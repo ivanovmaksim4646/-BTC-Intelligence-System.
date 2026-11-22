@@ -1,10 +1,20 @@
 name: Deploy BTC Cloudflare scheduler
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker.js'
+      - 'wrangler.jsonc'
+      - '.github/workflows/deploy-cloudflare.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: btc-cloudflare-deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -13,6 +23,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v3
         with:
@@ -20,3 +31,24 @@ jobs:
           accountId: 250b0a0e7ffc849880ba1f6af31b3c28
           wranglerVersion: '4'
           command: deploy
+
+      - name: Verify GitHub dispatch secret is configured in Cloudflare
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 250b0a0e7ffc849880ba1f6af31b3c28
+        run: |
+          set -euo pipefail
+          # Only inspect secret names; never print secret values.
+          npx --yes wrangler@4 secret list --name btc-intelligence-scheduler > /tmp/btc-cf-secrets.json
+          python - <<'PY'
+          import json
+          with open('/tmp/btc-cf-secrets.json', encoding='utf-8') as f:
+              secrets = json.load(f)
+          names = {entry.get('name') for entry in secrets}
+          if 'GITHUB_DISPATCH_TOKEN' not in names:
+              print('ERROR: Cloudflare Worker is deployed, but GITHUB_DISPATCH_TOKEN is missing.')
+              print('Add that secret in Cloudflare Worker Settings > Variables and Secrets.')
+              raise SystemExit(1)
+          print('OK: GITHUB_DISPATCH_TOKEN exists in Cloudflare (value not exposed).')
+          PY
