@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "btc-intelligence-scheduler",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-22",
+  "workers_dev": true,
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "durable_objects": {
+    "bindings": [{ "name": "DISPATCH_LOCK", "class_name": "DispatchLock" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DispatchLock"] }]
+}
