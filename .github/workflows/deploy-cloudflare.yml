@@ -32,6 +32,22 @@ jobs:
           wranglerVersion: '4'
           command: deploy
 
+      - name: Sync GitHub dispatch token to Cloudflare Worker
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 250b0a0e7ffc849880ba1f6af31b3c28
+          BTC_GITHUB_DISPATCH_TOKEN: ${{ secrets.BTC_GITHUB_DISPATCH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${BTC_GITHUB_DISPATCH_TOKEN:-}" ]]; then
+            echo "ERROR: BTC_GITHUB_DISPATCH_TOKEN is missing from GitHub Actions repository secrets."
+            exit 1
+          fi
+          # Pass through stdin, never command-line arguments or build output.
+          printf '%s' "$BTC_GITHUB_DISPATCH_TOKEN" | npx --yes wrangler@4 secret put GITHUB_DISPATCH_TOKEN --name btc-intelligence-scheduler
+          echo "Cloudflare dispatch secret synchronized."
+
       - name: Verify GitHub dispatch secret is configured in Cloudflare
         shell: bash
         env:
