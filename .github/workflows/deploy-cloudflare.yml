@@ -1,0 +1,22 @@
+name: Deploy BTC Cloudflare scheduler
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 250b0a0e7ffc849880ba1f6af31b3c28
+          wranglerVersion: '4'
+          command: deploy
