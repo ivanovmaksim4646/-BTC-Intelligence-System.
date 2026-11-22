@@ -5,6 +5,15 @@ on:
     # Avoid the busiest minute of the hour. GitHub schedules use UTC.
     - cron: "2-59/5 * * * *"
   workflow_dispatch:
+    inputs:
+      slot:
+        description: "Cloudflare scheduler slot (UTC)"
+        required: false
+        type: string
+      source:
+        description: "Trigger source (e.g. cloudflare)"
+        required: false
+        type: string
 
 permissions:
   contents: write
