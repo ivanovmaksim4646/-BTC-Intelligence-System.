@@ -1,0 +1,92 @@
+name: TradingView BTC structure intake
+
+on:
+  workflow_dispatch:
+    inputs:
+      tv_payload:
+        description: "Validated TradingView alert payload JSON"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: btc-tradingview-intake
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Validate and append structure alert
+        env:
+          BTC_TV_PAYLOAD: ${{ inputs.tv_payload }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          from pathlib import Path
+
+          raw = os.environ['BTC_TV_PAYLOAD']
+          event = json.loads(raw)
+          required = {'source', 'event', 'symbol', 'timeframe', 'time_ms',
+                      'price', 'mother_high', 'mother_low', 'inside_high', 'inside_low'}
+          assert set(event) == required, 'Unexpected fields'
+          assert event['source'] == 'btc-intelligence-tv-v1'
+          assert event['event'] in {'h1_inside_bar', 'h1_sweep_high_reject',
+                                    'h1_sweep_low_reclaim'}
+          assert event['timeframe'] == '5'
+          assert event['symbol'].upper().startswith(('BINANCE:BTC', 'BYBIT:BTC',
+                                                       'BINGX:BTC', 'KRAKEN:XBT',
+                                                       'BTC', 'XBT')), 'Not BTC'
+          assert isinstance(event['time_ms'], int)
+          assert abs(dt.datetime.now(dt.timezone.utc).timestamp()*1000 -
+                     event['time_ms']) < 30*60*1000, 'Stale alert'
+          for key in ('price','mother_high','mother_low','inside_high','inside_low'):
+              assert isinstance(event[key], (int, float)) and 0 < event[key] < 1e8
+          assert event['mother_low'] < event['inside_low'] < event['inside_high'] < event['mother_high']
+
+          path = Path('data/BTC-tradingview-events.jsonl')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          old = path.read_text(encoding='utf-8').splitlines() if path.exists() else []
+          ident = (event['symbol'], event['event'], event['time_ms'])
+          for line in old:
+              seen = json.loads(line)
+              if (seen['symbol'],seen['event'],seen['time_ms']) == ident:
+                  print('Duplicate alert ignored')
+                  break
+          else:
+              event['received_at_utc'] = dt.datetime.now(dt.timezone.utc).isoformat()
+              with path.open('a', encoding='utf-8') as f:
+                  f.write(json.dumps(event, separators=(',', ':'), ensure_ascii=False)+'\n')
+              print('BTC TradingView alert saved:', event['event'], event['symbol'])
+          PY
+
+      - name: Commit event history
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "btc-intelligence-bot"
+          git config user.email "btc-intelligence-bot@users.noreply.github.com"
+          git add data/BTC-tradingview-events.jsonl 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No new alert"
+            exit 0
+          fi
+          git commit -m "data: record TradingView BTC structure event"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((attempt * 2))
+          done
+          echo "Failed to persist alert" >&2
+          exit 1
