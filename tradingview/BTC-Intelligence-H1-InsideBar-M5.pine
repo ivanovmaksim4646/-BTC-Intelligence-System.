@@ -1,0 +1,48 @@
+//@version=6
+indicator("BTC Intelligence — H1 Inside Bar / M5 Sweeps", overlay=true, max_labels_count=100)
+
+// Run this indicator on a 5-minute BTC chart.
+// Confirmed HTF bars only: [1] = most recent closed H1, [2] = H1 mother bar.
+// This script sends structure observations, NOT trades or entry instructions.
+
+string source = "btc-intelligence-tv-v1"
+bool isM5 = timeframe.isminutes and timeframe.multiplier == 5
+float insideHigh = request.security(syminfo.tickerid, "60", high[1], barmerge.gaps_off, barmerge.lookahead_on)
+float insideLow = request.security(syminfo.tickerid, "60", low[1], barmerge.gaps_off, barmerge.lookahead_on)
+float motherHigh = request.security(syminfo.tickerid, "60", high[2], barmerge.gaps_off, barmerge.lookahead_on)
+float motherLow = request.security(syminfo.tickerid, "60", low[2], barmerge.gaps_off, barmerge.lookahead_on)
+bool isInsideH1 = not na(motherHigh) and insideHigh < motherHigh and insideLow > motherLow
+bool newHour = ta.change(time("60")) != 0
+
+var bool highSweepSent = false
+var bool lowSweepSent = false
+if newHour
+    highSweepSent := false
+    lowSweepSent := false
+
+// Sweep of the completed inside bar's high, followed by close back below it.
+// Signals only within the H1 immediately following the inside bar.
+bool highSweep = isM5 and isInsideH1 and barstate.isconfirmed and high > insideHigh and close < insideHigh and not highSweepSent
+bool lowSweep = isM5 and isInsideH1 and barstate.isconfirmed and low < insideLow and close > insideLow and not lowSweepSent
+
+makePayload(string evt) =>
+    '{"source":"' + source + '","event":"' + evt + '","symbol":"' + syminfo.tickerid + '","timeframe":"5","time_ms":' + str.tostring(time_close) + ',"price":' + str.tostring(close, format.mintick) + ',"mother_high":' + str.tostring(motherHigh, format.mintick) + ',"mother_low":' + str.tostring(motherLow, format.mintick) + ',"inside_high":' + str.tostring(insideHigh, format.mintick) + ',"inside_low":' + str.tostring(insideLow, format.mintick) + '}'
+
+if isM5 and newHour and isInsideH1 and barstate.isconfirmed
+    alert(makePayload("h1_inside_bar"), alert.freq_once_per_bar_close)
+
+if highSweep
+    highSweepSent := true
+    alert(makePayload("h1_sweep_high_reject"), alert.freq_once_per_bar_close)
+
+if lowSweep
+    lowSweepSent := true
+    alert(makePayload("h1_sweep_low_reclaim"), alert.freq_once_per_bar_close)
+
+plot(isInsideH1 ? insideHigh : na, "H1 inside high", color=color.orange, linewidth=2, style=plot.style_linebr)
+plot(isInsideH1 ? insideLow : na, "H1 inside low", color=color.aqua, linewidth=2, style=plot.style_linebr)
+plotshape(highSweep, title="High sweep/rejection", style=shape.triangledown, location=location.abovebar, color=color.red, size=size.small, text="Sweep H")
+plotshape(lowSweep, title="Low sweep/reclaim", style=shape.triangleup, location=location.belowbar, color=color.lime, size=size.small, text="Sweep L")
+
+if barstate.islast and not isM5
+    label.new(bar_index, high, "Use BTC M5 chart for alerts", style=label.style_label_down)
