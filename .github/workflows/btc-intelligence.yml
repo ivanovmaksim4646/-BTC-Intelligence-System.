@@ -47,6 +47,10 @@ jobs:
         continue-on-error: true
         run: python src/collector.py
 
+      - name: Generate BTC order-flow observations
+        if: steps.collect.outcome == 'success'
+        run: python src/market_analysis.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
