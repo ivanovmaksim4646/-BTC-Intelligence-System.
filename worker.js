@@ -1,5 +1,6 @@
 // Cloudflare Cron -> Durable Object -> GitHub Actions workflow_dispatch.
 // Never store credentials in source control. Set GITHUB_DISPATCH_TOKEN with Wrangler secret.
+// Deployment uses the CLOUDFLARE_API_TOKEN repository secret; rotating it requires a new deployment to verify access.
 const GITHUB_OWNER = "ivanovmaksim4646";
 const GITHUB_REPO = "-BTC-Intelligence-System.";
 const WORKFLOW = "btc-intelligence.yml";
