@@ -111,9 +111,20 @@ async function receiveTradingView(request, env) {
     body: JSON.stringify({ ref: "main", inputs: { tv_payload: JSON.stringify(payload) } })
   });
   if (!response.ok) {
-    console.error("TradingView webhook dispatch failed", response.status);
-    return new Response("Dispatch failed", { status: 502 });
+    // GitHub error bodies may contain sensitive diagnostics; never echo them.
+    const category = response.status === 401 ? "invalid_dispatch_token"
+      : response.status === 403 ? "dispatch_permission_denied"
+      : response.status === 404 ? "repository_or_workflow_not_found"
+      : response.status === 422 ? "invalid_dispatch_request"
+      : response.status === 429 ? "github_rate_limit"
+      : "github_dispatch_error";
+    console.error("TradingView webhook: GitHub rejected dispatch", {
+      status: response.status, category, workflow: "tradingview-intelligence.yml"
+    });
+    return Response.json({ error: category, upstream_http_status: response.status },
+      { status: 502, headers: { "Cache-Control": "no-store" } });
   }
+  console.log("TradingView webhook accepted", payload.event, payload.symbol, payload.time_ms);
   return Response.json({accepted: true}, { status: 202 });
 }
 
