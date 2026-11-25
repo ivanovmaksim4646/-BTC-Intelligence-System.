@@ -1,9 +1,9 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-25T14:13:15.211350Z",
+  "collected_at_utc": "2026-11-25T15:25:14.019136Z",
   "notes": [
     "Only closed OHLC candles",
-    "Shift candidates use confirmed pivots and last closed candle; no continuation BOS or validated trade signal",
+    "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
     "FVG is an algorithmic 3-candle imbalance, not automatically an institutional POI",
     "Kraken Spot structures need independent validation on the intended futures chart"
   ],
@@ -53,8 +53,8 @@
     "H1": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 58689.8
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 57919.2
         }
       ],
       "fvg": [
@@ -87,12 +87,18 @@
           "high": 59681.6,
           "kind": "bearish_fvg",
           "low": 59668.0
+        },
+        {
+          "formed_at": 1795615200,
+          "high": 58382.7,
+          "kind": "bearish_fvg",
+          "low": 58375.7
         }
       ],
-      "last_close": 58012.6,
-      "last_high": 58839.3,
-      "last_low": 57919.2,
-      "latest_closed_utc": "2026-11-25T13:00:00Z",
+      "last_close": 58156.8,
+      "last_high": 58375.7,
+      "last_low": 57210.7,
+      "latest_closed_utc": "2026-11-25T14:00:00Z",
       "status": "ok"
     },
     "H4": {
@@ -151,7 +157,12 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 58162.4
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795563900,
@@ -164,34 +175,39 @@
           "high": 59681.6,
           "kind": "bearish_fvg",
           "low": 59565.7
-        },
-        {
-          "formed_at": 1795614300,
-          "high": 58569.8,
-          "kind": "bearish_fvg",
-          "low": 58375.7
         }
       ],
-      "last_close": 58012.6,
-      "last_high": 58375.7,
-      "last_low": 57919.2,
-      "latest_closed_utc": "2026-11-25T13:45:00Z",
+      "last_close": 57941.6,
+      "last_high": 58654.8,
+      "last_low": 57686.2,
+      "latest_closed_utc": "2026-11-25T15:00:00Z",
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 57928.1
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795613700,
           "high": 58752.6,
           "kind": "bearish_fvg",
           "low": 58449.3
+        },
+        {
+          "formed_at": 1795619400,
+          "high": 58037.3,
+          "kind": "bearish_fvg",
+          "low": 57968.5
         }
       ],
-      "last_close": 58180.5,
-      "last_high": 58267.4,
-      "last_low": 57955.9,
-      "latest_closed_utc": "2026-11-25T14:05:00Z",
+      "last_close": 57823.5,
+      "last_high": 57963.0,
+      "last_low": 57639.5,
+      "latest_closed_utc": "2026-11-25T15:20:00Z",
       "status": "ok"
     },
     "W1": {
