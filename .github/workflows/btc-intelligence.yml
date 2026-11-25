@@ -55,6 +55,10 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/structure.py
 
+      - name: Evaluate BTC watchlist candidates (Sweep optional)
+        if: steps.collect.outcome == 'success'
+        run: python src/setup_candidates.py
+
       - name: Record scheduler trigger diagnostics
         if: always()
         env:
