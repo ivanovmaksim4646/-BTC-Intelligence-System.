@@ -1,0 +1,236 @@
+{
+  "classification": "structure_observation_only",
+  "collected_at_utc": "2026-11-25T10:48:53.233832Z",
+  "notes": [
+    "Only closed OHLC candles",
+    "Shift candidates use confirmed pivots and last closed candle; no continuation BOS or validated trade signal",
+    "FVG is an algorithmic 3-candle imbalance, not automatically an institutional POI",
+    "Kraken Spot structures need independent validation on the intended futures chart"
+  ],
+  "schema_version": "1.0",
+  "source": "Kraken Spot XBTUSD",
+  "timeframes": {
+    "D1": {
+      "events": [],
+      "fvg": [
+        {
+          "formed_at": 1791417600,
+          "high": 85110.1,
+          "kind": "bearish_fvg",
+          "low": 83467.7
+        },
+        {
+          "formed_at": 1792713600,
+          "high": 82542.9,
+          "kind": "bearish_fvg",
+          "low": 81942.7
+        },
+        {
+          "formed_at": 1794528000,
+          "high": 73113.6,
+          "kind": "bearish_fvg",
+          "low": 71429.1
+        },
+        {
+          "formed_at": 1794614400,
+          "high": 71022.7,
+          "kind": "bearish_fvg",
+          "low": 68369.7
+        },
+        {
+          "formed_at": 1794700800,
+          "high": 67500.0,
+          "kind": "bearish_fvg",
+          "low": 66086.7
+        }
+      ],
+      "last_close": 59741.2,
+      "last_high": 61592.2,
+      "last_low": 59197.4,
+      "latest_closed_utc": "2026-11-24T00:00:00Z",
+      "status": "ok"
+    },
+    "H1": {
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 59417.1,
+          "reference_low": 58650.0
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1795453200,
+          "high": 62577.0,
+          "kind": "bearish_fvg",
+          "low": 62193.8
+        },
+        {
+          "formed_at": 1795456800,
+          "high": 61755.0,
+          "kind": "bearish_fvg",
+          "low": 61695.5
+        },
+        {
+          "formed_at": 1795489200,
+          "high": 61000.0,
+          "kind": "bearish_fvg",
+          "low": 60342.1
+        },
+        {
+          "formed_at": 1795564800,
+          "high": 59814.6,
+          "kind": "bearish_fvg",
+          "low": 59751.7
+        },
+        {
+          "formed_at": 1795568400,
+          "high": 59681.6,
+          "kind": "bearish_fvg",
+          "low": 59668.0
+        }
+      ],
+      "last_close": 59013.6,
+      "last_high": 59360.0,
+      "last_low": 58741.0,
+      "latest_closed_utc": "2026-11-25T09:00:00Z",
+      "status": "ok"
+    },
+    "H4": {
+      "events": [],
+      "fvg": [
+        {
+          "formed_at": 1794484800,
+          "high": 73332.6,
+          "kind": "bearish_fvg",
+          "low": 73058.4
+        },
+        {
+          "formed_at": 1794499200,
+          "high": 72693.1,
+          "kind": "bearish_fvg",
+          "low": 72129.0
+        },
+        {
+          "formed_at": 1794542400,
+          "high": 71022.7,
+          "kind": "bearish_fvg",
+          "low": 69303.9
+        },
+        {
+          "formed_at": 1794628800,
+          "high": 67794.8,
+          "kind": "bearish_fvg",
+          "low": 67392.2
+        },
+        {
+          "formed_at": 1794672000,
+          "high": 66908.8,
+          "kind": "bearish_fvg",
+          "low": 66127.4
+        },
+        {
+          "formed_at": 1795276800,
+          "high": 59657.8,
+          "kind": "bullish_fvg",
+          "low": 58549.9
+        },
+        {
+          "formed_at": 1795492800,
+          "high": 60982.9,
+          "kind": "bearish_fvg",
+          "low": 60696.9
+        },
+        {
+          "formed_at": 1795579200,
+          "high": 59397.2,
+          "kind": "bearish_fvg",
+          "low": 59336.8
+        }
+      ],
+      "last_close": 58654.4,
+      "last_high": 59336.8,
+      "last_low": 58554.1,
+      "latest_closed_utc": "2026-11-25T04:00:00Z",
+      "status": "ok"
+    },
+    "M15": {
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 58835.0
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1795563900,
+          "high": 59888.5,
+          "kind": "bearish_fvg",
+          "low": 59769.3
+        },
+        {
+          "formed_at": 1795565700,
+          "high": 59681.6,
+          "kind": "bearish_fvg",
+          "low": 59565.7
+        }
+      ],
+      "last_close": 58865.4,
+      "last_high": 58961.2,
+      "last_low": 58830.0,
+      "latest_closed_utc": "2026-11-25T10:30:00Z",
+      "status": "ok"
+    },
+    "M5": {
+      "events": [],
+      "fvg": [
+        {
+          "formed_at": 1795593900,
+          "high": 58718.2,
+          "kind": "bullish_fvg",
+          "low": 58700.1
+        }
+      ],
+      "last_close": 58865.4,
+      "last_high": 58933.4,
+      "last_low": 58834.2,
+      "latest_closed_utc": "2026-11-25T10:40:00Z",
+      "status": "ok"
+    },
+    "W1": {
+      "events": [],
+      "fvg": [
+        {
+          "formed_at": 1760572800,
+          "high": 118344.4,
+          "kind": "bearish_fvg",
+          "low": 114000.0
+        },
+        {
+          "formed_at": 1762387200,
+          "high": 107556.3,
+          "kind": "bearish_fvg",
+          "low": 107400.0
+        },
+        {
+          "formed_at": 1763596800,
+          "high": 99222.0,
+          "kind": "bearish_fvg",
+          "low": 93003.7
+        },
+        {
+          "formed_at": 1794441600,
+          "high": 75625.0,
+          "kind": "bearish_fvg",
+          "low": 74115.6
+        }
+      ],
+      "last_close": 62984.6,
+      "last_high": 74115.6,
+      "last_low": 61970.3,
+      "latest_closed_utc": "2026-11-12T00:00:00Z",
+      "status": "ok"
+    }
+  },
+  "trade_signal": null
+}
