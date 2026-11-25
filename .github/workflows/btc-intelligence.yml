@@ -51,6 +51,10 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/market_analysis.py
 
+      - name: Generate BTC structure observations
+        if: steps.collect.outcome == 'success'
+        run: python src/structure.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
