@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-25T21:23:33.586966Z",
+  "collected_at_utc": "2026-11-25T22:24:36.541840Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -53,9 +53,8 @@
     "H1": {
       "events": [
         {
-          "kind": "inside_bar",
-          "reference_high": 60349.9,
-          "reference_low": 59628.7
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60310.6
         }
       ],
       "fvg": [
@@ -84,10 +83,10 @@
           "low": 58926.8
         }
       ],
-      "last_close": 60193.2,
-      "last_high": 60310.6,
-      "last_low": 59719.8,
-      "latest_closed_utc": "2026-11-25T20:00:00Z",
+      "last_close": 60162.7,
+      "last_high": 60418.6,
+      "last_low": 60102.0,
+      "latest_closed_utc": "2026-11-25T21:00:00Z",
       "status": "ok"
     },
     "H4": {
@@ -137,12 +136,7 @@
       "status": "ok"
     },
     "M15": {
-      "events": [
-        {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60310.6
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795626900,
@@ -155,19 +149,25 @@
           "high": 60102.0,
           "kind": "bullish_fvg",
           "low": 59962.5
+        },
+        {
+          "formed_at": 1795644000,
+          "high": 60213.6,
+          "kind": "bearish_fvg",
+          "low": 60181.3
         }
       ],
-      "last_close": 60163.0,
-      "last_high": 60392.5,
-      "last_low": 60102.0,
-      "latest_closed_utc": "2026-11-25T21:00:00Z",
+      "last_close": 60034.6,
+      "last_high": 60181.3,
+      "last_low": 60009.2,
+      "latest_closed_utc": "2026-11-25T22:00:00Z",
       "status": "ok"
     },
     "M5": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60189.9
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60009.2
         }
       ],
       "fvg": [
@@ -200,12 +200,18 @@
           "high": 60053.1,
           "kind": "bullish_fvg",
           "low": 59893.7
+        },
+        {
+          "formed_at": 1795644000,
+          "high": 60201.3,
+          "kind": "bearish_fvg",
+          "low": 60162.7
         }
       ],
-      "last_close": 60159.5,
-      "last_high": 60191.7,
-      "last_low": 60134.6,
-      "latest_closed_utc": "2026-11-25T21:15:00Z",
+      "last_close": 60016.8,
+      "last_high": 60109.9,
+      "last_low": 59994.9,
+      "latest_closed_utc": "2026-11-25T22:15:00Z",
       "status": "ok"
     },
     "W1": {
