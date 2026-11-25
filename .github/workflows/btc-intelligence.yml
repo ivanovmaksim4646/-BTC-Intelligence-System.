@@ -55,6 +55,35 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/structure.py
 
+      - name: Record scheduler trigger diagnostics
+        if: always()
+        env:
+          BTC_TRIGGER_EVENT: ${{ github.event_name }}
+          BTC_TRIGGER_SOURCE: ${{ inputs.source }}
+          BTC_TRIGGER_SLOT: ${{ inputs.slot }}
+          BTC_RUN_ID: ${{ github.run_id }}
+          BTC_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          from pathlib import Path
+          path = Path('data/BTC-scheduler-health.json')
+          record = {
+              'schema_version': '1.0',
+              'recorded_at_utc': dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z'),
+              'event': os.environ.get('BTC_TRIGGER_EVENT', ''),
+              'source': os.environ.get('BTC_TRIGGER_SOURCE', '') or 'github',
+              'slot': os.environ.get('BTC_TRIGGER_SLOT', ''),
+              'run_id': os.environ.get('BTC_RUN_ID', ''),
+              'run_attempt': os.environ.get('BTC_RUN_ATTEMPT', ''),
+          }
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(record, indent=2) + '\\n', encoding='utf-8')
+          print('BTC scheduler:', record['event'], record['source'], 'run', record['run_id'])
+          PY
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
