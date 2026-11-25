@@ -67,5 +67,39 @@ class StructureTests(unittest.TestCase):
         bars = [bar(i*300, 10, 11, 9, 10) for i in range(12)]
         self.assertIsNone(st.structural_shift(bars))
 
+    def test_bearish_bos_after_lower_lows(self):
+        highs = [10,12,15,12,11,12,13,11,10,11,12,11]
+        lows  = [ 8, 9,10, 9, 7, 8, 9, 8, 6, 7, 8, 4]
+        closes= [ 9,11,12,10, 8,10,11, 9, 7,10, 9, 5]
+        bars = [bar(i*300, closes[i], highs[i], lows[i], closes[i]) for i in range(12)]
+        bos = st.continuation_bos(bars)
+        self.assertIsNotNone(bos)
+        self.assertEqual(bos["kind"], "bearish_bos_candidate")
+        self.assertEqual(bos["break_level"], 6)
+        self.assertIsNone(st.structural_shift(bars))
+
+    def test_bullish_bos_after_higher_highs(self):
+        highs = [10,12,15,12,11,12,13,11,10,11,12,11]
+        lows  = [ 8, 9,10, 9, 7, 8, 9, 8, 6, 7, 8, 4]
+        closes= [ 9,11,12,10, 8,10,11, 9, 7,10, 9, 5]
+        bars = [bar(i*300, 30-closes[i], 30-lows[i], 30-highs[i], 30-closes[i])
+                for i in range(12)]
+        bos = st.continuation_bos(bars)
+        self.assertIsNotNone(bos)
+        self.assertEqual(bos["kind"], "bullish_bos_candidate")
+        self.assertEqual(bos["break_level"], 24)
+        self.assertIsNone(st.structural_shift(bars))
+
+    def test_wick_break_without_close_is_not_bos(self):
+        highs = [10,12,15,12,11,12,13,11,10,11,12,11]
+        lows  = [ 8, 9,10, 9, 7, 8, 9, 8, 6, 7, 8, 4]
+        closes= [ 9,11,12,10, 8,10,11, 9, 7,10, 9, 7]
+        bars = [bar(i*300, closes[i], highs[i], lows[i], closes[i]) for i in range(12)]
+        self.assertIsNone(st.continuation_bos(bars))
+
+    def test_no_bos_on_equal_swings(self):
+        bars = [bar(i*300, 10, 11, 9, 10) for i in range(12)]
+        self.assertIsNone(st.continuation_bos(bars))
+
 if __name__ == "__main__":
     unittest.main()
