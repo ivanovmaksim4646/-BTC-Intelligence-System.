@@ -40,5 +40,32 @@ class StructureTests(unittest.TestCase):
     def test_insufficient(self):
         self.assertEqual(st.events_for([bar(0,1,2,0,1)],"M5")["status"], "insufficient_candles")
 
+
+    def test_bullish_shift_candidate_distinct_from_bos(self):
+        highs = [10,12,15,12,11,12,13,11,10,11,12,15]
+        lows  = [ 8, 9,10, 9, 7, 8, 9, 8, 6, 7, 8,10]
+        closes= [ 9,11,12,10, 8,10,11, 9, 7,10,12,14]
+        bars = [bar(i*300, closes[i], highs[i], lows[i], closes[i]) for i in range(12)]
+        event = st.structural_shift(bars)
+        self.assertIsNotNone(event)
+        self.assertEqual(event["kind"], "bullish_shift_candidate")
+        self.assertEqual(event["break_level"], 13)
+        self.assertTrue(event["not_bos"])
+
+    def test_bearish_shift_candidate(self):
+        highs = [10,12,15,12,11,12,13,11,10,11,12,15]
+        lows  = [ 8, 9,10, 9, 7, 8, 9, 8, 6, 7, 8,10]
+        closes= [ 9,11,12,10, 8,10,11, 9, 7,10,12,14]
+        # Reflect bearish trend into bullish trend, with a downward final break.
+        bars = [bar(i*300, 30-closes[i], 30-lows[i], 30-highs[i], 30-closes[i]) for i in range(12)]
+        event = st.structural_shift(bars)
+        self.assertIsNotNone(event)
+        self.assertEqual(event["kind"], "bearish_shift_candidate")
+        self.assertEqual(event["break_level"], 17)
+
+    def test_shift_requires_confirmed_swing_history(self):
+        bars = [bar(i*300, 10, 11, 9, 10) for i in range(12)]
+        self.assertIsNone(st.structural_shift(bars))
+
 if __name__ == "__main__":
     unittest.main()
