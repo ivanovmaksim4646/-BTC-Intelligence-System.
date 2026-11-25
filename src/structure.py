@@ -2,8 +2,7 @@
 """BTC candle structure observations from CLOSED Kraken Spot OHLC candles.
 
 Events are descriptive only; no order placement or standalone trade signals.
-Swing BOS is intentionally NOT claimed: pivot confirmation and HTF context
-must be defined and separately validated before signalling trades.
+Shift candidates require a break of confirmed swing against a prior trend.\nThis deliberately does not claim continuation BOS or verified ICT trade signals.
 """
 from __future__ import annotations
 import datetime as dt
@@ -31,12 +30,62 @@ def closed_candles(rows, now_epoch, minutes):
               if item["t"] + length <= now_epoch}
     return [unique[k] for k in sorted(unique)]
 
+
+def confirmed_pivots(bars, left=2, right=2):
+    """Confirmed swing highs/lows; never use future or currently forming bars."""
+    highs, lows = [], []
+    if left < 1 or right < 1:
+        raise ValueError("pivot strength must be positive")
+    for i in range(left, len(bars) - right):
+        window = bars[i-left:i+right+1]
+        high = bars[i]["h"]
+        low = bars[i]["l"]
+        if all(high > row["h"] for j, row in enumerate(window) if j != left):
+            highs.append({"index": i, "price": high, "time": bars[i]["t"]})
+        if all(low < row["l"] for j, row in enumerate(window) if j != left):
+            lows.append({"index": i, "price": low, "time": bars[i]["t"]})
+    return highs, lows
+
+
+def structural_shift(bars, left=2, right=2):
+    """Early reversal: candle CLOSE breaks a confirmed swing against prior trend.
+
+    Separate from BOS (continuation); confirmation is algorithmic and limited
+    to this venue/timeframe, not discretionary ICT validation or a trade signal.
+    """
+    if len(bars) < max(8, 2*left + right + 3):
+        return None
+    highs, lows = confirmed_pivots(bars[:-1], left, right)
+    if len(highs) < 2 or len(lows) < 2:
+        return None
+    prev, last = bars[-2], bars[-1]
+    hh0, hh1 = highs[-2], highs[-1]
+    ll0, ll1 = lows[-2], lows[-1]
+    is_downtrend = hh1["price"] < hh0["price"] and ll1["price"] < ll0["price"]
+    is_uptrend = hh1["price"] > hh0["price"] and ll1["price"] > ll0["price"]
+    if is_downtrend and prev["c"] <= hh1["price"] < last["c"]:
+        return {"kind": "bullish_shift_candidate", "break_level": hh1["price"],
+                "broken_swing_utc": dt.datetime.fromtimestamp(hh1["time"], dt.timezone.utc).isoformat().replace("+00:00", "Z"),
+                "confirmation": "closed_candle_above_confirmed_swing_high",
+                "previous_structure": "lower_highs_lower_lows",
+                "not_bos": True}
+    if is_uptrend and prev["c"] >= ll1["price"] > last["c"]:
+        return {"kind": "bearish_shift_candidate", "break_level": ll1["price"],
+                "broken_swing_utc": dt.datetime.fromtimestamp(ll1["time"], dt.timezone.utc).isoformat().replace("+00:00", "Z"),
+                "confirmation": "closed_candle_below_confirmed_swing_low",
+                "previous_structure": "higher_highs_higher_lows",
+                "not_bos": True}
+    return None
+
 def events_for(bars, timeframe):
     if len(bars) < 4:
         return {"status": "insufficient_candles", "events": [], "fvg": [], "latest_closed_utc": None}
     a, b = bars[-2], bars[-1]
     prev, first = bars[-2], bars[-3]
     events = []
+    shift = structural_shift(bars)
+    if shift is not None:
+        events.append(shift)
     # The candle preceding the last candle is the reference range.
     if b["h"] < a["h"] and b["l"] > a["l"]:
         events.append({"kind": "inside_bar", "reference_high": a["h"], "reference_low": a["l"]})
@@ -81,7 +130,7 @@ def build(now=None):
     result = {"schema_version": "1.0", "source": "Kraken Spot XBTUSD",
               "collected_at_utc": now.isoformat().replace("+00:00","Z"),
               "classification": "structure_observation_only", "trade_signal": None,
-              "notes": ["Only closed OHLC candles", "No confirmed BOS/Shift without verified swing structure",
+              "notes": ["Only closed OHLC candles", "Shift candidates use confirmed pivots and last closed candle; no continuation BOS or validated trade signal",
                         "FVG is an algorithmic 3-candle imbalance, not automatically an institutional POI",
                         "Kraken Spot structures need independent validation on the intended futures chart"],
               "timeframes": {}}
