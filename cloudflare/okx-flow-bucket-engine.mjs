@@ -82,7 +82,6 @@ export function snapshot(state,nowMs) {
     // a stable socket does not prove upstream exchange data completeness.
     const connection_observed=state.connection_started_ms!==null
       && state.connection_started_ms<=b.start_ms
-      && state.phase==="subscribed"
       && state.last_message_ms!==null
       && state.last_message_ms>=b.end_ms
       && state.interruptions.every(g=>g.at_ms>b.end_ms||g.at_ms<b.start_ms)
