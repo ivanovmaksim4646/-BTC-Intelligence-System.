@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-26T09:35:43.551706Z",
+  "checked_at_utc": "2026-11-26T10:05:27.523519Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
-      "status": "ok",
-      "age_seconds": 4
+      "status": "unverified",
+      "age_seconds": 3
     },
     "order_flow_analysis": {
       "status": "ok",
@@ -22,18 +22,19 @@
     "github_workflow_trigger": {
       "status": "ok",
       "age_seconds": 0,
-      "event": "schedule",
-      "source": "github",
-      "slot": ""
+      "event": "workflow_dispatch",
+      "source": "cloudflare",
+      "slot": "2026-11-26T10:05:00.000Z"
     },
     "cloudflare_dispatch": {
-      "status": "last_dispatch_unverified",
-      "note": "A GitHub schedule event does not prove Cloudflare dispatch works"
+      "status": "last_dispatch_observed",
+      "note": "A recent Cloudflare-origin GitHub run was observed; this does not prove continuous uptime"
     },
     "tradingview_intake": {
-      "status": "not_yet_verified",
-      "events_saved": null,
-      "note": "No saved events is not proof there were no TradingView alerts"
+      "status": "event_history_present",
+      "events_saved": 1,
+      "note": "No saved events is not proof there were no TradingView alerts",
+      "last_event_received_at_utc": "2026-11-26T10:05:10.768606+00:00"
     }
   },
   "fully_operational_confirmed": false,
