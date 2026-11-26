@@ -35,7 +35,7 @@ def read(name):
         return None
 
 
-def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None):
+def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None, bea=None):
     now = now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:
         raise ValueError("now must have timezone")
@@ -110,7 +110,22 @@ def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None
                                "flow", "derivatives", "liquidity", "support", "conflicts",
                                "missing", "watch_direction", "paper_candidates_count")},
                            "trade_signal": None}
+    calendar = {"status": "missing_or_stale", "events": []}
+    if isinstance(bea, dict):
+        stamp = timestamp(bea.get("generated_at_utc"))
+        if (stamp and 0 <= (now - stamp).total_seconds() <= 129600
+                and bea.get("source") == "https://apps.bea.gov/API/signup/release_dates.json"
+                and bea.get("status") in ("official_schedule_only", "no_releases_in_horizon")
+                and isinstance(bea.get("events"), list)):
+            calendar = {"status": bea["status"], "source": bea["source"],
+                        "generated_at_utc": bea["generated_at_utc"],
+                        "max_age_seconds": 129600,
+                        "events": [e for e in bea["events"] if isinstance(e, dict)
+                                   and timestamp(e.get("release_at_utc"))
+                                   and now <= timestamp(e["release_at_utc"])],
+                        "coverage": "BEA GDP/PCE only; BLS/FOMC unavailable"}
     return {
+        "economic_calendar": calendar,
         "okx_confluence": okx_section,
         "schema_version": "1.1",
         "generated_at_utc": now.isoformat().replace("+00:00", "Z"),
@@ -143,7 +158,8 @@ def main():
     report = build(
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
         read("BTC-structure-current.json"), read("BTC-setup-candidates.json"),
-        read("BTC-scheduler-health.json"), okx=read("BTC-okx-confluence-v2.json")
+        read("BTC-scheduler-health.json"), okx=read("BTC-okx-confluence-v2.json"),
+        bea=read("BTC-official-bea-calendar-v1.json")
     )
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
