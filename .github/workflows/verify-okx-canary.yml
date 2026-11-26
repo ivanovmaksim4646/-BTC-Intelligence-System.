@@ -1,0 +1,45 @@
+name: Verify OKX WebSocket Cloudflare canary
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-okx-canary.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch publicly safe operational status
+        run: |
+          set -euo pipefail
+          url='https://btc-okx-ws-canary.ivanovmaksim812.workers.dev/status'
+          for i in $(seq 1 12); do
+            if curl -fsS --max-time 12 "$url" -o /tmp/okx-canary.json; then
+              python - <<'PY'
+          import json
+          p='/tmp/okx-canary.json'
+          data=json.load(open(p))
+          print('Phase:',data.get('phase'))
+          print('Reason:',data.get('completion_reason'))
+          print('Subscribed:',data.get('subscribed'))
+          print('Trades:',data.get('trade_count'))
+          print('Messages:',data.get('message_count'))
+          print('Complete M5:',data.get('complete_m5'))
+          print('CVD:',data.get('m5_cvd'))
+          assert data.get('trade_signal') is None or 'trade_signal' not in data
+          assert data.get('complete_m5') is not True
+          PY
+              if python -c "import json; d=json.load(open('/tmp/okx-canary.json'));exit(0 if d.get('canary_complete') else 1)"; then
+                echo "Canary completed. See status above."
+                exit 0
+              fi
+            else
+              echo "Status endpoint temporarily unavailable (attempt $i)"
+            fi
+            sleep 15
+          done
+          echo "Canary has not completed during verification window" >&2
+          exit 1
