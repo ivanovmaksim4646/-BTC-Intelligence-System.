@@ -1,0 +1,280 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-11-26T14:08:40.219519+00:00",
+  "source": "OKX BTC-USDT-SWAP",
+  "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
+  "status": "structure_and_sampled_liquidity",
+  "market_context": "mixed",
+  "timeframes": {
+    "5m": {
+      "timeframe": "5m",
+      "status": "observed",
+      "structure": "bullish",
+      "last_closed_candle_open_s": 1795701600,
+      "last_closed_candle_close_s": 1795701900,
+      "last_close": 60853.0,
+      "confirmed_swing_highs": [
+        {
+          "t": 1795699200,
+          "price": 60869.0
+        },
+        {
+          "t": 1795700700,
+          "price": 60925.0
+        }
+      ],
+      "confirmed_swing_lows": [
+        {
+          "t": 1795698000,
+          "price": 60759.4
+        },
+        {
+          "t": 1795698900,
+          "price": 60763.3
+        }
+      ],
+      "swing_confirmation_delay_bars": 2,
+      "fresh_bos_or_choch": null,
+      "note": "HH/HL or LH/LL classification from two confirmed swing pairs; not BOS/CHOCH or an entry."
+    },
+    "15m": {
+      "timeframe": "15m",
+      "status": "observed",
+      "structure": "mixed",
+      "last_closed_candle_open_s": 1795700700,
+      "last_closed_candle_close_s": 1795701600,
+      "last_close": 60850.2,
+      "confirmed_swing_highs": [
+        {
+          "t": 1795687200,
+          "price": 60985.0
+        },
+        {
+          "t": 1795696200,
+          "price": 60960.1
+        }
+      ],
+      "confirmed_swing_lows": [
+        {
+          "t": 1795676400,
+          "price": 60380.0
+        },
+        {
+          "t": 1795689900,
+          "price": 60435.2
+        }
+      ],
+      "swing_confirmation_delay_bars": 2,
+      "fresh_bos_or_choch": null,
+      "note": "HH/HL or LH/LL classification from two confirmed swing pairs; not BOS/CHOCH or an entry."
+    },
+    "1h": {
+      "timeframe": "1h",
+      "status": "observed",
+      "structure": "mixed",
+      "last_closed_candle_open_s": 1795698000,
+      "last_closed_candle_close_s": 1795701600,
+      "last_close": 60850.2,
+      "confirmed_swing_highs": [
+        {
+          "t": 1795665600,
+          "price": 61119.8
+        },
+        {
+          "t": 1795680000,
+          "price": 61040.0
+        }
+      ],
+      "confirmed_swing_lows": [
+        {
+          "t": 1795672800,
+          "price": 60343.0
+        },
+        {
+          "t": 1795687200,
+          "price": 60435.2
+        }
+      ],
+      "swing_confirmation_delay_bars": 2,
+      "fresh_bos_or_choch": null,
+      "note": "HH/HL or LH/LL classification from two confirmed swing pairs; not BOS/CHOCH or an entry."
+    },
+    "4h": {
+      "timeframe": "4h",
+      "status": "observed",
+      "structure": "bearish",
+      "last_closed_candle_open_s": 1795680000,
+      "last_closed_candle_close_s": 1795694400,
+      "last_close": 60684.5,
+      "confirmed_swing_highs": [
+        {
+          "t": 1795435200,
+          "price": 64570.0
+        },
+        {
+          "t": 1795651200,
+          "price": 61620.0
+        }
+      ],
+      "confirmed_swing_lows": [
+        {
+          "t": 1795392000,
+          "price": 60339.6
+        },
+        {
+          "t": 1795608000,
+          "price": 57257.8
+        }
+      ],
+      "swing_confirmation_delay_bars": 2,
+      "fresh_bos_or_choch": null,
+      "note": "HH/HL or LH/LL classification from two confirmed swing pairs; not BOS/CHOCH or an entry."
+    }
+  },
+  "htf_structure": "mixed",
+  "ltf_structure": "mixed",
+  "liquidity_context": {
+    "book_timestamp_ms": 1795702119252,
+    "resting_side": "ask_heavier",
+    "resting_imbalance": -0.56874,
+    "open_interest_change": {
+      "delta_btc": 5.5997,
+      "delta_percent": 0.0175,
+      "oi_btc": 32012.176100000117,
+      "elapsed_seconds": 179.067,
+      "snapshot_only": true
+    },
+    "funding": {
+      "rate_fraction": 4.80670633652e-05,
+      "next_funding_time_ms": 1795737600000,
+      "classification": "quoted_not_realized"
+    },
+    "premium": {
+      "mark_price": 60862.0,
+      "index_price": 60891.5,
+      "premium_bps": -4.844683,
+      "mark_timestamp_ms": 1795702119604,
+      "index_timestamp_ms": 1795702119466,
+      "classification": "instantaneous_premium_not_expiry_basis"
+    },
+    "wall_persistence": {
+      "samples_considered": 9,
+      "bid_zones": 0,
+      "ask_zones": 0,
+      "bid_zone_prices": [],
+      "ask_zone_prices": [],
+      "intraperiod_persistence_verified": false
+    },
+    "not_executed_volume": true
+  },
+  "alignment": "descriptive_only",
+  "observational_divergences": [],
+  "ifvg_context": [
+    {
+      "tf": "1h",
+      "direction": "long",
+      "low": 60645.0,
+      "high": 60750.0,
+      "inverted_at": 1795680000,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "1h",
+      "direction": "short",
+      "low": 60645.0,
+      "high": 60724.4,
+      "inverted_at": 1795687200,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "short",
+      "low": 78690.8,
+      "high": 79903.1,
+      "inverted_at": 1793880000,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 75865.0,
+      "high": 75893.4,
+      "inverted_at": 1794110400,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 73649.4,
+      "high": 74073.9,
+      "inverted_at": 1794412800,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "short",
+      "low": 63265.3,
+      "high": 63530.0,
+      "inverted_at": 1795089600,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 62437.7,
+      "high": 62748.9,
+      "inverted_at": 1795435200,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 59796.3,
+      "high": 61520.0,
+      "inverted_at": 1795435200,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "short",
+      "low": 58627.9,
+      "high": 59750.0,
+      "inverted_at": 1795593600,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 59661.0,
+      "high": 59952.3,
+      "inverted_at": 1795334400,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "short",
+      "low": 59661.0,
+      "high": 60422.2,
+      "inverted_at": 1795536000,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 59392.8,
+      "high": 59445.9,
+      "inverted_at": 1795622400,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    }
+  ],
+  "warnings": [],
+  "decision": "NO_TRADE",
+  "trade_signal": null,
+  "trade_entry": null,
+  "execution_ready": false,
+  "directional_probability": null,
+  "complete_cvd_btc": null,
+  "complete_delta_btc": null,
+  "confirmed_absorption": null,
+  "note": "No independent entry, position direction or trade outcome follows from sampled liquidity."
+}
