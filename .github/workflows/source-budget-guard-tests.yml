@@ -1,0 +1,40 @@
+name: BTC source budget guard tests
+on:
+  push:
+    branches:
+      - feature/source-budget-guard-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test full Python suite
+        run: python -m unittest discover -s tests -q
+      - name: Audit source readiness
+        run: |
+          python src/source_budget_v1.py
+          python - <<'PY'
+          import json
+          r=json.load(open("data/BTC-source-budget-v1.json"))
+          print("decision:",r["decision"],"okx:",r["okx_features"])
+          assert r["decision"]=="RETAIN_BINGX"
+          assert not r["switch_approved"]
+          assert r["trade_signal"] is None
+          PY
+      - name: Check removed unnecessary OKX canary Cron only
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=Path("cloudflare/wrangler-okx-canary.jsonc").read_text()
+          d=json.loads(s)
+          assert d["triggers"]["crons"]==[]
+          assert d["name"]=="btc-okx-ws-canary"
+          p=json.loads(Path("wrangler.jsonc").read_text())
+          assert p["triggers"]["crons"]==["*/5 * * * *"]
+          print("Existing BTC 5-minute scheduler is unchanged; OKX one-shot canary has no cron.")
+          PY
