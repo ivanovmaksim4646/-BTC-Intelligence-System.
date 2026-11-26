@@ -1,0 +1,19 @@
+name: Market breadth and macro pilot
+on:
+  push:
+    branches: [feature/market-breadth-macro]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - name: Probe public data sources
+        env:
+          COINGECKO_DEMO_API_KEY: ${{ secrets.COINGECKO_DEMO_API_KEY }}
+        run: |
+          python -m src.market_breadth_macro_v1
+          cat data/BTC-market-breadth-macro-v1.json

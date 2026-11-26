@@ -208,6 +208,13 @@ jobs:
         if: always()
         run: python src/okx_entry_evidence_gate_v1.py
 
+      - name: Collect public market breadth and macro context
+        if: always()
+        continue-on-error: true
+        env:
+          COINGECKO_DEMO_API_KEY: ${{ secrets.COINGECKO_DEMO_API_KEY }}
+        run: python -m src.market_breadth_macro_v1
+
       - name: Combine current OKX evidence for research reports (no execution)
         if: always()
         continue-on-error: true
