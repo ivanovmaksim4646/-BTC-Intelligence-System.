@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "research_confluence_only",
-  "evaluated_at_utc": "2026-11-26T22:16:39.640035+00:00",
+  "evaluated_at_utc": "2026-11-26T22:19:12.162270+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "entry": null,
@@ -14,140 +14,15 @@
   "qm_retest_verified": false,
   "models": {
     "IFVG_H1_W1": {
-      "status": "context_observed_not_trade",
-      "observations": [
-        {
-          "timeframe": "H1",
-          "direction": "long",
-          "low": 60656.2,
-          "high": 60714.0,
-          "inverted_at": 1795726800,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "retest_observed": false,
-          "futures_validated": false
-        },
-        {
-          "timeframe": "W1",
-          "direction": "short",
-          "low": 65425.5,
-          "high": 68850.9,
-          "inverted_at": 1794441600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "retest_observed": false,
-          "futures_validated": false
-        },
-        {
-          "timeframe": "W1",
-          "direction": "short",
-          "low": 70001.8,
-          "high": 76236.9,
-          "inverted_at": 1794441600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "retest_observed": false,
-          "futures_validated": false
-        }
-      ],
-      "entry_signal": false
+      "status": "unavailable",
+      "observations": []
     },
     "HTF_POI_QM_LTF": {
-      "status": "unverified_context_pairs",
-      "observations": [
-        {
-          "htf": "H1",
-          "ltf": "M5",
-          "direction": "long",
-          "poi": {
-            "low": 58926.8,
-            "high": 59410.6,
-            "kind": "bullish_fvg"
-          },
-          "qm_shoulder": 60602.5,
-          "qm_head": 60596.0,
-          "qm_extreme_time": 1795728600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "poi_touch_verified": false,
-          "qm_retest_verified": false,
-          "futures_validated": false
-        },
-        {
-          "htf": "H1",
-          "ltf": "M5",
-          "direction": "long",
-          "poi": {
-            "low": 60681.5,
-            "high": 60682.4,
-            "kind": "bullish_fvg"
-          },
-          "qm_shoulder": 60602.5,
-          "qm_head": 60596.0,
-          "qm_extreme_time": 1795728600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "poi_touch_verified": false,
-          "qm_retest_verified": false,
-          "futures_validated": false
-        },
-        {
-          "htf": "H4",
-          "ltf": "M5",
-          "direction": "long",
-          "poi": {
-            "low": 58839.3,
-            "high": 59719.8,
-            "kind": "bullish_fvg"
-          },
-          "qm_shoulder": 60602.5,
-          "qm_head": 60596.0,
-          "qm_extreme_time": 1795728600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "poi_touch_verified": false,
-          "qm_retest_verified": false,
-          "futures_validated": false
-        }
-      ],
-      "entry_signal": false
+      "status": "unavailable",
+      "observations": []
     }
   },
   "reasons": [
-    "spot_futures_delta_disagree_or_neutral",
-    "poi_touch_sequence_not_proven",
-    "qm_retest_not_proven",
-    "futures_chart_not_verified",
-    "entry_sl_tp_rr_not_validated"
+    "missing_stale_or_unsynchronized_inputs"
   ]
 }
