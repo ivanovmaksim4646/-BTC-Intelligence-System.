@@ -2,9 +2,11 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal]
     paths:
       - 'src/collector.py'
+      - 'src/forward_paper_journal_v1.py'
+      - 'tests/test_forward_paper_journal_v1.py'
       - 'src/okx_paper_signal_v1.py'
       - 'tests/test_okx_paper_signal_v1.py'
       - 'src/okx_flow_history_v1.py'
@@ -231,6 +233,10 @@ jobs:
       - name: Track verified OKX paper entries and update RR outcomes (no execution)
         if: always()
         run: python src/okx_outcome_tracker_v1.py
+
+      - name: Update prospective paper journal (admission disabled)
+        if: always()
+        run: python -m src.forward_paper_journal_v1
 
       - name: Audit BTC data-source budget and retirement readiness
         if: always()
