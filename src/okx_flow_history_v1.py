@@ -43,7 +43,17 @@ def collect_one(inst,end):
         time.sleep(.25)
         p={"instId":inst,"type":"1","limit":"100"}
         if cursor is None:
-            p.update(type="2", after=str(end+1000))
+            # Pagination type=2 returns trades STRICTLY earlier than the given
+            # timestamp. BTC Spot can have no print in the first second after
+            # M5 close; a +1s cursor then excludes all post-close trades and
+            # fails the independent upper-boundary evidence gate.
+            #
+            # Seed Spot from a bounded post-close margin, while preserving
+            # type=1 trade-id pagination and exact closed-candle volume match.
+            # If no actual post-close trade exists yet, provenance stays
+            # incomplete instead of inventing boundary coverage.
+            margin_ms=60000 if inst=="BTC-USDT" else 1000
+            p.update(type="2", after=str(end+margin_ms))
         else:p["after"]=str(cursor)
         return request("market/history-trades",p)
     try:
