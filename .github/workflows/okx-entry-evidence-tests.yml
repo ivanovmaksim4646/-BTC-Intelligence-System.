@@ -1,0 +1,33 @@
+name: OKX entry evidence gate v1 tests
+on:
+  push:
+    branches:
+      - feature/okx-entry-evidence-gate-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -v
+      - name: Live OKX entry evidence gate with no synthetic trades
+        run: |
+          python src/okx_futures_candles.py
+          python src/okx_setup_validator_v1.py
+          python src/okx_entry_evidence_gate_v1.py
+          python src/okx_outcome_tracker_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-entry-evidence-gate-v1.json').read_text())
+          p=json.loads(Path('data/BTC-okx-outcome-tracker-v1.json').read_text())
+          print('OKX gate:',o['decision'],o['reasons'],'new entries',o['new_paper_entries'])
+          print('OKX outcome:',p['newly_finalized'],'new',p['warnings'])
+          assert o['decision']=='NO_TRADE' and o['trade_signal'] is None
+          assert p['trade_signal'] is None and not p['execution_enabled']
+          assert o['source']=='OKX BTC-USDT-SWAP'
+          PY
