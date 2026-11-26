@@ -2,6 +2,7 @@ import datetime as dt
 import unittest
 from src.okx_futures_candles import parse_candles, collect, INTERVALS, SOURCE
 from src.binance_poi_qm_v1 import evaluate
+from src.source_budget_v1 import evaluate as budget_evaluate
 
 NOW=dt.datetime(2026,11,26,12,40,tzinfo=dt.timezone.utc)
 def rows(tf,now=NOW,n=40):
@@ -54,6 +55,15 @@ class OKXCandleTests(unittest.TestCase):
         bad=evaluate(snap,NOW,expected_source="BingX USD-M Perpetual BTC-USDT")
         self.assertEqual(bad["observations"],[])
         self.assertIn("missing_or_stale_verified_futures_candles",bad["reasons"])
+    def test_guard_records_migrated_candles_but_retains_bingx(self):
+        snap=collect(NOW,lambda tf:rows(tf))
+        study=evaluate(snap,NOW,expected_source=SOURCE)
+        result=budget_evaluate({}, {}, NOW,okx_candles=snap,okx_ict=study)
+        self.assertTrue(result["okx_features"]["closed_candles_5m_15m_1h_4h_1d_1w"])
+        self.assertTrue(result["okx_features"]["okx_ict_observations_available"])
+        self.assertFalse(result["okx_features"]["validated_okx_poi_qm_ifvg"])
+        self.assertFalse(result["switch_approved"])
+        self.assertEqual(result["decision"],"RETAIN_BINGX")
     def test_stale_data(self):
         r=rows("5m")
         later=int(NOW.timestamp()*1000)+900000
