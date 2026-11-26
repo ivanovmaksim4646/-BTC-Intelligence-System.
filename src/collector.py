@@ -170,6 +170,75 @@ def fetch_spot_incremental(state: dict[str, Any], now_ns: int) -> tuple[dict[int
     return buckets, spot
 
 
+
+def trade_identity(row: list[Any]) -> str:
+    """Prefer Kraken's immutable trade ID; a fingerprint is only a fallback."""
+    if len(row) > 6 and row[6] not in (None, ""):
+        return "id:" + str(row[6])
+    return "legacy:" + "|".join(str(value) for value in row[:6])
+
+
+def backfill_spot_closed_window(start: int, end: int, ohlc: list[list[Any]],
+                                max_pages: int = 120) -> tuple[dict[int, dict[str, float | int]], int]:
+    """Rebuild a CLOSED H4 window from Kraken Trades; publish only if independently verified.
+
+    Fetches older paginated trades using a fresh cursor, never adds replayed
+    volumes to existing buckets. Failure leaves the prior measurements partial.
+    """
+    if start >= end or start % 300 or end % 300:
+        raise ValueError("backfill window must be aligned and closed")
+    expected_bars = (end - start) // 300
+    volume_rows = [row for row in ohlc if start <= int(row[0]) < end]
+    if len(volume_rows) != expected_bars:
+        raise ValueError("backfill requires complete OHLC reference")
+    expected_volume = sum(float(row[6]) for row in volume_rows)
+    cursor = start * 1_000_000_000 - 1
+    end_ns = end * 1_000_000_000
+    seen: set[str] = set()
+    rebuilt: dict[int, dict[str, float | int]] = {}
+    reached_end = False
+    pages = 0
+    for _ in range(max_pages):
+        payload = public("Trades", {"pair": SPOT_PAIR, "since": cursor})["result"]
+        pair_key = next(key for key in payload if key != "last")
+        rows = payload[pair_key]
+        next_cursor = int(payload["last"])
+        pages += 1
+        if next_cursor <= cursor:
+            raise RuntimeError("backfill pagination cursor stalled")
+        for row in rows:
+            stamp = float(row[2])
+            if stamp >= end:
+                reached_end = True
+                continue
+            if stamp < start:
+                continue
+            identity = trade_identity(row)
+            if identity in seen:
+                continue
+            seen.add(identity)
+            minute = int(stamp) // 60 * 60
+            bucket = rebuilt.setdefault(minute, {"buy": 0.0, "sell": 0.0, "count": 0})
+            side = row[3]
+            if side not in ("b", "s"):
+                raise ValueError("unexpected Kraken trade side")
+            bucket["buy" if side == "b" else "sell"] += float(row[1])
+            bucket["count"] += 1
+        cursor = next_cursor
+        if reached_end or cursor >= end_ns:
+            reached_end = True
+            break
+        if not rows:
+            raise RuntimeError("backfill exhausted before window end")
+    if not reached_end:
+        raise RuntimeError("backfill page limit exceeded before window end")
+    actual_volume = sum(float(row["buy"]) + float(row["sell"]) for row in rebuilt.values())
+    relative_error = abs(actual_volume - expected_volume) / max(expected_volume, 1e-12)
+    if relative_error > 0.005:
+        raise RuntimeError(f"backfill cannot verify volume: relative_error={relative_error:.5f}")
+    return rebuilt, pages
+
+
 def fetch_spot_ohlc() -> list[list[Any]]:
     payload = public("OHLC", {"pair": SPOT_PAIR, "interval": 5})["result"]
     key = next(key for key in payload if key != "last")
@@ -300,6 +369,45 @@ def collect() -> None:
     atomic_json(STATE_FILE, state)
     spot_ohlc = fetch_spot_ohlc()
     spot_flow = aggregate_spot(spot_buckets, spot_ohlc, int(spot_state["coverage_start_ns"]), now)
+    # Gaps in accumulated trades can survive for hours after a missed run.
+    # Repair ONLY a closed H4 with a complete independent Kraken OHLC reference.
+    h4 = spot_flow["H4"]
+    h4_start = now // WINDOWS["H4"] * WINDOWS["H4"] - WINDOWS["H4"]
+    last_attempt = spot_state.get("h4_backfill_attempt", {})
+    retry_due = (last_attempt.get("window_start") != h4_start
+                 or now - int(last_attempt.get("at_epoch", 0)) >= 3600)
+    if (h4["coverage"] == "partial"
+            and h4["coverage_detail"]["ohlc_bars"] == WINDOWS["H4"] // 300
+            and retry_due):
+        spot_state["h4_backfill_attempt"] = {"window_start": h4_start, "at_epoch": now}
+        try:
+            repaired, repair_pages = backfill_spot_closed_window(
+                h4_start, h4_start + WINDOWS["H4"], spot_ohlc
+            )
+            # Replace (never add) the repaired closed window; M5/current data stay untouched.
+            for minute in list(spot_buckets):
+                if h4_start <= minute < h4_start + WINDOWS["H4"]:
+                    del spot_buckets[minute]
+            spot_buckets.update(repaired)
+            spot_state["minute_buckets"] = {
+                str(k): value for k, value in sorted(spot_buckets.items())
+            }
+            spot_state["last_h4_backfill"] = {
+                "window_start_utc": iso(h4_start), "pages": repair_pages,
+                "status": "volume_verified"
+            }
+            spot_flow = aggregate_spot(
+                spot_buckets, spot_ohlc, int(spot_state["coverage_start_ns"]), now
+            )
+            print("Verified Kraken Spot H4 trade backfill:", repair_pages, "pages")
+        except (OSError, ValueError, RuntimeError, KeyError, TypeError) as exc:
+            # Never silently promote an unverified reconstruction to complete.
+            spot_state["last_h4_backfill"] = {
+                "window_start_utc": iso(h4_start),
+                "status": "not_verified", "error_class": type(exc).__name__
+            }
+            print("Spot H4 stays partial: backfill not verified", type(exc).__name__)
+        atomic_json(STATE_FILE, state)
 
     # Align lookback to the start of the last closed H4 window. A simple
     # now-minus-N-hours request can cut off its first few 5-minute bars.
