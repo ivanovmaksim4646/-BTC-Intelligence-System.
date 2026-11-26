@@ -25,8 +25,8 @@ def candidate(direction="long"):
 def snapshots():
     return ({"source":VENUE,"evaluated_at_utc":NOW.isoformat(),
              "classification":"futures_research_only","observations":[]},
-            {"source":VENUE,"status":"verified",
-             "timeframes":{tf:{"status":"ok"} for tf in
+            {"source":VENUE,"status":"verified","collected_at_utc":NOW.isoformat(),
+             "timeframes":{tf:{"status":"ok","bars":[{"t":i} for i in range(35)]} for tf in
                 ("5m","15m","1h","4h","1d","1w")}})
 
 class RiskEngineOKXTests(unittest.TestCase):
