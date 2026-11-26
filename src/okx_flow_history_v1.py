@@ -65,6 +65,20 @@ def collect_one(inst,end):
         r={"instrument":inst,"end_ms":end,"volume_reconciled":False,"error":type(exc).__name__}
     r["elapsed_seconds"]=round(time.monotonic()-began,2)
     return r
+def spot_backfill_target(rows,end,max_age_buckets=48):
+    """Nearest missing recent Spot M5; at most one extra REST window per sync.
+
+    Do not retry the just-closed bucket in the same run. Missing data is
+    never inferred; only the existing merge() verifier can persist it.
+    """
+    confirmed={r.get("end_ms") for r in rows
+               if isinstance(r,dict) and r.get("instrument")=="BTC-USDT"
+               and r.get("volume_reconciled") is True}
+    for t in range(end-M5,end-(max_age_buckets+1)*M5,-M5):
+        if t not in confirmed:
+            return t
+    return None
+
 def write(path,obj):
     tmp=path.with_suffix(".tmp")
     tmp.write_text(json.dumps(obj,indent=2)+"\n")
@@ -76,8 +90,15 @@ def main():
     if not isinstance(old,list):raise ValueError("invalid history")
     with ThreadPoolExecutor(max_workers=2) as pool:
         results=list(pool.map(lambda i:collect_one(i,end),INSTRUMENTS))
-    rows=merge(old,results,end)
+    # One bounded Spot backfill per sync: no unbounded retries or fabricated
+    # historical CVD. Backfill reuses the exact same provenance gates.
+    target=spot_backfill_target(old+results,end)
+    backfill=collect_one("BTC-USDT",target) if target is not None else None
+    rows=merge(old,results+([backfill] if backfill else []),end)
     out={"classification":"volume_reconciled_rest_research_only","end_ms":end,"results":results,
+         "spot_backfill":{"target_end_ms":target,
+                          "volume_reconciled":backfill.get("volume_reconciled") if backfill else None,
+                          "error":backfill.get("error") if backfill else None},
          "history_count":len(rows),"instruments":summarize(rows,end),"trade_signal":None}
     write(HISTORY,rows);write(CURRENT,out)
     print("PERSISTENT FLOW",json.dumps(out),flush=True)
