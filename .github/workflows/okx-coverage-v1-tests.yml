@@ -1,0 +1,33 @@
+name: OKX trade pagination coverage tests
+on:
+  push:
+    branches:
+      - feature/okx-paginated-flow-coverage-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Full regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Probe OKX historical-trade pagination and evidence coverage
+        run: python src/okx_history_coverage_v1.py
+      - name: Validate no synthetic CVD or trading signal
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('data/BTC-okx-history-coverage-v1.json').read_text())
+          print('OKX historical REST:', x['status'], x['coverage'], x['page_count'], x['trades_in_window'])
+          print('M5 delta:', x.get('m5_delta_btc'), 'CVD:', x.get('m5_cvd'))
+          assert x['trade_signal'] is None and x['m5_cvd'] is None
+          if x.get('m5_delta_btc') is not None:
+              assert x['coverage']=='pagination_crossed_both_m5_window_boundaries'
+          PY
