@@ -17,7 +17,7 @@ def snapshot():
 
 class BinanceFuturesTests(unittest.TestCase):
     def test_closed_only(self):
-        now_ms=1800*1000
+        now_ms=1250*1000
         bars=parse_klines([kline(0),kline(300),kline(600),kline(900)],300,now_ms)
         self.assertEqual(len(bars),4)
     def test_forming_excluded(self):
