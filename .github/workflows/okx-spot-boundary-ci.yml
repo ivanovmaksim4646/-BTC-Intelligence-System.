@@ -2,6 +2,8 @@ name: OKX Spot Boundary Regression CI
 on:
   push:
     branches: [fix/okx-spot-upper-boundary-v1]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
