@@ -57,3 +57,20 @@ If the PAT web page returns **HTTP 500 immediately after regeneration**, it may 
 ## Known limitations
 
 A liquidation heatmap, Binance/BingX verified order-flow, ETF feeds, macro data, comprehensive PDH/PDL/IB/ADR, validated trade entries/stops/targets, and production-grade backtesting are **not** supplied by the collector. The TradingView Pine script currently emits H1 Inside Bar / M5 Sweep observations; it does not provide continuous candles or all ICT objects. Never imply unavailable feeds are present.
+
+
+## TradingView ICT M5 v2 — activation checklist
+
+The existing **BTC Intelligence — H1 Inside Bar / M5 Sweeps** alert remains unchanged and its v1 webhook payload continues to be supported.
+
+New source: [tradingview/BTC-Intelligence-ICT-M5-v2.pine](tradingview/BTC-Intelligence-ICT-M5-v2.pine)
+
+1. In TradingView Pine Editor, create a **new script**, paste the source and compile it on **BTCUSDT perpetual M5**. The code was not compiled in TradingView by GitHub CI: GitHub validates Python and Worker JS only.
+2. Create a **new independent alert** from this v2 indicator, condition **Any alert() function call**, once per bar close. Do not delete the existing v1 alert yet.
+3. Set the same existing Cloudflare webhook URL ending in **/tv-webhook**, and enable the alert. The endpoint allows only TradingView webhook origin IPs and strictly validates a BTC symbol, M5, timestamp and narrow payload schema.
+4. Wait for a real v2 event. Verify webhook is delivered (not 400 or 502), then check [data/BTC-tradingview-events.jsonl](data/BTC-tradingview-events.jsonl) for an event with `source: btc-intelligence-tv-v2`.
+5. Compare the specific event candle and price on TradingView. Only after real events pass end-to-end can v2 be considered live.
+
+**v2 event names:** `m5_bullish_bos`, `m5_bearish_bos`, `m5_bullish_shift`, `m5_bearish_shift`, `m5_bullish_fvg`, `m5_bearish_fvg`, `m5_sweep_pdh`, `m5_sweep_pdl`. The script emits only one prioritized event per closed M5 candle. Confirmed pivots use a 2-left/2-right lookback. BOS/Shift are simplified algorithmic *candidates*, not fully validated ICT structure, and gaps are not independently verified as unfilled/mitigated institutional FVG. These v2 events are observations, not executable entries or probabilities. Correlation with Kraken Spot/Futures Delta and OI must be validated separately and must not be inferred solely from webhook receipt.
+
+Live CI: [TradingView v2 tests](../../actions/workflows/tradingview-v2-tests.yml) checks legacy and new payload validation plus `node --check worker.js`. [Deploy Cloudflare](../../actions/workflows/deploy-cloudflare.yml) deploys Worker changes.
