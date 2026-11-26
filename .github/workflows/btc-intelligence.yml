@@ -118,6 +118,16 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/signal_engine_v1.py
 
+      - name: Collect BingX futures candles (independent, nonblocking)
+        id: bingx_candles
+        continue-on-error: true
+        run: python src/bingx_futures_probe.py
+
+      - name: Evaluate BingX futures POI touch and QM retest (research only)
+        if: steps.bingx_candles.outcome == 'success'
+        continue-on-error: true
+        run: python src/bingx_poi_qm_v1.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
