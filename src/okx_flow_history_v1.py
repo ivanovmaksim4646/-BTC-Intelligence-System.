@@ -35,11 +35,11 @@ def summarize(rows,end):
             "segment_cvd_btc_reconciled":str(sum((decimal(r["delta_btc_reconciled"]) for r in chain),Decimal(0))) if chain else None,
             "complete_cvd_btc":None,"classification":"volume_reconciled_not_sequence_certified"}
     return out
-def collect_one(inst,end):
+def collect_one(inst,end,max_runtime_seconds=180,max_pages_override=None):
     began=time.monotonic()
     def fetch(cursor):
         # Two parallel instruments, each at most four requests/s before latency.
-        if time.monotonic()-began>180:raise TimeoutError("bounded collection deadline")
+        if time.monotonic()-began>max_runtime_seconds:raise TimeoutError("bounded collection deadline")
         time.sleep(.25)
         p={"instId":inst,"type":"1","limit":"100"}
         if cursor is None:
@@ -57,7 +57,7 @@ def collect_one(inst,end):
         else:p["after"]=str(cursor)
         return request("market/history-trades",p)
     try:
-        r=probe(inst,fetch,end,max_pages=500 if inst.endswith("SWAP") else 180)
+        r=probe(inst,fetch,end,max_pages=max_pages_override if max_pages_override is not None else (500 if inst.endswith("SWAP") else 180))
         # The recent-candles endpoint only returns the latest bars. A
         # retrospective gap up to four hours old must query the historical
         # endpoint using a timestamp cursor or reconciliation will fail
@@ -102,7 +102,7 @@ def main():
     # One bounded Spot backfill per sync: no unbounded retries or fabricated
     # historical CVD. Backfill reuses the exact same provenance gates.
     target=spot_backfill_target(old+results,end)
-    backfill=collect_one("BTC-USDT",target) if target is not None else None
+    backfill=collect_one("BTC-USDT",target,max_runtime_seconds=35,max_pages_override=100) if target is not None else None
     rows=merge(old,results+([backfill] if backfill else []),end)
     out={"classification":"volume_reconciled_rest_research_only","end_ms":end,"results":results,
          "spot_backfill":{"target_end_ms":target,
