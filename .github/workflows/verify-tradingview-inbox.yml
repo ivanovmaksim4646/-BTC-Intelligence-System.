@@ -1,0 +1,30 @@
+name: Verify TradingView durable inbox HTTP status
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-tradingview-inbox.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Confirm deployed inbox responds without credentials
+        run: |
+          set -euo pipefail
+          curl -fsS --max-time 15 'https://btc-intelligence-scheduler.ivanovmaksim812.workers.dev/tv-queue-health' > /tmp/tv-inbox.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/tv-inbox.json'))
+          print('INBOX_LIVE_STATUS:',d.get('status'))
+          print('INBOX_PENDING:',d.get('pending'))
+          print('INBOX_DISPATCHED:',d.get('accepted_dispatched'))
+          print('INBOX_DEAD_LETTERS:',d.get('dead_letters'))
+          print('INBOX_LAST_ERROR:',d.get('last_error'))
+          assert d.get('status')=='ok'
+          assert d.get('trade_signal') is None
+          assert d.get('guarantee')=='durable_acceptance_not_GitHub_completion'
+          PY
