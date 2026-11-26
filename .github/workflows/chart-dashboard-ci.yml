@@ -1,0 +1,15 @@
+name: Chart dashboard checks
+on:
+  pull_request:
+    paths: ['charts/**', '.github/workflows/chart-dashboard-ci.yml']
+  push:
+    branches: ['feature/dual-chart-dashboard']
+    paths: ['charts/**', '.github/workflows/chart-dashboard-ci.yml']
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check charts/charts.mjs && node --test charts/chart-data.test.mjs
