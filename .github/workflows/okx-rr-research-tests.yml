@@ -19,6 +19,7 @@ jobs:
           python src/okx_futures_candles.py
           python src/okx_poi_qm_v1.py
           python src/risk_engine_v2_okx.py
+          python src/rr_statistics_v1.py
           python - <<'PY'
           import json
           r=json.load(open("data/BTC-risk-engine-v2-okx.json"))
@@ -29,4 +30,7 @@ jobs:
           assert r["rr_policy"]["main_watchlist_net_rr_from"]==2.0
           assert r["max_account_risk_fraction"]==0.01
           assert r["max_notional_leverage"]==5
+          stats=json.load(open("data/BTC-rr-statistics-v1.json"))
+          assert stats["entry_count"]==0 and stats["performance_verified"] is False
+          assert stats["by_rr"]["2.0"]["expectancy_r"] is None
           PY
