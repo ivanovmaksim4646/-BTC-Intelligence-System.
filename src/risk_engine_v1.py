@@ -4,7 +4,7 @@
 Entry = independently evidenced, CLOSED BingX retest-candle close.
 SL = evidenced QM head extreme, optionally outward-buffered in basis points.
 TP = independently evidenced same-venue opposing liquidity level, NEVER
-manufactured as an arbitrary multiple of risk to obtain RR >= 3.
+manufactured as an arbitrary multiple of risk; default historical RR gate is 3.
 Requires explicitly confirmed candidate structure, source, timestamps and
 realistic slippage/fees assumptions. A passing example is NOT an order signal.
 """
@@ -49,7 +49,7 @@ def calculate(candidate, *, equity_usdt, risk_fraction=0.01,
               leverage_cap=5, stop_buffer_bps=3,
               entry_slippage_bps=2, exit_slippage_bps=2,
               taker_fee_bps_per_side=5,
-              now=None, venue=VENUE):
+              now=None, venue=VENUE, min_net_rr=3):
     """Explicit evidence contract, with conservative two-way cost adjustments.
 
     Target must be an actual pre-existing level with independently
@@ -117,8 +117,11 @@ def calculate(candidate, *, equity_usdt, risk_fraction=0.01,
         return out
     rr_gross=abs(target-entry)/abs(entry-stop)
     rr_net=gain_per_btc/loss_per_btc
-    if rr_net<3:
-        out["reason"]="rr_below_three_after_costs"
+    if (type(min_net_rr) not in (int,float) or not math.isfinite(min_net_rr) or min_net_rr<1):
+        out["reason"]="invalid_min_net_rr"
+        return out
+    if rr_net<min_net_rr:
+        out["reason"]="rr_below_minimum_after_costs" if min_net_rr!=3 else "rr_below_three_after_costs"
         return out
     max_risk=equity_usdt*risk_fraction
     risk_sized_btc=max_risk/loss_per_btc
@@ -135,6 +138,7 @@ def calculate(candidate, *, equity_usdt, risk_fraction=0.01,
         "take_profit":round(target,8),
         "rr_gross":round(rr_gross,4),
         "rr_net_estimate":round(rr_net,4),
+        "rr_minimum_applied":min_net_rr,
         "position_btc":round(size,8),
         "notional_usdt":round(entry*size,2),
         "risk_usdt_estimate":round(size*loss_per_btc,2),

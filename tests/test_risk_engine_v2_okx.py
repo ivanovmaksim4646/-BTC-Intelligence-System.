@@ -75,10 +75,39 @@ class RiskEngineOKXTests(unittest.TestCase):
         r=calculate_paper(c,equity_usdt=10000,now=NOW)
         self.assertEqual(r["status"],"withheld")
         self.assertIsNone(r["take_profit"])
-    def test_rr_below_three_rejected(self):
+    def test_rr_below_three_is_not_automatically_rejected(self):
         c=candidate();c["target_level"]=125
         r=calculate_paper(c,equity_usdt=10000,now=NOW)
-        self.assertEqual(r["reason"],"rr_below_three_after_costs")
+        self.assertEqual(r["status"],"paper_scenario_only")
+        self.assertGreaterEqual(r["rr_net_estimate"],2)
+    def test_rr_two_is_eligible_for_main_watchlist_research(self):
+        c=candidate()
+        c["target_level"]=123
+        r=calculate_paper(c,equity_usdt=10000,now=NOW)
+        self.assertEqual(r["status"],"paper_scenario_only")
+        self.assertGreaterEqual(r["rr_net_estimate"],2.0)
+        self.assertLess(r["rr_net_estimate"],3.0)
+        self.assertEqual(r["rr_category"],"main_watchlist_candidate")
+        self.assertIsNone(r["trade_signal"])
+
+    def test_rr_one_to_two_is_research_only(self):
+        c=candidate()
+        c["target_level"]=114
+        r=calculate_paper(c,equity_usdt=10000,now=NOW)
+        self.assertEqual(r["status"],"paper_scenario_only")
+        self.assertGreaterEqual(r["rr_net_estimate"],1)
+        self.assertLess(r["rr_net_estimate"],2)
+        self.assertEqual(r["rr_category"],"research_only")
+        self.assertEqual(r["outcome"],"unobserved")
+        self.assertIsNone(r["trade_signal"])
+
+    def test_rr_below_one_is_withheld(self):
+        c=candidate()
+        c["target_level"]=107
+        r=calculate_paper(c,equity_usdt=10000,now=NOW)
+        self.assertEqual(r["status"],"withheld")
+        self.assertEqual(r["reason"],"rr_below_minimum_after_costs")
+
     def test_no_auto_trade_even_for_historical_observation(self):
         research,candles=snapshots()
         research["observations"]=[{"direction":"long","status":"historical_sequence_observed",
