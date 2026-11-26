@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-26T12:55:20.607818Z",
+  "collected_at_utc": "2026-11-26T13:00:21.116549Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -278,13 +278,7 @@
       "status": "ok"
     },
     "H1": {
-      "events": [
-        {
-          "kind": "inside_bar",
-          "reference_high": 60925.4,
-          "reference_low": 60381.0
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795453200,
@@ -533,10 +527,10 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 60642.4,
-      "last_high": 60705.4,
-      "last_low": 60412.5,
-      "latest_closed_utc": "2026-11-26T11:00:00Z",
+      "last_close": 60762.9,
+      "last_high": 60914.7,
+      "last_low": 60516.7,
+      "latest_closed_utc": "2026-11-26T12:00:00Z",
       "status": "ok"
     },
     "H4": {
@@ -802,7 +796,13 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 60914.7,
+          "reference_low": 60519.8
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795626900,
@@ -821,12 +821,18 @@
           "high": 60527.5,
           "kind": "bullish_fvg",
           "low": 60461.5
+        },
+        {
+          "formed_at": 1795697100,
+          "high": 60762.9,
+          "kind": "bullish_fvg",
+          "low": 60641.4
         }
       ],
-      "last_close": 60848.0,
-      "last_high": 60914.7,
-      "last_low": 60519.8,
-      "latest_closed_utc": "2026-11-26T12:30:00Z",
+      "last_close": 60762.9,
+      "last_high": 60893.4,
+      "last_low": 60762.9,
+      "latest_closed_utc": "2026-11-26T12:45:00Z",
       "qm": [
         {
           "broken_level": 60659.8,
@@ -942,12 +948,7 @@
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60775.9
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795691700,
@@ -962,22 +963,11 @@
           "low": 60611.0
         }
       ],
-      "last_close": 60860.9,
-      "last_high": 60881.1,
-      "last_low": 60765.0,
-      "latest_closed_utc": "2026-11-26T12:50:00Z",
+      "last_close": 60762.9,
+      "last_high": 60876.3,
+      "last_low": 60762.9,
+      "latest_closed_utc": "2026-11-26T12:55:00Z",
       "qm": [
-        {
-          "broken_level": 58476.4,
-          "direction": "short",
-          "head_extreme": 58839.3,
-          "head_time": 1795613100,
-          "left_shoulder": 58689.8,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795614300
-        },
         {
           "broken_level": 58375.7,
           "direction": "long",
@@ -1076,6 +1066,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795695600
+        },
+        {
+          "broken_level": 60843.0,
+          "direction": "long",
+          "head_extreme": 60516.7,
+          "head_time": 1795695600,
+          "left_shoulder": 60557.8,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795696800
         }
       ],
       "status": "ok"
