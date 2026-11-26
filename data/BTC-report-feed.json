@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 0.61808929,
-    "percent": 0.001022383,
-    "source_time_utc": "2026-11-26T11:10:20.165Z"
+    "mark_minus_index_usd": -1.44420914,
+    "percent": -0.0023859765,
+    "source_time_utc": "2026-11-26T11:15:21.008Z"
   },
-  "collected_at_utc": "2026-11-26T11:10:19.200004Z",
-  "collection_age_seconds_at_generation": 3,
+  "collected_at_utc": "2026-11-26T11:15:20.475791Z",
+  "collection_age_seconds_at_generation": 1,
   "funding": {
     "absolute": 0.007179047279311813,
     "relative_hourly": 1.18779166667e-07,
     "relative_percent_hourly": 1.18779166667e-05,
-    "source_time_utc": "2026-11-26T11:10:20.165Z"
+    "source_time_utc": "2026-11-26T11:15:21.008Z"
   },
-  "generated_at_utc": "2026-11-26T11:10:21.781619Z",
+  "generated_at_utc": "2026-11-26T11:15:21.947597Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -24,12 +24,12 @@
     "change": {
       "H1": -26.2047,
       "H4": 26.121,
-      "M15": 0.5384,
+      "M15": 3.3402,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T11:10:20.165Z",
+    "source_time_utc": "2026-11-26T11:15:21.008Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2170.2793
+    "value": 2169.2611
   },
   "order_flow": {
     "H1": {
@@ -59,35 +59,33 @@
     "M15": {
       "coverage": {
         "futures": "complete",
-        "spot": "partial"
+        "spot": "complete"
       },
-      "futures_delta": -16.3,
-      "futures_volume": 110.7718,
-      "observation": "unavailable",
-      "spot_delta": null,
-      "spot_volume": null,
-      "window_end_utc": "2026-11-26T11:00:00Z"
+      "futures_delta": 1.3784,
+      "futures_volume": 97.9884,
+      "observation": "mixed_or_neutral",
+      "spot_delta": -0.12761279,
+      "spot_volume": 18.63053301,
+      "window_end_utc": "2026-11-26T11:15:00Z"
     },
     "M5": {
       "coverage": {
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 3.8572,
-      "futures_volume": 28.609,
-      "observation": "both_aggressive_buy",
-      "spot_delta": 0.31207175,
-      "spot_volume": 2.07366345,
-      "window_end_utc": "2026-11-26T11:10:00Z"
+      "futures_delta": -0.6359,
+      "futures_volume": 40.7235,
+      "observation": "mixed_or_neutral",
+      "spot_delta": 2.77425714,
+      "spot_volume": 9.3969623,
+      "window_end_utc": "2026-11-26T11:15:00Z"
     }
   },
-  "reasons": [
-    "incomplete_spot_or_futures_coverage"
-  ],
-  "report_data_status": "withhold_or_qualify",
+  "reasons": [],
+  "report_data_status": "ready",
   "scheduler": {
     "event": "workflow_dispatch",
-    "slot": "2026-11-26T11:10:00.000Z",
+    "slot": "2026-11-26T11:15:00.000Z",
     "source": "cloudflare"
   },
   "schema_version": "1.0",
@@ -218,12 +216,7 @@
       "status": "ok"
     },
     "M15": {
-      "events": [
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60420.8
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795626900,
@@ -250,19 +243,14 @@
           "low": 60461.5
         }
       ],
-      "last_close": 60441.1,
-      "last_high": 60461.5,
-      "last_low": 60381.0,
-      "latest_closed_utc": "2026-11-26T10:45:00Z",
+      "last_close": 60533.0,
+      "last_high": 60554.4,
+      "last_low": 60412.5,
+      "latest_closed_utc": "2026-11-26T11:00:00Z",
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60414.8
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795688400,
@@ -283,10 +271,10 @@
           "low": 60461.4
         }
       ],
-      "last_close": 60440.1,
-      "last_high": 60455.0,
-      "last_low": 60412.5,
-      "latest_closed_utc": "2026-11-26T11:05:00Z",
+      "last_close": 60533.0,
+      "last_high": 60554.4,
+      "last_low": 60440.0,
+      "latest_closed_utc": "2026-11-26T11:10:00Z",
       "status": "ok"
     },
     "W1": {
@@ -337,8 +325,8 @@
       "status": "no_structure_break"
     },
     "M15": {
-      "reason": "missing_complete_or_aligned_data",
-      "status": "unavailable"
+      "reason": "no_confirmed_close_break",
+      "status": "no_structure_break"
     },
     "M5": {
       "reason": "no_confirmed_close_break",
