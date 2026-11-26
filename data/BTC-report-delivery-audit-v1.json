@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "checked_at_utc": "2026-11-26T19:58:27.108933Z",
+  "classification": "report_readiness_audit_not_delivery_receipt",
+  "feed_fresh": true,
+  "trigger_fresh": true,
+  "slots": {
+    "morning": {
+      "local_time": "08:15",
+      "time_zone": "Europe/Warsaw",
+      "today_slot_reached": true
+    },
+    "pre_new_york": {
+      "local_time": "13:45",
+      "time_zone": "Europe/Warsaw",
+      "today_slot_reached": true
+    }
+  },
+  "can_claim_unqualified_report": false,
+  "delivery_confirmed": false,
+  "push_notification_confirmed": false,
+  "delivery_attempt_id": null,
+  "delivery_provider_receipt": null,
+  "issues": [
+    "report_data_not_unqualified",
+    "confluence_unverified_or_partial"
+  ],
+  "decision": "NO_TRADE",
+  "trade_signal": null,
+  "note": "File generation, scheduler invocation and mobile push delivery are different evidence layers."
+}
