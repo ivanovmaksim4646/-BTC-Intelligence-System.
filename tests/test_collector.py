@@ -46,5 +46,52 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(value["coverage"], "partial")
 
 
+    def test_spot_h4_backfill_rebuilds_without_double_counting(self):
+        from unittest.mock import patch
+
+        start, end = 0, 14400
+        ohlc = [[i * 300, "0", "0", "0", "0", "0", "1"] for i in range(48)]
+        trades = [
+            ["60000", "1", i * 300 + 1, "b" if i % 2 else "s", "l", "", str(i)]
+            for i in range(48)
+        ]
+        pages = [
+            {"result": {"XBTUSD": trades[:25], "last": str(25 * 300 * 1_000_000_000)}},
+            {"result": {"XBTUSD": [trades[24]] + trades[25:] +
+                        [["60000", "1", end + 1, "b", "l", "", "later"]],
+                        "last": str((end + 1) * 1_000_000_000)}},
+        ]
+        with patch.object(collector, "public", side_effect=pages) as api:
+            rebuilt, count = collector.backfill_spot_closed_window(start, end, ohlc)
+        self.assertEqual(count, 2)
+        self.assertEqual(sum(row["count"] for row in rebuilt.values()), 48)
+        result = collector.aggregate_spot(rebuilt, ohlc, 0, end)["H4"]
+        self.assertEqual(result["coverage"], "complete")
+        self.assertEqual(result["total_volume"], 48)
+        self.assertEqual(api.call_count, 2)
+
+    def test_spot_h4_backfill_rejects_volume_mismatch(self):
+        from unittest.mock import patch
+
+        ohlc = [[i * 300, "0", "0", "0", "0", "0", "1"] for i in range(48)]
+        page = {"result": {
+            "XBTUSD": [["60000", "1", 1, "b", "l", "", "t1"],
+                       ["60000", "1", 14401, "b", "l", "", "later"]],
+            "last": str(14401 * 1_000_000_000)
+        }}
+        with patch.object(collector, "public", return_value=page):
+            with self.assertRaisesRegex(RuntimeError, "cannot verify volume"):
+                collector.backfill_spot_closed_window(0, 14400, ohlc)
+
+    def test_spot_h4_backfill_rejects_stalled_pagination(self):
+        from unittest.mock import patch
+
+        ohlc = [[i * 300, "0", "0", "0", "0", "0", "1"] for i in range(48)]
+        page = {"result": {"XBTUSD": [], "last": "-1"}}
+        with patch.object(collector, "public", return_value=page):
+            with self.assertRaisesRegex(RuntimeError, "cursor stalled"):
+                collector.backfill_spot_closed_window(0, 14400, ohlc)
+
+
 if __name__ == "__main__":
     unittest.main()
