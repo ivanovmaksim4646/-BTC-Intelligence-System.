@@ -23,7 +23,7 @@ class LiquidityHistoryTests(unittest.TestCase):
         self.assertIsNone(r["change"]);self.assertIsNone(r["trade_signal"])
         self.assertIsNone(r["complete_cvd_btc"])
     def test_two_samples_produce_changes_not_executions(self):
-        older=create_observation(sample(ts=TS-302000,bid=7.0,ask=24.0,premium=3.0),NOW)
+        older=create_observation(sample(bid=7.0,ask=24.0,premium=3.0),NOW)\n        older["book_timestamp_ms"]=TS-302000
         r,h=analyze(sample(bid=10,ask=20,premium=2.0),[older],NOW)
         self.assertTrue(r["new_record"])
         self.assertEqual(len(h),2)
@@ -34,7 +34,7 @@ class LiquidityHistoryTests(unittest.TestCase):
         self.assertAlmostEqual(d["premium_change_bps"],-1.0,places=3)
         self.assertFalse(d["interval_fully_observed"])
     def test_long_gap_censored(self):
-        old=create_observation(sample(ts=TS-3601000),NOW) if False else create_observation(sample(),NOW)
+        old=create_observation(sample(),NOW)
         old["book_timestamp_ms"]=TS-3601000
         r,h=analyze(sample(),[old],NOW)
         self.assertTrue(r["new_record"])
