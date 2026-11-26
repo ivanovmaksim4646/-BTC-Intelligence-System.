@@ -1,8 +1,6 @@
 name: OKX reconciled flow sync
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0-55/5 * * * *"
   push:
     branches: [feature/okx-flow-integration]
 permissions:
