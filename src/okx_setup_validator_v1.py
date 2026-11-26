@@ -45,9 +45,12 @@ def evaluate_event(event,candles,now=None):
         base["reasons"].append("invalid_alert")
         return base
     try:
-        # Validate the strict TV v1/v2 schema at the original alert time;
-        # event age gets separately and strictly checked against now below.
-        validate(event,now_ms=event.get("time_ms"))
+        # GitHub appends received_at_utc to its immutable alert history.
+        # Strip ONLY that documented ingestion metadata; unknown fields fail.
+        payload={k:v for k,v in event.items() if k!="received_at_utc"}
+        # Validate exact TV schema at original event time. The 2-hour age
+        # policy is checked against now independently below.
+        validate(payload,now_ms=event.get("time_ms"))
     except (ValueError,TypeError):
         base["reasons"].append("invalid_alert_schema")
         return base
