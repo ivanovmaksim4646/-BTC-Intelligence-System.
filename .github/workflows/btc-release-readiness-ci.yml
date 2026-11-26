@@ -1,0 +1,20 @@
+name: BTC Release Readiness Audit CI
+on:
+  push:
+    branches: [feature/btc-release-readiness-audit]
+    paths:
+      - 'src/release_readiness_v1.py'
+      - 'tests/test_release_readiness_v1.py'
+      - '.github/workflows/btc-release-readiness-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_release_readiness_v1.py' -v
