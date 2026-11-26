@@ -155,6 +155,10 @@ jobs:
         continue-on-error: true
         run: python src/okx_futures_orderflow_v1.py
 
+      - name: Audit OKX futures trade-page coverage and persist verified OI snapshot changes
+        if: always()
+        run: python src/okx_flow_coverage_v1.py
+
       - name: Report RR statistics from independently validated historical outcomes
         if: always()
         run: python src/rr_statistics_v1.py
