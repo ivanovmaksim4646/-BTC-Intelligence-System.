@@ -1,0 +1,44 @@
+name: OKX reconciled flow sync
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0-55/5 * * * *"
+  push:
+    branches: [feature/okx-flow-integration]
+permissions:
+  contents: read
+concurrency:
+  group: okx-reconciled-flow-sync
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+  collect:
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - run: python -m src.okx_flow_history_v1
+      - name: Persist reconciled history
+        run: |
+          git config user.name "btc-intelligence-bot"
+          git config user.email "btc-intelligence-bot@users.noreply.github.com"
+          git add data/BTC-okx-reconciled-m5-history.json data/BTC-okx-reconciled-flow-current.json
+          git diff --cached --quiet && exit 0
+          git commit -m "data: update reconciled OKX flow"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((attempt * 2))
+          done
+          exit 1
