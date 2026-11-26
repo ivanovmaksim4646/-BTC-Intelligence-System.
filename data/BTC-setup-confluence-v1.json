@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "research_confluence_only",
-  "evaluated_at_utc": "2026-11-26T22:20:36.795521+00:00",
+  "evaluated_at_utc": "2026-11-26T22:25:20.639909+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "entry": null,
@@ -14,70 +14,15 @@
   "qm_retest_verified": false,
   "models": {
     "IFVG_H1_W1": {
-      "status": "context_observed_not_trade",
-      "observations": [
-        {
-          "timeframe": "H1",
-          "direction": "long",
-          "low": 60656.2,
-          "high": 60714.0,
-          "inverted_at": 1795726800,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "retest_observed": false,
-          "futures_validated": false
-        },
-        {
-          "timeframe": "W1",
-          "direction": "short",
-          "low": 65425.5,
-          "high": 68850.9,
-          "inverted_at": 1794441600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "retest_observed": false,
-          "futures_validated": false
-        },
-        {
-          "timeframe": "W1",
-          "direction": "short",
-          "low": 70001.8,
-          "high": 76236.9,
-          "inverted_at": 1794441600,
-          "flow_aligned": false,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": 34.0509,
-            "direction": "increasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "retest_observed": false,
-          "futures_validated": false
-        }
-      ],
-      "entry_signal": false
+      "status": "unavailable",
+      "observations": []
     },
     "HTF_POI_QM_LTF": {
-      "status": "no_recent_directional_pair",
-      "observations": [],
-      "entry_signal": false
+      "status": "unavailable",
+      "observations": []
     }
   },
   "reasons": [
-    "spot_futures_delta_disagree_or_neutral",
-    "poi_touch_sequence_not_proven",
-    "qm_retest_not_proven",
-    "futures_chart_not_verified",
-    "entry_sl_tp_rr_not_validated"
+    "missing_stale_or_unsynchronized_inputs"
   ]
 }
