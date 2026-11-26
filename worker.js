@@ -60,8 +60,10 @@ const TV_EVENTS_V1 = new Set([
   "h1_inside_bar", "h1_sweep_high_reject", "h1_sweep_low_reclaim"
 ]);
 const TV_LEVEL_KINDS_V2 = Object.freeze({
-  m5_bullish_break: "pivot_high",
-  m5_bearish_break: "pivot_low",
+  m5_bullish_bos: "pivot_high",
+  m5_bearish_bos: "pivot_low",
+  m5_bullish_shift: "pivot_high",
+  m5_bearish_shift: "pivot_low",
   m5_bullish_fvg: "fvg_upper",
   m5_bearish_fvg: "fvg_lower",
   m5_sweep_pdh: "pdh",
