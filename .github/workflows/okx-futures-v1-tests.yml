@@ -19,6 +19,18 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: OKX public API probe (read only)
         run: python src/okx_futures_orderflow_v1.py
+      - name: Diagnose OKX OI response shape (public metadata only)
+        run: |
+          python - <<'PY'
+          from src.okx_futures_orderflow_v1 import get_json,SYMBOL
+          import json
+          try:
+              rows=get_json("/api/v5/public/open-interest",{"instType":"SWAP","instId":SYMBOL})
+              print("OKX public OI records:", len(rows))
+              print("OKX first OI record:", json.dumps(rows[:1]))
+          except Exception as exc:
+              print("OKX OI diagnostic failed:", type(exc).__name__)
+          PY
       - name: Explicit validity report
         run: |
           python - <<'PY'
