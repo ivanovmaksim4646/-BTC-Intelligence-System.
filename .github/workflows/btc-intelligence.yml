@@ -176,6 +176,10 @@ jobs:
         if: always()
         run: python src/okx_derivatives_context_v1.py
 
+      - name: Evaluate OKX Liquidity Intelligence v1 (sampled observations only, NO TRADE)
+        if: always()
+        run: python src/okx_liquidity_intelligence_v1.py
+
       - name: Report RR statistics from independently validated historical outcomes
         if: always()
         run: python src/rr_statistics_v1.py
