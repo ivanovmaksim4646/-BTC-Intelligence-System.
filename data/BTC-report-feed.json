@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 0.83232712,
-    "percent": 0.0013811225,
-    "source_time_utc": "2026-11-26T15:26:28.425Z"
+    "mark_minus_index_usd": -0.72570717,
+    "percent": -0.0012048516,
+    "source_time_utc": "2026-11-26T15:30:20.373Z"
   },
-  "collected_at_utc": "2026-11-26T15:26:27.900972Z",
+  "collected_at_utc": "2026-11-26T15:30:19.680062Z",
   "collection_age_seconds_at_generation": 2,
   "funding": {
     "absolute": 0.34181823527875,
     "relative_hourly": 5.635375e-06,
     "relative_percent_hourly": 0.0005635375,
-    "source_time_utc": "2026-11-26T15:26:28.425Z"
+    "source_time_utc": "2026-11-26T15:30:20.373Z"
   },
-  "generated_at_utc": "2026-11-26T15:26:29.444413Z",
+  "generated_at_utc": "2026-11-26T15:30:21.763881Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -24,12 +24,12 @@
     "change": {
       "H1": -4.9979,
       "H4": -6.3032,
-      "M15": -12.562,
+      "M15": 0.4602,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T15:26:28.425Z",
+    "source_time_utc": "2026-11-26T15:30:20.373Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2135.2812
+    "value": 2136.9194
   },
   "order_flow": {
     "H1": {
@@ -61,32 +61,32 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": -19.2247,
-      "futures_volume": 440.8909,
+      "futures_delta": -1.7707,
+      "futures_volume": 78.4479,
       "observation": "mixed_or_neutral",
-      "spot_delta": -85.03214163,
-      "spot_volume": 118.75074643,
-      "window_end_utc": "2026-11-26T15:15:00Z"
+      "spot_delta": 35.36140259,
+      "spot_volume": 71.33222245,
+      "window_end_utc": "2026-11-26T15:30:00Z"
     },
     "M5": {
       "coverage": {
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": -3.4301,
-      "futures_volume": 19.2791,
-      "observation": "both_aggressive_sell",
-      "spot_delta": -8.48146111,
-      "spot_volume": 18.13888833,
-      "window_end_utc": "2026-11-26T15:25:00Z"
+      "futures_delta": 5.7836,
+      "futures_volume": 21.728,
+      "observation": "both_aggressive_buy",
+      "spot_delta": 4.37485028,
+      "spot_volume": 8.75458212,
+      "window_end_utc": "2026-11-26T15:30:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "push",
-    "slot": "",
-    "source": "github"
+    "event": "workflow_dispatch",
+    "slot": "2026-11-26T15:30:00.000Z",
+    "source": "cloudflare"
   },
   "schema_version": "1.0",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
@@ -883,12 +883,25 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
-      "fvg": [],
-      "last_close": 60163.1,
-      "last_high": 60656.2,
-      "last_low": 59850.0,
-      "latest_closed_utc": "2026-11-26T15:00:00Z",
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 60656.2,
+          "reference_low": 59850.0
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1795706100,
+          "high": 60656.2,
+          "kind": "bearish_fvg",
+          "low": 60300.0
+        }
+      ],
+      "last_close": 60257.9,
+      "last_high": 60300.0,
+      "last_low": 60066.9,
+      "latest_closed_utc": "2026-11-26T15:15:00Z",
       "qm": [
         {
           "broken_level": 60659.8,
@@ -1007,7 +1020,7 @@
       "events": [
         {
           "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60220.2
+          "reference_high": 60287.5
         }
       ],
       "fvg": [
@@ -1024,10 +1037,10 @@
           "low": 60307.8
         }
       ],
-      "last_close": 60168.7,
-      "last_high": 60287.5,
-      "last_low": 60123.8,
-      "latest_closed_utc": "2026-11-26T15:20:00Z",
+      "last_close": 60257.9,
+      "last_high": 60300.0,
+      "last_low": 60151.7,
+      "latest_closed_utc": "2026-11-26T15:25:00Z",
       "qm": [
         {
           "broken_level": 58187.8,
