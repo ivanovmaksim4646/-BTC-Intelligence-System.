@@ -5,6 +5,10 @@ import urllib.request
 import urllib.parse
 from decimal import Decimal
 from pathlib import Path
+try:
+    from src.okx_flow_reconcile import reconcile,aggregate
+except ModuleNotFoundError:
+    from okx_flow_reconcile import reconcile,aggregate
 
 def request(path, params):
     url="https://www.okx.com/api/v5/"+path+"?"+urllib.parse.urlencode(params)
@@ -69,12 +73,16 @@ def main():
         began=time.monotonic()
         try:
             result=probe(inst,fetch,end,max_pages=500 if inst=="BTC-USDT-SWAP" else 180)
+            candles=request("market/candles",{"instId":inst,"bar":"5m","limit":"10"})
+            metadata=request("public/instruments",{"instType":"SWAP","instId":inst}) if inst=="BTC-USDT-SWAP" else []
+            result=reconcile(result,candles,metadata)
         except Exception as e:
             result={"instrument":inst,"error":str(e),"completeness_verified":False,
                     "complete_delta_btc":None,"complete_cvd_btc":None}
         result["elapsed_seconds"]=round(time.monotonic()-began,2)
         results.append(result)
-    out={"classification":"bounded_rest_pagination_research_only","results":results}
+    out={"classification":"bounded_rest_pagination_research_only","results":results,
+         "rolling_windows":{inst:aggregate([r for r in results if "end_ms" in r],end,inst) for inst in ("BTC-USDT","BTC-USDT-SWAP")}}
     Path("data").mkdir(exist_ok=True)
     Path("data/BTC-okx-rest-pagination-probe.json").write_text(json.dumps(out,indent=2))
     print(json.dumps(out))
