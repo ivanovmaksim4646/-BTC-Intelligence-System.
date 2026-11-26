@@ -8,6 +8,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import math
+import time
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request,urlopen
@@ -45,6 +46,7 @@ def parse_response(payload,interval,now_ms):
     return candles
 
 def fetch(interval):
+    time.sleep(1.1)  # BingX documents 1 request / second / IP
     url=API+"?"+urlencode({"symbol":"BTC-USDT","interval":interval,"limit":300})
     with urlopen(Request(url,headers={"User-Agent":"BTC-Intelligence/1.0"}),timeout=20) as resp:
         return json.load(resp)
