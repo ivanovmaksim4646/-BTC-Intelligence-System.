@@ -68,7 +68,7 @@ def main():
             return request("market/history-trades",p)
         began=time.monotonic()
         try:
-            result=probe(inst,fetch,end)
+            result=probe(inst,fetch,end,max_pages=500 if inst=="BTC-USDT-SWAP" else 180)
         except Exception as e:
             result={"instrument":inst,"error":str(e),"completeness_verified":False,
                     "complete_delta_btc":None,"complete_cvd_btc":None}
