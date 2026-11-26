@@ -1,5 +1,9 @@
 name: Official BEA Calendar Daily Sync
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/official-bea-calendar-sync.yml'
   schedule:
     - cron: '20 6 * * *'
   workflow_dispatch:
