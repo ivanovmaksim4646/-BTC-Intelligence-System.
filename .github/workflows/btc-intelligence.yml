@@ -2,7 +2,7 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal, feature/btc-release-readiness-audit]
     paths:
       - 'src/collector.py'
       - 'src/forward_paper_journal_v1.py'
@@ -241,6 +241,11 @@ jobs:
       - name: Audit BTC data-source budget and retirement readiness
         if: always()
         run: python src/source_budget_v1.py
+
+      - name: Audit operational release readiness (read-only, never a trade signal)
+        if: always()
+        continue-on-error: true
+        run: python -m src.release_readiness_v1
 
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
