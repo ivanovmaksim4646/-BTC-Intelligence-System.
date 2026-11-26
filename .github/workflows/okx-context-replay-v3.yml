@@ -1,0 +1,19 @@
+name: OKX context replay research
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/okx-context-replay-v3]
+permissions:
+  contents: read
+jobs:
+  context-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python -m src.okx_context_replay_v3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-context-replay-v3
+          path: data/BTC-okx-context-replay-v3.json
