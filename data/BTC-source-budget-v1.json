@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "evaluated_at_utc": "2026-11-26T12:22:34.248235+00:00",
+  "decision": "RETAIN_BINGX",
+  "switch_approved": false,
+  "classification": "data_cost_and_venue_migration_audit_only",
+  "primary_venue_target": "OKX BTC-USDT-SWAP",
+  "okx_features": {
+    "live_rest_trade_page": true,
+    "closed_m5_candles": true,
+    "oi_snapshot": true,
+    "complete_m5_delta": false,
+    "continuous_cvd_5m_15m_1h_4h": false,
+    "closed_candles_5m_15m_1h_4h_1d_1w": false,
+    "validated_okx_poi_qm_ifvg": false,
+    "risk_engine_venue_migrated": false,
+    "tradingview_venue_aligned": false
+  },
+  "bingx_features": {
+    "5m": true,
+    "15m": true,
+    "1h": false,
+    "4h": true,
+    "1d": true,
+    "1w": true
+  },
+  "reasons": [
+    "OKX REST trade page is not complete Delta/CVD",
+    "OKX has not replaced BingX M5-W1 candle and POI/QM pipeline",
+    "Risk Engine v1 and TradingView still reference BingX",
+    "Kraken provides independent Spot/Futures confirmation",
+    "Removing BingX saves GitHub API calls, not persistent Cloudflare DO duration"
+  ],
+  "safe_immediate_savings": [
+    "remove_redundant_5_minute_cron_from_already_completed_okx_canary",
+    "do_not_run_extra_okx_history_pagination_30_pages_every_sync",
+    "retain_existing_bingx_and_kraken_until_venue_migration_is_tested"
+  ],
+  "trade_signal": null
+}
