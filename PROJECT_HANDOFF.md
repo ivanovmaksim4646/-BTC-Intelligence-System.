@@ -171,3 +171,5 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | PR48 CI passed** | Runs 45911554426, 45911549365 chart checks and 45911554425 existing OKX regression successful at exact head c3b6ec7d61a8ea84c81549b71979c89bbee4c163. Browser/hosting and signal performance not tested. Eligible for read-only dashboard merge, not signal changes.
 
 - **2026-11-27 | PR48 dashboard merged** | {"sha":"6532dec92a73f5381e65e8593fe143d20b4855c1","merged":true,"message":"Pull Request successfully merged"}; read-only chart code in main. Browser display, public hosting and scheduled report integration pending; no trading changes or evidence of improved profitability.
+
+- **2026-11-27 | Chart Pages deployment staged** | PR49, commit 0204a42dad834261618b231387ac1344fd5a3dd0. Path-limited main deployment of three static dashboard assets, existing Node checks before deploy. Pages settings endpoint unavailable via connector; owner may need enable GitHub Actions source. Browser and report integration pending; no trading changes.
