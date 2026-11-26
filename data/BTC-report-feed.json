@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 4.01111726,
-    "percent": 0.0066140547,
-    "source_time_utc": "2026-11-26T20:20:00.357Z"
+    "mark_minus_index_usd": 0.87943355,
+    "percent": 0.0014505625,
+    "source_time_utc": "2026-11-26T20:20:54.612Z"
   },
-  "collected_at_utc": "2026-11-26T20:19:59.172076Z",
-  "collection_age_seconds_at_generation": 43,
+  "collected_at_utc": "2026-11-26T20:20:53.519391Z",
+  "collection_age_seconds_at_generation": 45,
   "funding": {
     "absolute": 0.171680068190875,
     "relative_hourly": 2.8307375e-06,
     "relative_percent_hourly": 0.00028307375,
-    "source_time_utc": "2026-11-26T20:20:00.357Z"
+    "source_time_utc": "2026-11-26T20:20:54.612Z"
   },
-  "generated_at_utc": "2026-11-26T20:20:41.919854Z",
+  "generated_at_utc": "2026-11-26T20:21:38.761363Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,27 +27,27 @@
         "funding": {
           "next_funding_time_ms": 1795766400000,
           "not_realized_funding": true,
-          "rate_fraction": 2.07737414322e-05,
-          "rate_percent": 0.0020774,
+          "rate_fraction": 2.03849203232e-05,
+          "rate_percent": 0.0020385,
           "status": "quoted_rate_snapshot"
         },
         "mark_index": {
-          "index_price": 60725.1,
-          "index_timestamp_ms": 1795724424687,
-          "mark_minus_index_usdt": -33.6,
-          "mark_price": 60691.5,
-          "mark_timestamp_ms": 1795724425257,
-          "premium_bps": -5.533132,
+          "index_price": 60699.8,
+          "index_timestamp_ms": 1795724482238,
+          "mark_minus_index_usdt": -32.8,
+          "mark_price": 60667.0,
+          "mark_timestamp_ms": 1795724482259,
+          "premium_bps": -5.403642,
           "status": "two_recent_public_snapshots",
           "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
         },
         "oi_change": {
-          "current_timestamp_ms": 1795724424633,
-          "delta_btc": -8.1956,
-          "delta_percent": -0.0255,
-          "elapsed_seconds": 280.603,
+          "current_timestamp_ms": 1795724481388,
+          "delta_btc": 3.5922,
+          "delta_percent": 0.01118,
+          "elapsed_seconds": 56.755,
           "limitation": "not_continuous_intraperiod_OI",
-          "previous_timestamp_ms": 1795724144030,
+          "previous_timestamp_ms": 1795724424633,
           "status": "two_verified_snapshots"
         }
       },
@@ -79,11 +79,11 @@
           }
         }
       },
-      "generated_at_utc": "2026-11-26T20:20:41.814557+00:00",
+      "generated_at_utc": "2026-11-26T20:21:38.701073+00:00",
       "liquidity": {
         "interpretation": "cancellable_resting_orders_not_directional_vote",
         "resting_side": "ask_heavier",
-        "timestamp_ms": 1795724425009
+        "timestamp_ms": 1795724481859
       },
       "m5_close_s": 1795724400,
       "missing": [
@@ -114,9 +114,9 @@
       "M15": 0.7126,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T20:20:00.357Z",
+    "source_time_utc": "2026-11-26T20:20:54.612Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2074.2714
+    "value": 2074.2931
   },
   "order_flow": {
     "H1": {
@@ -160,20 +160,20 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": -1.6823,
-      "futures_volume": 5.0357,
-      "observation": "unavailable",
-      "spot_delta": -0.7115369,
-      "spot_volume": 2.61830762,
-      "window_end_utc": "2026-11-26T20:15:00Z"
+      "futures_delta": -1.8668,
+      "futures_volume": 5.6888,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -1.29181884,
+      "spot_volume": 2.15790196,
+      "window_end_utc": "2026-11-26T20:20:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "schedule",
-    "slot": "",
-    "source": "github"
+    "event": "workflow_dispatch",
+    "slot": "2026-11-26T20:20:00.000Z",
+    "source": "cloudflare"
   },
   "schema_version": "1.1",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
@@ -1499,8 +1499,8 @@
       "status": "no_structure_break"
     },
     "M5": {
-      "reason": "order_flow_unavailable",
-      "status": "unavailable"
+      "reason": "no_confirmed_close_break",
+      "status": "no_structure_break"
     }
   }
 }
