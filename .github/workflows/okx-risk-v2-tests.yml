@@ -1,0 +1,35 @@
+name: OKX Risk Engine v2 tests
+on:
+  push:
+    branches:
+      - feature/okx-risk-engine-v2
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -v
+      - name: Verify live OKX Risk Engine snapshot
+        run: |
+          python src/okx_futures_candles.py
+          python src/okx_poi_qm_v1.py
+          python src/risk_engine_v2_okx.py
+          python - <<'PY'
+          import json
+          r=json.load(open("data/BTC-risk-engine-v2-okx.json"))
+          print("OKX risk:",r["decision"],"venue:",r["venue"],"verified_candles:",r["okx_closed_candles_verified"])
+          print("Risk cap:",r["max_account_risk_fraction"],"leverage cap:",r["max_notional_leverage"])
+          print("Reasons:",r["reasons"])
+          assert r["venue"]=="OKX BTC-USDT-SWAP"
+          assert r["okx_closed_candles_verified"] is True
+          assert r["decision"]=="NO_TRADE"
+          assert r["trade_signal"] is None
+          assert not r["execution_ready"]
+          assert r["max_account_risk_fraction"]==0.01
+          assert r["max_notional_leverage"]==5
+          PY
