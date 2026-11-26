@@ -23,7 +23,8 @@ class LiquidityHistoryTests(unittest.TestCase):
         self.assertIsNone(r["change"]);self.assertIsNone(r["trade_signal"])
         self.assertIsNone(r["complete_cvd_btc"])
     def test_two_samples_produce_changes_not_executions(self):
-        older=create_observation(sample(bid=7.0,ask=24.0,premium=3.0),NOW)\n        older["book_timestamp_ms"]=TS-302000
+        older=create_observation(sample(bid=7.0,ask=24.0,premium=3.0),NOW)
+        older["book_timestamp_ms"]=TS-302000
         r,h=analyze(sample(bid=10,ask=20,premium=2.0),[older],NOW)
         self.assertTrue(r["new_record"])
         self.assertEqual(len(h),2)
