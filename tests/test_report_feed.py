@@ -56,3 +56,17 @@ class ReportFeedTests(unittest.TestCase):
         report = build(None, None, None, None, None, now=NOW)
         self.assertEqual(report["report_data_status"], "withhold_or_qualify")
         self.assertIsNone(report["order_flow"]["M5"]["spot_delta"])
+
+    def test_okx_kept_separate_from_legacy_kraken(self):
+        okx = {"source": "OKX BTC-USDT-SWAP", "classification": "okx_confluence_research_only",
+               "generated_at_utc": STAMP, "m5_close_s": int(NOW.timestamp())-300,
+               "missing": ["macro"], "flow": {"5m": {"spot": {"delta_btc": "2"}}}}
+        report = build(*fixtures(), now=NOW, okx=okx)
+        self.assertEqual(report["okx_confluence"]["status"], "research_partial")
+        self.assertEqual(report["order_flow"]["H4"]["spot_delta"], 1.5)
+        self.assertIsNone(report["okx_confluence"]["trade_signal"])
+
+    def test_stale_okx_withheld(self):
+        okx = {"source": "OKX BTC-USDT-SWAP", "classification": "okx_confluence_research_only",
+               "generated_at_utc": "2026-11-26T11:00:00Z", "m5_close_s": int(NOW.timestamp())-3600}
+        self.assertIsNone(build(*fixtures(), now=NOW, okx=okx)["okx_confluence"]["data"])
