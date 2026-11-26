@@ -29,8 +29,8 @@ def parse_klines(rows, seconds, now_ms):
             continue
         vals=list(map(float,r[1:5]))
         if (not all(math.isfinite(x) and x>0 for x in vals)
-            or vals[2]<max(vals[0],vals[3])
-            or vals[1]>min(vals[0],vals[3])
+            or vals[1]<max(vals[0],vals[3])
+            or vals[2]>min(vals[0],vals[3])
             or (open_ms % (seconds*1000)!=0 if seconds!=604800 else (open_ms//1000//86400+3)%7!=0)
             or close_ms-open_ms+1!=seconds*1000):
             raise ValueError("invalid OHLC or candle bounds")
