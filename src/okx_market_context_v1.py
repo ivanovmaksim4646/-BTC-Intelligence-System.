@@ -3,7 +3,7 @@
 
 Uses confirmed pivots (two left and two RIGHT closed candles), avoiding
 future look-ahead. Direction is descriptive HH/HL or LH/LL, not a setup.
-Liquidity observations cannot independently validate BOS, trade execution,
+Closed-candle break candidates reuse structure.py; liquidity cannot validate trade execution,
 absorption or complete CVD. No orders; decision always NO_TRADE.
 """
 from __future__ import annotations
@@ -11,6 +11,10 @@ import datetime as dt
 import json
 import math
 from pathlib import Path
+try:
+    from src.structure import structural_shift, continuation_bos
+except ModuleNotFoundError:
+    from structure import structural_shift, continuation_bos
 
 DATA=Path(__file__).resolve().parents[1]/"data"
 OUT=DATA/"BTC-okx-market-context-v1.json"
@@ -65,6 +69,19 @@ def confirmed_pivots(bars):
             lows.append({"t":bars[i]["t"],"price":lo})
     return highs,lows
 
+def fresh_structure_break(bars,tf):
+    """Reuse venue-independent candidate logic on verified OKX closed bars only."""
+    event=structural_shift(bars) or continuation_bos(bars)
+    if event is None:return None
+    # Do not repeatedly label a recross of the same already-broken pivot.
+    pivot=int(dt.datetime.fromisoformat(event['broken_swing_utc'].replace('Z','+00:00')).timestamp())
+    level=event['break_level']; up=event['kind'].startswith('bullish')
+    if any((b['c']>level if up else b['c']<level) for b in bars[:-1] if b['t']>pivot):
+        return None
+    return {**event,'source':SOURCE,'timeframe':tf,
+            'event_close_s':bars[-1]['t']+TIMES[tf],
+            'classification':'algorithmic_closed_candle_structure_candidate_not_entry'}
+
 def frame_context(bars,tf):
     highs,lows=confirmed_pivots(bars)
     state="mixed"
@@ -84,8 +101,8 @@ def frame_context(bars,tf):
        "confirmed_swing_highs":highs[-2:],
        "confirmed_swing_lows":lows[-2:],
        "swing_confirmation_delay_bars":RIGHT,
-       "fresh_bos_or_choch":None,
-       "note":"HH/HL or LH/LL classification from two confirmed swing pairs; not BOS/CHOCH or an entry."}
+       "fresh_bos_or_choch":fresh_structure_break(bars,tf),
+       "note":"HH/HL or LH/LL is descriptive; any fresh break is an algorithmic candidate, not an entry."}
 
 def evaluate(candles,liquidity,poi=None,now=None):
     now=now or dt.datetime.now(dt.timezone.utc)

@@ -1,7 +1,7 @@
 import datetime as dt
 import copy
 import unittest
-from src.okx_market_context_v1 import evaluate,frame_context,confirmed_pivots,SOURCE,TIMES
+from src.okx_market_context_v1 import evaluate,frame_context,confirmed_pivots,fresh_structure_break,SOURCE,TIMES
 NOW=dt.datetime(2026,11,26,15,0,tzinfo=dt.timezone.utc)
 TS=int(NOW.timestamp())
 def candles():
@@ -79,6 +79,31 @@ class MarketContextTests(unittest.TestCase):
     def test_all_closed_candles_not_invented_break_of_structure(self):
         r=evaluate(candles(),liquidity(),now=NOW)
         self.assertTrue(all(v["fresh_bos_or_choch"] is None for v in r["timeframes"].values()))
+    def break_bars(self,values):
+        return [{"t":300*(i+100),"o":x,"h":x+0.2,"l":x-0.2,"c":x}
+                for i,x in enumerate(values)]
+    def test_bullish_bos_close_candidate(self):
+        bars=self.break_bars([10,11,14,12,10,9,11,13,16,14,12,11,13,15,17])
+        e=fresh_structure_break(bars,"5m")
+        self.assertEqual(e["kind"],"bullish_bos_candidate")
+        self.assertEqual(e["event_close_s"],bars[-1]["t"]+300)
+        self.assertEqual(e["source"],SOURCE)
+    def test_bearish_bos_close_candidate(self):
+        bars=self.break_bars([30-x for x in [10,11,14,12,10,9,11,13,16,14,12,11,13,15,17]])
+        self.assertEqual(fresh_structure_break(bars,"5m")["kind"],"bearish_bos_candidate")
+    def test_bullish_choch_candidate(self):
+        bars=self.break_bars([16,17,20,17,15,13,15,16,18,15,13,11,13,16,19])
+        self.assertEqual(fresh_structure_break(bars,"5m")["kind"],"bullish_shift_candidate")
+    def test_bearish_choch_candidate(self):
+        bars=self.break_bars([40-x for x in [16,17,20,17,15,13,15,16,18,15,13,11,13,16,19]])
+        self.assertEqual(fresh_structure_break(bars,"5m")["kind"],"bearish_shift_candidate")
+    def test_wick_only_not_break(self):
+        bars=self.break_bars([10,11,14,12,10,9,11,13,16,14,12,11,13,15,16])
+        bars[-1]["h"]=18
+        self.assertIsNone(fresh_structure_break(bars,"5m"))
+    def test_recross_not_new_break(self):
+        bars=self.break_bars([10,11,14,12,10,9,11,13,16,14,12,11,13,17,15,17])
+        self.assertIsNone(fresh_structure_break(bars,"5m"))
     def test_historical_ifvg_remains_non_actionable(self):
         poi={"source":SOURCE,"classification":"futures_research_only",
              "evaluated_at_utc":NOW.isoformat(),"decision":"NO_TRADE",
