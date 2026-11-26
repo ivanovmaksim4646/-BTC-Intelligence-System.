@@ -74,12 +74,20 @@ def assess_snapshot(observations, candle_snapshot=None, now=None):
         "fresh_same_venue_orderflow_and_execution_slippage_evidence",
         "backtesting_and_forward_validation"
     ]
+    def fresh_utc(value,window_minutes=15):
+        try:
+            t=dt.datetime.fromisoformat(value.replace("Z","+00:00"))
+            return t.tzinfo is not None and dt.timedelta(0)<=now-t<=dt.timedelta(minutes=window_minutes)
+        except (ValueError,TypeError,AttributeError):
+            return False
     good_candles=(isinstance(candle_snapshot,dict)
         and candle_snapshot.get("source")==VENUE
         and candle_snapshot.get("status")=="verified"
+        and fresh_utc(candle_snapshot.get("collected_at_utc"))
         and isinstance(candle_snapshot.get("timeframes"),dict)
         and all(isinstance(candle_snapshot["timeframes"].get(tf),dict)
           and candle_snapshot["timeframes"][tf].get("status")=="ok"
+          and len(candle_snapshot["timeframes"][tf].get("bars") or [])>=30
           for tf in ("5m","15m","1h","4h","1d","1w")))
     r["okx_closed_candles_verified"]=good_candles
     r["trade_signal"]=None
