@@ -1,0 +1,61 @@
+name: Cloudflare usage detail audit (read-only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cloudflare-usage-detail.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch current status distribution and Durable Object GB-seconds
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          AID: 250b0a0e7ffc849880ba1f6af31b3c28
+        run: |
+          python - <<'PY'
+          import os,json,datetime as dt,urllib.request,urllib.error
+          token=os.environ.get("CLOUDFLARE_API_TOKEN","")
+          aid=os.environ.get("AID","")
+          def gql(q,variables):
+              payload=json.dumps({"query":q,"variables":variables}).encode()
+              req=urllib.request.Request("https://api.cloudflare.com/client/v4/graphql",data=payload,headers={
+                  "Authorization":"Bearer "+token,"Content-Type":"application/json"})
+              try:
+                  with urllib.request.urlopen(req,timeout=22) as r: res=json.load(r)
+              except urllib.error.HTTPError as ex:
+                  print("HTTP:",ex.code);return None
+              if res.get("errors"):
+                  print("GRAPHQL ERROR:",[x.get("message","")[:160] for x in res["errors"]][:2])
+                  return None
+              a=((res.get("data") or {}).get("viewer") or {}).get("accounts") or []
+              return a[0] if a else None
+          now=dt.datetime.now(dt.timezone.utc)
+          start=now-dt.timedelta(hours=24)
+          fmt=lambda d:d.isoformat(timespec="seconds").replace("+00:00","Z")
+          v={"aid":aid,"start":fmt(start),"end":fmt(now)}
+          q='query($aid:string!,$start:string!,$end:string!){viewer{accounts(filter:{accountTag:$aid}){workersInvocationsAdaptive(limit:10000,filter:{datetime_geq:$start,datetime_leq:$end}){dimensions{scriptName status eventType}sum{requests errors}}}}}'
+          data=gql(q,v)
+          if data:
+              breakdown={}
+              for item in data.get("workersInvocationsAdaptive") or []:
+                  d=item.get("dimensions") or {}
+                  k=(d.get("scriptName"),d.get("eventType"),d.get("status"))
+                  prev=breakdown.setdefault(str(k),{"requests":0,"errors":0})
+                  prev["requests"]+=(item.get("sum") or {}).get("requests") or 0
+                  prev["errors"]+=(item.get("sum") or {}).get("errors") or 0
+              print("WORKER STATUS BY EVENT:",json.dumps(breakdown,sort_keys=True))
+          # Official DO analytics: sums are already GB-seconds, not raw wall time.
+          q2='query($aid:string!){viewer{accounts(filter:{accountTag:$aid}){durableObjectsPeriodicGroups(limit:1000,filter:{date_geq:"2026-11-25"}){dimensions{namespaceId}sum{duration cpuTime}}}}}'
+          d=gql(q2,{"aid":aid})
+          if d:
+              rows=d.get("durableObjectsPeriodicGroups") or []
+              print("DO PERIODIC METRICS GROUPS:",len(rows))
+              print("DO DURATION GB-SECONDS SINCE NOV25 UTC:",sum((r.get("sum") or {}).get("duration") or 0 for r in rows))
+              print("DO CPU TOTAL:",sum((r.get("sum") or {}).get("cpuTime") or 0 for r in rows))
+          print("API ANALYTICS WINDOW:",v["start"],v["end"])
+          PY
