@@ -2,7 +2,7 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/okx-flow-main-sync]
     paths:
       - 'src/collector.py'
       - 'tests/test_collector.py'
@@ -29,7 +29,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  integration-check:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+
   collect:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
