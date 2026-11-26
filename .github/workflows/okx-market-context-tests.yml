@@ -1,0 +1,34 @@
+name: OKX market context integration tests
+on:
+  push:
+    branches:
+      - feature/okx-market-context-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run full BTC Intelligence Python regression suite
+        run: python -m unittest discover -s tests -q
+      - name: Verify live repo OKX market context synthesis
+        run: |
+          python src/okx_market_context_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-market-context-v1.json').read_text())
+          print('OKX market context',o['status'],
+                'market',o['market_context'],
+                'HTF',o['htf_structure'],'LTF',o['ltf_structure'],
+                'liquidity',o['liquidity_context'] is not None,
+                'warnings',o['warnings'])
+          assert o['source']=='OKX BTC-USDT-SWAP'
+          assert o['decision']=='NO_TRADE'
+          assert o['trade_signal'] is None
+          assert o['complete_cvd_btc'] is None
+          assert not o['execution_ready']
+          PY

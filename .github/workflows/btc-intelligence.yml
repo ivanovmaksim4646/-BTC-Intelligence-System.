@@ -180,6 +180,10 @@ jobs:
         if: always()
         run: python src/okx_liquidity_intelligence_v1.py
 
+      - name: Combine confirmed OKX M5 M15 H1 H4 price structure with liquidity intelligence (NO TRADE)
+        if: always()
+        run: python src/okx_market_context_v1.py
+
       - name: Report RR statistics from independently validated historical outcomes
         if: always()
         run: python src/rr_statistics_v1.py
