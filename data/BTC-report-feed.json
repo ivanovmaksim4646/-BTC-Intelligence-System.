@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": -4.11842011,
-    "percent": -0.0068146929,
-    "source_time_utc": "2026-11-26T10:45:18.317Z"
+    "mark_minus_index_usd": -3.21692346,
+    "percent": -0.0053230587,
+    "source_time_utc": "2026-11-26T10:50:19.813Z"
   },
-  "collected_at_utc": "2026-11-26T10:45:17.703119Z",
+  "collected_at_utc": "2026-11-26T10:50:19.273069Z",
   "collection_age_seconds_at_generation": 2,
   "funding": {
     "absolute": 0.616832253128,
     "relative_hourly": 1.0135825e-05,
     "relative_percent_hourly": 0.0010135825,
-    "source_time_utc": "2026-11-26T10:45:18.317Z"
+    "source_time_utc": "2026-11-26T10:50:19.813Z"
   },
-  "generated_at_utc": "2026-11-26T10:45:19.328220Z",
+  "generated_at_utc": "2026-11-26T10:50:21.124553Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,9 +27,9 @@
       "M15": -24.4978,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T10:45:18.317Z",
+    "source_time_utc": "2026-11-26T10:50:19.813Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2166.696
+    "value": 2166.4392
   },
   "order_flow": {
     "H1": {
@@ -73,19 +73,19 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": -23.0491,
-      "futures_volume": 84.9863,
-      "observation": "spot_buy_futures_sell_divergence",
-      "spot_delta": 10.29782849,
-      "spot_volume": 18.54108043,
-      "window_end_utc": "2026-11-26T10:45:00Z"
+      "futures_delta": -15.0621,
+      "futures_volume": 35.6519,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -7.11285136,
+      "spot_volume": 9.0603533,
+      "window_end_utc": "2026-11-26T10:50:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
     "event": "workflow_dispatch",
-    "slot": "2026-11-26T10:45:00.000Z",
+    "slot": "2026-11-26T10:50:00.000Z",
     "source": "cloudflare"
   },
   "schema_version": "1.0",
@@ -251,7 +251,12 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60420.8
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795688400,
@@ -264,12 +269,18 @@
           "high": 60711.9,
           "kind": "bearish_fvg",
           "low": 60587.7
+        },
+        {
+          "formed_at": 1795689900,
+          "high": 60585.4,
+          "kind": "bearish_fvg",
+          "low": 60461.4
         }
       ],
-      "last_close": 60461.5,
-      "last_high": 60587.7,
-      "last_low": 60420.8,
-      "latest_closed_utc": "2026-11-26T10:40:00Z",
+      "last_close": 60438.8,
+      "last_high": 60461.4,
+      "last_low": 60381.0,
+      "latest_closed_utc": "2026-11-26T10:45:00Z",
       "status": "ok"
     },
     "W1": {
