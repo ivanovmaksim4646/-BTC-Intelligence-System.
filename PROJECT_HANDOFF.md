@@ -173,3 +173,5 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | PR48 dashboard merged** | {"sha":"6532dec92a73f5381e65e8593fe143d20b4855c1","merged":true,"message":"Pull Request successfully merged"}; read-only chart code in main. Browser display, public hosting and scheduled report integration pending; no trading changes or evidence of improved profitability.
 
 - **2026-11-27 | Chart Pages deployment staged** | PR49, commit 0204a42dad834261618b231387ac1344fd5a3dd0. Path-limited main deployment of three static dashboard assets, existing Node checks before deploy. Pages settings endpoint unavailable via connector; owner may need enable GitHub Actions source. Browser and report integration pending; no trading changes.
+
+- **2026-11-27 | Pages source enabled and deployment merged** | User screenshot confirms GitHub Actions source selected. PR49 CI 45911763869 and 45911763860 succeeded; merge 4c35d60fe9a6c72798958a686623bd17bdc8592d. Main push triggers publication. Actual deployment and browser display pending; no trading changes.
