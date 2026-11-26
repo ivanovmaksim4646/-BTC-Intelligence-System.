@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 4.67618989,
-    "percent": 0.0076965311,
-    "source_time_utc": "2026-11-26T12:37:31.75Z"
+    "mark_minus_index_usd": 3.8172456,
+    "percent": 0.0062806794,
+    "source_time_utc": "2026-11-26T12:40:21.684Z"
   },
-  "collected_at_utc": "2026-11-26T12:37:30.852855Z",
-  "collection_age_seconds_at_generation": 2,
+  "collected_at_utc": "2026-11-26T12:40:20.537826Z",
+  "collection_age_seconds_at_generation": 3,
   "funding": {
     "absolute": -0.069002128951875,
     "relative_hourly": -1.1379375e-06,
     "relative_percent_hourly": -0.00011379375,
-    "source_time_utc": "2026-11-26T12:37:31.75Z"
+    "source_time_utc": "2026-11-26T12:40:21.684Z"
   },
-  "generated_at_utc": "2026-11-26T12:37:33.047240Z",
+  "generated_at_utc": "2026-11-26T12:40:23.757470Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,9 +27,9 @@
       "M15": -0.5546,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T12:37:31.75Z",
+    "source_time_utc": "2026-11-26T12:40:21.684Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2158.535
+    "value": 2177.6034
   },
   "order_flow": {
     "H1": {
@@ -73,20 +73,20 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": -2.8066,
-      "futures_volume": 10.2318,
-      "observation": "spot_buy_futures_sell_divergence",
-      "spot_delta": 0.7634545,
-      "spot_volume": 3.96671676,
-      "window_end_utc": "2026-11-26T12:35:00Z"
+      "futures_delta": 3.5694,
+      "futures_volume": 83.7928,
+      "observation": "mixed_or_neutral",
+      "spot_delta": 4.08976333,
+      "spot_volume": 9.48489611,
+      "window_end_utc": "2026-11-26T12:40:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "push",
-    "slot": "",
-    "source": "github"
+    "event": "workflow_dispatch",
+    "slot": "2026-11-26T12:40:00.000Z",
+    "source": "cloudflare"
   },
   "schema_version": "1.0",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
@@ -1029,46 +1029,20 @@
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60608.5
-        },
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60545.0
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795691700,
           "high": 60527.5,
           "kind": "bullish_fvg",
           "low": 60455.0
-        },
-        {
-          "formed_at": 1795695300,
-          "high": 60702.5,
-          "kind": "bearish_fvg",
-          "low": 60641.4
         }
       ],
-      "last_close": 60596.2,
-      "last_high": 60611.0,
-      "last_low": 60519.8,
-      "latest_closed_utc": "2026-11-26T12:30:00Z",
+      "last_close": 60774.2,
+      "last_high": 60809.8,
+      "last_low": 60574.9,
+      "latest_closed_utc": "2026-11-26T12:35:00Z",
       "qm": [
-        {
-          "broken_level": 59080.2,
-          "direction": "short",
-          "head_extreme": 59328.9,
-          "head_time": 1795590300,
-          "left_shoulder": 59245.5,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795593300
-        },
         {
           "broken_level": 58476.4,
           "direction": "short",
@@ -1167,6 +1141,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795689900
+        },
+        {
+          "broken_level": 60557.8,
+          "direction": "short",
+          "head_extreme": 60843.0,
+          "head_time": 1795694400,
+          "left_shoulder": 60650.6,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795695600
         }
       ],
       "status": "ok"
