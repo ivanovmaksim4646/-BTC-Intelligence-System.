@@ -1,0 +1,330 @@
+{
+  "basis": {
+    "mark_minus_index_usd": 0.34195187,
+    "percent": 0.0005627965,
+    "source_time_utc": "2026-11-26T10:31:40.701Z"
+  },
+  "collected_at_utc": "2026-11-26T10:31:39.572789Z",
+  "collection_age_seconds_at_generation": 3,
+  "funding": {
+    "absolute": 0.616832253128,
+    "relative_hourly": 1.0135825e-05,
+    "relative_percent_hourly": 0.0010135825,
+    "source_time_utc": "2026-11-26T10:31:40.701Z"
+  },
+  "generated_at_utc": "2026-11-26T10:31:42.401183Z",
+  "max_allowed_age_seconds": 900,
+  "notes": [
+    "Age must be recomputed at report-reading time using collected_at_utc.",
+    "Window Delta is exactly the same measurement as window CVD change, not an independent confirmation.",
+    "Only Kraken Spot/Futures data and available derived observations are included; no ETF, liquidation heatmap, Binance/BingX order flow or macro feed.",
+    "Structure is based on Kraken Spot closed candles; TradingView events are recorded separately."
+  ],
+  "open_interest": {
+    "change": {
+      "H1": 9.1896,
+      "H4": 26.121,
+      "M15": -0.3297,
+      "M5": 0.0
+    },
+    "source_time_utc": "2026-11-26T10:31:40.701Z",
+    "unit": "BTC-equivalent contracts",
+    "value": 2195.8178
+  },
+  "order_flow": {
+    "H1": {
+      "coverage": {
+        "futures": "complete",
+        "spot": "complete"
+      },
+      "futures_delta": -28.6884,
+      "futures_volume": 423.881,
+      "observation": "mixed_or_neutral",
+      "spot_delta": 2.6923034,
+      "spot_volume": 65.18477272,
+      "window_end_utc": "2026-11-26T10:00:00Z"
+    },
+    "H4": {
+      "coverage": {
+        "futures": "complete",
+        "spot": "complete"
+      },
+      "futures_delta": -7.3963,
+      "futures_volume": 463.9951,
+      "observation": "mixed_or_neutral",
+      "spot_delta": -3.88006325,
+      "spot_volume": 387.05114479,
+      "window_end_utc": "2026-11-26T08:00:00Z"
+    },
+    "M15": {
+      "coverage": {
+        "futures": "complete",
+        "spot": "complete"
+      },
+      "futures_delta": 1.8467,
+      "futures_volume": 142.4673,
+      "observation": "mixed_or_neutral",
+      "spot_delta": -6.99308439,
+      "spot_volume": 15.29620131,
+      "window_end_utc": "2026-11-26T10:30:00Z"
+    },
+    "M5": {
+      "coverage": {
+        "futures": "complete",
+        "spot": "complete"
+      },
+      "futures_delta": -25.0415,
+      "futures_volume": 59.4647,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -3.4145825,
+      "spot_volume": 5.44486682,
+      "window_end_utc": "2026-11-26T10:30:00Z"
+    }
+  },
+  "reasons": [],
+  "report_data_status": "ready",
+  "scheduler": {
+    "event": "push",
+    "slot": "",
+    "source": "github"
+  },
+  "schema_version": "1.0",
+  "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
+  "source": "Kraken Spot/Futures via BTC Intelligence GitHub Actions",
+  "structure": {
+    "D1": {
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59197.4
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1791417600,
+          "high": 85110.1,
+          "kind": "bearish_fvg",
+          "low": 83467.7
+        },
+        {
+          "formed_at": 1792713600,
+          "high": 82542.9,
+          "kind": "bearish_fvg",
+          "low": 81942.7
+        },
+        {
+          "formed_at": 1794528000,
+          "high": 73113.6,
+          "kind": "bearish_fvg",
+          "low": 71429.1
+        },
+        {
+          "formed_at": 1794614400,
+          "high": 71022.7,
+          "kind": "bearish_fvg",
+          "low": 68369.7
+        },
+        {
+          "formed_at": 1794700800,
+          "high": 67500.0,
+          "kind": "bearish_fvg",
+          "low": 66086.7
+        }
+      ],
+      "last_close": 60368.6,
+      "last_high": 60478.6,
+      "last_low": 57210.7,
+      "latest_closed_utc": "2026-11-25T00:00:00Z",
+      "status": "ok"
+    },
+    "H1": {
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 60981.8,
+          "reference_low": 60446.4
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1795453200,
+          "high": 62577.0,
+          "kind": "bearish_fvg",
+          "low": 62193.8
+        },
+        {
+          "formed_at": 1795456800,
+          "high": 61755.0,
+          "kind": "bearish_fvg",
+          "low": 61695.5
+        },
+        {
+          "formed_at": 1795629600,
+          "high": 59410.6,
+          "kind": "bullish_fvg",
+          "low": 58926.8
+        },
+        {
+          "formed_at": 1795651200,
+          "high": 60284.7,
+          "kind": "bullish_fvg",
+          "low": 60181.3
+        },
+        {
+          "formed_at": 1795683600,
+          "high": 60673.5,
+          "kind": "bullish_fvg",
+          "low": 60592.2
+        }
+      ],
+      "last_close": 60855.2,
+      "last_high": 60900.0,
+      "last_low": 60673.5,
+      "latest_closed_utc": "2026-11-26T09:00:00Z",
+      "status": "ok"
+    },
+    "H4": {
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60284.7
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1794542400,
+          "high": 71022.7,
+          "kind": "bearish_fvg",
+          "low": 69303.9
+        },
+        {
+          "formed_at": 1794628800,
+          "high": 67794.8,
+          "kind": "bearish_fvg",
+          "low": 67392.2
+        },
+        {
+          "formed_at": 1794672000,
+          "high": 66908.8,
+          "kind": "bearish_fvg",
+          "low": 66127.4
+        },
+        {
+          "formed_at": 1795636800,
+          "high": 59719.8,
+          "kind": "bullish_fvg",
+          "low": 58839.3
+        }
+      ],
+      "last_close": 60454.9,
+      "last_high": 61037.5,
+      "last_low": 60277.1,
+      "latest_closed_utc": "2026-11-26T04:00:00Z",
+      "status": "ok"
+    },
+    "M15": {
+      "events": [],
+      "fvg": [
+        {
+          "formed_at": 1795626900,
+          "high": 58937.7,
+          "kind": "bullish_fvg",
+          "low": 58557.8
+        },
+        {
+          "formed_at": 1795650300,
+          "high": 60254.1,
+          "kind": "bullish_fvg",
+          "low": 60240.0
+        }
+      ],
+      "last_close": 60747.2,
+      "last_high": 60876.0,
+      "last_low": 60720.4,
+      "latest_closed_utc": "2026-11-26T10:15:00Z",
+      "status": "ok"
+    },
+    "M5": {
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60725.8
+        }
+      ],
+      "fvg": [
+        {
+          "formed_at": 1795682700,
+          "high": 60671.7,
+          "kind": "bullish_fvg",
+          "low": 60664.2
+        },
+        {
+          "formed_at": 1795688400,
+          "high": 60834.0,
+          "kind": "bearish_fvg",
+          "low": 60820.5
+        }
+      ],
+      "last_close": 60747.2,
+      "last_high": 60799.9,
+      "last_low": 60720.4,
+      "latest_closed_utc": "2026-11-26T10:25:00Z",
+      "status": "ok"
+    },
+    "W1": {
+      "events": [],
+      "fvg": [
+        {
+          "formed_at": 1760572800,
+          "high": 118344.4,
+          "kind": "bearish_fvg",
+          "low": 114000.0
+        },
+        {
+          "formed_at": 1762387200,
+          "high": 107556.3,
+          "kind": "bearish_fvg",
+          "low": 107400.0
+        },
+        {
+          "formed_at": 1763596800,
+          "high": 99222.0,
+          "kind": "bearish_fvg",
+          "low": 93003.7
+        },
+        {
+          "formed_at": 1794441600,
+          "high": 75625.0,
+          "kind": "bearish_fvg",
+          "low": 74115.6
+        },
+        {
+          "formed_at": 1795046400,
+          "high": 72584.6,
+          "kind": "bearish_fvg",
+          "low": 64520.3
+        }
+      ],
+      "last_close": 60368.6,
+      "last_high": 64520.3,
+      "last_low": 55100.0,
+      "latest_closed_utc": "2026-11-19T00:00:00Z",
+      "status": "ok"
+    }
+  },
+  "trade_signal": null,
+  "watchlist": {
+    "H1": {
+      "reason": "no_confirmed_close_break",
+      "status": "no_structure_break"
+    },
+    "M15": {
+      "reason": "no_confirmed_close_break",
+      "status": "no_structure_break"
+    },
+    "M5": {
+      "reason": "no_confirmed_close_break",
+      "status": "no_structure_break"
+    }
+  }
+}
