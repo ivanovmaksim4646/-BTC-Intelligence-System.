@@ -71,11 +71,13 @@ class SpotBoundaryTests(unittest.TestCase):
         def fake_request(path,params):
             paths.append((path,params))
             return []
-        with patch("src.okx_flow_history_v1.probe",side_effect=fake_probe), \
-             patch("src.okx_flow_history_v1.request",side_effect=fake_request), \\
-             patch("src.okx_flow_history_v1.reconcile",side_effect=lambda r,c,m:r), \\
-             patch("src.okx_flow_history_v1.time.sleep"), \\
-             patch("src.okx_flow_history_v1.time.time",return_value=(END+600000)/1000):
+        with (
+            patch("src.okx_flow_history_v1.probe",side_effect=fake_probe),
+            patch("src.okx_flow_history_v1.request",side_effect=fake_request),
+            patch("src.okx_flow_history_v1.reconcile",side_effect=lambda r,c,m:r),
+            patch("src.okx_flow_history_v1.time.sleep"),
+            patch("src.okx_flow_history_v1.time.time",return_value=(END+600000)/1000),
+        ):
             collect_one("BTC-USDT",old_end)
         historic=[p for path,p in paths if path=="market/history-candles"]
         self.assertEqual(len(historic),1)
