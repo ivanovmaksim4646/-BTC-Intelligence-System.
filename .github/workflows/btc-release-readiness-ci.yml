@@ -6,6 +6,8 @@ on:
       - 'src/release_readiness_v1.py'
       - 'tests/test_release_readiness_v1.py'
       - '.github/workflows/btc-release-readiness-ci.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
