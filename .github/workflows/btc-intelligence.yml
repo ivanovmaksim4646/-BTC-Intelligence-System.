@@ -192,6 +192,11 @@ jobs:
         if: always()
         run: python src/okx_entry_evidence_gate_v1.py
 
+      - name: Combine current OKX evidence for research reports (no execution)
+        if: always()
+        continue-on-error: true
+        run: python -m src.okx_confluence_v2
+
       - name: Track verified OKX paper entries and update RR outcomes (no execution)
         if: always()
         run: python src/okx_outcome_tracker_v1.py
