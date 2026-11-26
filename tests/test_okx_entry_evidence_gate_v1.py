@@ -157,6 +157,20 @@ class EntryEvidenceGateTests(unittest.TestCase):
         with patch("src.okx_entry_evidence_gate_v1.fvg_zones",return_value=[]) as f:
             prior_poi_zones(bars,3600,head,"long")
         self.assertTrue(all(b["t"]+3600<=head for b in f.call_args.args[0]))
+    def test_diagnostics_distinguish_no_alert_from_no_qm(self):
+        with patch("src.okx_entry_evidence_gate_v1.scan_qm",return_value=[]):
+            a=evaluate(fixture(),[],NOW)
+            b=evaluate(fixture(),observations(),NOW)
+        self.assertEqual(a["diagnostics"]["matching_tv_events"],0)
+        self.assertEqual(b["diagnostics"]["matching_tv_events"],1)
+        self.assertEqual(b["diagnostics"]["qm_patterns"],0)
+    def test_duplicate_alerts_do_not_double_count_paths(self):
+        events=observations()
+        events.append(dict(events[0],event_id="another"))
+        with patch("src.okx_entry_evidence_gate_v1.scan_qm",return_value=qm()):
+            result=evaluate(fixture(),events,NOW)
+        self.assertEqual(result["diagnostics"]["matching_tv_events"],2)
+        self.assertEqual(result["diagnostics"]["direction_matched_qm"],1)
     def test_fvg_is_not_arbitrary_rr_target(self):
         p=confirmed_pivots(fixture()["timeframes"]["1h"]["bars"],3600,"long",EPOCH)
         self.assertEqual(p[-1]["level"],115)

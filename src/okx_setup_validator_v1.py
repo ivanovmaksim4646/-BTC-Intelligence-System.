@@ -87,6 +87,16 @@ def evaluate_event(event,candles,now=None):
     if i is None or i<2 or event["time_ms"]%1000!=0:
         base["reasons"].append("alert_candle_unavailable_or_misaligned")
         return base
+    # Validate exactly the three matched closed candles before arithmetic.
+    from math import isfinite
+    window=bars[i-2:i+1]
+    if any(not isinstance(x,dict) or type(x.get("t")) is not int or
+           x["t"]!=candle_time-(2-j)*M5 or
+           any(type(x.get(k)) not in (int,float) or not isfinite(x[k]) or x[k]<=0 for k in ("o","h","l","c")) or
+           not x["l"]<=min(x["o"],x["c"])<=max(x["o"],x["c"])<=x["h"]
+           for j,x in enumerate(window)) or candle_time+M5>now.timestamp():
+        base["reasons"].append("invalid_or_gapped_matched_okx_candles")
+        return base
     b=bars[i]
     if abs(b["c"]-event["price"])/b["c"]>PRICE_DEVIATION_MAX:
         base["reasons"].append("okx_price_mismatch")
@@ -119,9 +129,11 @@ def evaluate(events,candles,existing_ids=None,now=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     ids=set(existing_ids or ())
     new=[];audits=[];by_reason={}
+    matched=[]
     for event in events:
         obs=evaluate_event(event,candles,now)
         if obs["status"]=="observed_not_trade":
+            matched.append(obs)
             if obs["event_id"] not in ids:
                 ids.add(obs["event_id"])
                 new.append(obs)
@@ -134,6 +146,8 @@ def evaluate(events,candles,existing_ids=None,now=None):
         "alerts_inspected":len(events),"okx_observations_new":len(new),
         "rejected_or_unverified":len(events)-sum(x["status"]=="observed_not_trade" for x in audits),
         "reason_counts":by_reason,
+        "okx_matched_events":len({x["event_id"] for x in matched}),
+        "latest_matched_event_close_ms":max((x["event_close_ms"] for x in matched),default=None),
         "records_to_append":new,
         "decision":"NO_TRADE","trade_signal":None,
         "note":"No observed event becomes a trade entry without independent POI/QM retest and liquidity target."}

@@ -78,6 +78,16 @@ class OKXSetupValidatorTests(unittest.TestCase):
     def test_no_mixing_on_missing_okx(self):
         c=candles();c["source"]="BingX USD-M Perpetual BTC-USDT"
         self.assertIn("unverified_okx_futures_candles",evaluate_event(event(),c,NOW)["reasons"])
+    def test_gapped_match_rejected(self):
+        c=candles();c["timeframes"]["5m"]["bars"][1]["t"]-=60
+        self.assertIn("invalid_or_gapped_matched_okx_candles",evaluate_event(event(),c,NOW)["reasons"])
+    def test_invalid_ohlc_rejected(self):
+        c=candles();c["timeframes"]["5m"]["bars"][-1]["c"]=0
+        self.assertIn("invalid_or_gapped_matched_okx_candles",evaluate_event(event(),c,NOW)["reasons"])
+    def test_duplicate_event_count_is_unique(self):
+        e=event();r=evaluate([e,e],candles(),now=NOW)
+        self.assertEqual(r["okx_matched_events"],1)
+        self.assertEqual(r["latest_matched_event_close_ms"],e["time_ms"])
     def test_malformed_tv_event_never_journaled(self):
         e=event();e["level_kind"]="pdh"
         r=evaluate([e],candles(),now=NOW)

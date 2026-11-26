@@ -94,6 +94,11 @@ def evaluate(snapshot,observations,now=None):
        "classification":"independently_reconstructed_okx_paper_hypotheses",
        "source":VENUE,"decision":"NO_TRADE","trade_signal":None,
        "candidates_evaluated":0,"paper_entries":[],"reasons":[],
+       "diagnostics":{"latest_m5_close_s":None,"matching_tv_events":0,
+          "qm_patterns":0,"direction_matched_qm":0,"confirmed_qm":0,
+          "first_retest_matches":0,"directional_break_matches":0,
+          "eligible_poi_zones":0,"poi_touches":0,"poi_not_invalidated":0,
+          "valid_stop":0,"target_matches":0,"net_rr_matches":0},
        "policy":{"risk_fraction_cap":0.01,"leverage_cap":5,
           "entry":"closed_M5_retest_close_only",
           "stop":"QM_head_extreme_with_outward_3bps",
@@ -132,6 +137,8 @@ def evaluate(snapshot,observations,now=None):
     if not 0<=now.timestamp()-close<=M5+60:
         report["reasons"].append("latest_m5_close_stale")
         return report
+    diag=report["diagnostics"]
+    diag["latest_m5_close_s"]=close
     corroborated=[o for o in obs if isinstance(o,dict)
          and o.get("source")==VENUE and o.get("status")=="observed_not_trade"
          and o.get("symbol")=="OKX:BTCUSDT.P"
@@ -139,14 +146,20 @@ def evaluate(snapshot,observations,now=None):
          and o.get("corroboration") in ("three_candle_fvg_consistent",
                                         "closed_candle_price_consistent_only")
          and o.get("side") in ("long","short")]
+    diag["matching_tv_events"]=len(corroborated)
+    qms=scan_qm(m5)
+    diag["qm_patterns"]=len(qms)
     if not corroborated:
         report["reasons"].append("no_same_bar_independently_corroborated_okx_tv_alert")
         return report
-    qms=scan_qm(m5)
+    # Count each directional path once, regardless of multiple TV alerts.
+    corroborated=sorted(corroborated,key=lambda o:str(o.get("event_id") or ""))
+    corroborated=list({o["side"]:o for o in reversed(corroborated)}.values())
     for o in corroborated:
         direction=o["side"]
         for q in qms:
             if q.get("direction")!=direction:continue
+            diag["direction_matched_qm"]+=1
             head=q.get("head_time");extreme=q.get("structural_extreme_time")
             shoulder=q.get("left_shoulder");head_price=q.get("head_extreme")
             if not all(valid_number(x) for x in (shoulder,head_price)):
@@ -154,6 +167,7 @@ def evaluate(snapshot,observations,now=None):
             if type(head) is not int or type(extreme) is not int or not head<extreme<entry_bar["t"]:
                 continue
             if entry_bar["t"]<extreme+3*M5:continue
+            diag["confirmed_qm"]+=1
             if not (entry_bar["l"]<=shoulder<=entry_bar["h"] and
                 abs(entry_bar["c"]-shoulder)/shoulder<=0.001 and
                 (entry_bar["c"]>shoulder if direction=="long" else entry_bar["c"]<shoulder)):
@@ -164,27 +178,33 @@ def evaluate(snapshot,observations,now=None):
                b["l"]<=shoulder<=b["h"] and abs(b["c"]-shoulder)/shoulder<=0.001 and
                (b["c"]>shoulder if direction=="long" else b["c"]<shoulder)]
             if not first or first[0]["t"]!=entry_bar["t"]:continue
+            diag["first_retest_matches"]+=1
             structure_break=chronological_break(m5,head,extreme,entry_bar["t"],direction)
             if structure_break is None:
                 if "no_directional_bos_or_shift_in_qm_sequence" not in report["reasons"]:
                     report["reasons"].append("no_directional_bos_or_shift_in_qm_sequence")
                 continue
+            diag["directional_break_matches"]+=1
             report["candidates_evaluated"]+=1
             stop=head_price*(0.9997 if direction=="long" else 1.0003)
             entry=entry_bar["c"]
             if not ((stop<entry) if direction=="long" else (entry<stop)):continue
+            diag["valid_stop"]+=1
             for tf in ("1h","4h"):
                 ht=frames[tf]["bars"];step=HTF_SECONDS[tf]
                 # HTF POI formed and CONFIRMED before touch; no future HTF.
                 pois=prior_poi_zones(ht,step,head,direction)
+                diag["eligible_poi_zones"]+=len(pois)
                 for poi in pois:
                     touches=[b for b in m5 if poi["available_at"]<=b["t"]<head
                              and overlaps(b,poi["low"],poi["high"])]
                     if not touches:continue
+                    diag["poi_touches"]+=1
                     # A close through the far edge after touch invalidates the POI.
                     if any((b["c"]<poi["low"] if direction=="long" else b["c"]>poi["high"])
                            for b in m5 if touches[0]["t"]<=b["t"]<=entry_bar["t"]):
                         continue
+                    diag["poi_not_invalidated"]+=1
                     # Opposing TP pivot confirmed BEFORE entry. Must lie
                     # beyond entry in profit direction, and not be selected
                     # from bars formed after entry.
@@ -192,6 +212,7 @@ def evaluate(snapshot,observations,now=None):
                     targets=[p for p in targets if (p["level"]>entry if direction=="long"
                                                    else p["level"]<entry)]
                     if not targets:continue
+                    diag["target_matches"]+=1
                     # Choose NEAREST already-confirmed profit-side swing,
                     # independent of desired RR and never manufacture a TP.
                     target=min(targets,key=lambda p:abs(p["level"]-entry))
@@ -203,6 +224,7 @@ def evaluate(snapshot,observations,now=None):
                     reward=abs(tp-entry)-entry*COST_ESTIMATE_BPS/10000
                     net=reward/risk if risk>0 else -1
                     if net<1:continue
+                    diag["net_rr_matches"]+=1
                     evidence={"htf":tf,"poi_formed":poi["formed"],
                          "poi_kind":poi["kind"],"poi_available_at":poi["available_at"],
                          "structure_break":structure_break,
@@ -258,11 +280,16 @@ def main():
             except ValueError:pass
     report=evaluate(read("BTC-okx-futures-candles.json"),obs)
     existing=set()
+    existing_keys=set()
     if ENTRY_JOURNAL.exists():
         for line in ENTRY_JOURNAL.read_text(encoding="utf-8").splitlines():
-            try:existing.add(json.loads(line)["entry_id"])
+            try:
+                row=json.loads(line)
+                existing.add(row["entry_id"])
+                existing_keys.add((row["source"],row["entry_close_utc"],row["direction"]))
             except (ValueError,KeyError,TypeError):pass
-    new=[e for e in report["paper_entries"] if e["entry_id"] not in existing]
+    new=[e for e in report["paper_entries"] if e["entry_id"] not in existing
+         and (e["source"],e["entry_close_utc"],e["direction"]) not in existing_keys]
     if new:
         with ENTRY_JOURNAL.open("a",encoding="utf-8") as file:
             for e in new:file.write(canonical(e)+"\n")
