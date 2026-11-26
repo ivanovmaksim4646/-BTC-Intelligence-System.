@@ -1,0 +1,30 @@
+name: TradingView ICT v2 integrity tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/tradingview_validation.py'
+      - 'tests/test_tradingview_validation.py'
+      - 'worker.js'
+      - 'tradingview/BTC-Intelligence-ICT-M5-v2.pine'
+      - '.github/workflows/tradingview-intelligence.yml'
+      - '.github/workflows/tradingview-v2-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check legacy and v2 payload schemas
+        run: python -m unittest discover -s tests -p test_tradingview_validation.py -v
+      - name: Check Worker JavaScript syntax
+        run: node --check worker.js
