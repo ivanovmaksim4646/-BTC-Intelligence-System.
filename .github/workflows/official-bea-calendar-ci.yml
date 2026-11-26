@@ -6,6 +6,12 @@ on:
       - 'src/official_bea_calendar_v1.py'
       - 'tests/test_official_bea_calendar_v1.py'
       - '.github/workflows/official-bea-calendar-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/official_bea_calendar_v1.py'
+      - 'tests/test_official_bea_calendar_v1.py'
+      - '.github/workflows/official-bea-calendar-ci.yml'
   workflow_dispatch:
 permissions:
   contents: read
