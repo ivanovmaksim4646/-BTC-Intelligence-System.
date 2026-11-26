@@ -17,7 +17,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"data"/"BTC-okx-history-coverage-v1.json"
 INST="BTC-USDT-SWAP"
 BASE="https://www.okx.com/api/v5/market/history-trades"
-MAX_PAGES=12
+MAX_PAGES=30
 PAGE_LIMIT=100
 
 def fetch_page(cursor=None,opener=urlopen):
