@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-26T13:35:20.990582Z",
+  "checked_at_utc": "2026-11-26T13:40:21.862503Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
-      "status": "ok",
-      "age_seconds": 3
+      "status": "unverified",
+      "age_seconds": 2
     },
     "order_flow_analysis": {
       "status": "ok",
@@ -24,7 +24,7 @@
       "age_seconds": 0,
       "event": "workflow_dispatch",
       "source": "cloudflare",
-      "slot": "2026-11-26T13:35:00.000Z"
+      "slot": "2026-11-26T13:40:00.000Z"
     },
     "cloudflare_dispatch": {
       "status": "last_dispatch_observed",
@@ -37,7 +37,7 @@
       "last_event_received_at_utc": "2026-11-26T12:45:20.631709+00:00"
     }
   },
-  "fully_operational_confirmed": true,
+  "fully_operational_confirmed": false,
   "notes": [
     "GitHub workflow success does not guarantee five-minute scheduling.",
     "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
