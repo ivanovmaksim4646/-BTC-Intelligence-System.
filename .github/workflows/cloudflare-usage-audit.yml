@@ -1,0 +1,91 @@
+
+name: Cloudflare account usage audit (read-only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cloudflare-usage-audit.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read-only Cloudflare Worker inventory and 24h metrics
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 250b0a0e7ffc849880ba1f6af31b3c28
+        run: |
+          python - <<'PY'
+          import datetime as dt, json, os, urllib.request, urllib.error
+          token=os.environ.get("CLOUDFLARE_API_TOKEN","")
+          aid=os.environ.get("CLOUDFLARE_ACCOUNT_ID","")
+          if not token:
+              print("Cloudflare API token missing"); raise SystemExit(1)
+          def req(url,payload=None):
+              data=json.dumps(payload).encode() if payload is not None else None
+              h={"Authorization":"Bearer "+token,"Accept":"application/json"}
+              if data is not None:h["Content-Type"]="application/json"
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url,data=data,headers=h),timeout=20) as r:
+                      return r.status,json.load(r)
+              except urllib.error.HTTPError as ex:
+                  try: body=json.load(ex)
+                  except Exception:body={}
+                  return ex.code,body
+              except Exception as ex:
+                  return None,{"errors":[{"message":type(ex).__name__}]}
+          base="https://api.cloudflare.com/client/v4"
+          code,obj=req(base+"/accounts/"+aid+"/workers/scripts")
+          print("INVENTORY HTTP:",code)
+          if code==200 and obj.get("success"):
+              items=obj.get("result") or []
+              print("WORKERS FOUND:",len(items))
+              for x in items:print("WORKER:",x.get("id","unknown"),"created:",x.get("created_on","?"))
+              print("INVENTORY PAGINATION:",obj.get("result_info"))
+          else:
+              print("INVENTORY FAILED:",[str(x.get("code",""))+" "+str(x.get("message",""))[:140] for x in obj.get("errors",[])][:3])
+          end=dt.datetime.now(dt.timezone.utc)
+          start=end-dt.timedelta(hours=24)
+          past=end-dt.timedelta(days=7)
+          fmt=lambda t:t.isoformat(timespec="seconds").replace("+00:00","Z")
+          def gql(q,vars=None):
+              code,body=req(base+"/graphql",{"query":q,"variables":vars or {}})
+              errs=body.get("errors",[])
+              if errs:
+                  print("GRAPHQL ERRORS:",[str(x.get("message",""))[:170] for x in errs][:3])
+              else:print("GRAPHQL HTTP:",code)
+              return body.get("data") or {}
+          # Discover available account analytic dimensions without leaking tokens.
+          q='query($aid:string!,$start:string!,$end:string!){viewer{accounts(filter:{accountTag:$aid}){workersInvocationsAdaptive(limit:10000,filter:{datetime_geq:$start,datetime_leq:$end}){dimensions{scriptName}sum{requests errors}} durableObjectsInvocationsAdaptiveGroups(limit:10000,filter:{datetime_geq:$start,datetime_leq:$end}){dimensions{namespaceId}sum{requests}}}}}'
+          variables={"aid":aid,"start":fmt(start),"end":fmt(end)}
+          d=gql(q,variables)
+          accounts=((d.get("viewer") or {}).get("accounts") or [])
+          if accounts:
+              account=accounts[0]
+              by_worker={}
+              for item in account.get("workersInvocationsAdaptive") or []:
+                  name=item.get("dimensions",{}).get("scriptName","unknown")
+                  s=item.get("sum") or {}
+                  z=by_worker.setdefault(name,{"requests":0,"errors":0})
+                  z["requests"]+=s.get("requests") or 0
+                  z["errors"]+=s.get("errors") or 0
+              print("WORKER 24H SUMS:",json.dumps(by_worker,sort_keys=True))
+              dos=account.get("durableObjectsInvocationsAdaptiveGroups") or []
+              print("DO 24H INVOCATION GROUP COUNT:",len(dos))
+              print("DO 24H INVOCATION TOTAL:",sum((x.get("sum") or {}).get("requests") or 0 for x in dos))
+          else:
+              print("ANALYTICS_UNAVAILABLE_OR_NOT_AUTHORIZED: true")
+          # Access to billing subscription is separate from edit/deploy tokens.
+          code,sub=req(base+"/accounts/"+aid+"/subscriptions")
+          print("BILLING PLAN ENDPOINT HTTP:",code)
+          if code==200 and sub.get("success"):
+              print("SUBSCRIPTION PRODUCTS:",[{"name":x.get("rate_plan",{}).get("public_name") or x.get("product",{}).get("name"),"status":x.get("state")} for x in sub.get("result",[])][:20])
+          else:
+              print("BILLING PLAN NOT VERIFIED THROUGH CURRENT DEPLOY TOKEN")
+          print("AUDIT WINDOW UTC:",fmt(start),fmt(end))
+          print("RESULT IS READ ONLY. NO SERVICE CONFIGURATION WAS MODIFIED.")
+          PY
