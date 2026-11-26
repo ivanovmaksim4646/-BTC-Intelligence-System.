@@ -1,6 +1,6 @@
 {
   "schema_version": "2.0",
-  "evaluated_at_utc": "2026-11-26T12:45:06.210310+00:00",
+  "evaluated_at_utc": "2026-11-26T12:45:29.253911+00:00",
   "classification": "okx_risk_gate_research_only",
   "venue": "OKX BTC-USDT-SWAP",
   "decision": "NO_TRADE",
@@ -15,6 +15,22 @@
   "execution_ready": false,
   "max_account_risk_fraction": 0.01,
   "max_notional_leverage": 5,
+  "rr_policy": {
+    "research_net_rr_from": 1.0,
+    "main_watchlist_net_rr_from": 2.0,
+    "counterfactual_targets_r": [
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      4.0,
+      5.0
+    ],
+    "outcomes_recorded": false,
+    "selection_policy": "compare_realized_outcomes_after_data_validation",
+    "target_policy": "no_target_fabrication; actual target needs verified opposing liquidity"
+  },
   "requires": [
     "same_venue_confirmed_retest_close",
     "independently_confirmed_opposing_liquidity_target_before_entry",
