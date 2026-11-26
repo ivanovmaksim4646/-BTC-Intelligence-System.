@@ -1,0 +1,32 @@
+name: OKX wall persistence research tests
+on:
+  push:
+    branches:
+      - feature/okx-wall-persistence-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run entire BTC Intelligence Python test suite
+        run: python -m unittest discover -s tests -q
+      - name: Verify historic OKX wall evaluation (no live orders)
+        run: |
+          python src/okx_wall_persistence_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-wall-persistence-v1.json').read_text())
+          print('Wall persistence:',o['status'],'samples',o['samples_considered'],
+                'bid_zones',len(o['persistent_bid_zones']),
+                'ask_zones',len(o['persistent_ask_zones']))
+          assert o['source']=='OKX BTC-USDT-SWAP'
+          assert o['trade_signal'] is None
+          assert o['complete_cvd_btc'] is None
+          assert o['confirmed_absorption'] is None
+          assert not o['gaps_verified_continuous']
+          PY
