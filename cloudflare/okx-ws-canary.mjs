@@ -112,10 +112,20 @@ export default {
     ctx.waitUntil(stub.fetch("https://internal/start",{method:"POST"}));
   },
   async fetch(req,env) {
-    if (new URL(req.url).pathname!=="/status" || req.method!=="GET") {
-      return new Response("Not found",{status:404});
-    }
+    const path=new URL(req.url).pathname;
     const id=env.OKX_CANARY.idFromName("btc-okx-ws-canary-v1");
-    return env.OKX_CANARY.get(id).fetch("https://internal/status");
+    const stub=env.OKX_CANARY.get(id);
+    if (path==="/start" && req.method==="POST") {
+      // Only a secret-holding GitHub deploy job may start the one-shot test.
+      if (!env.CANARY_START_TOKEN ||
+          req.headers.get("Authorization")!==`Bearer ${env.CANARY_START_TOKEN}`) {
+        return new Response("Forbidden",{status:403});
+      }
+      return stub.fetch("https://internal/start",{method:"POST"});
+    }
+    if (path==="/status" && req.method==="GET") {
+      return stub.fetch("https://internal/status");
+    }
+    return new Response("Not found",{status:404});
   }
 };
