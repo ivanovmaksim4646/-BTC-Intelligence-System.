@@ -22,6 +22,9 @@ OUT=DATA/"BTC-risk-engine-v2-okx.json"
 VENUE="OKX BTC-USDT-SWAP"
 MAX_RISK_FRACTION=0.01
 MAX_LEVERAGE=5
+MIN_RESEARCH_NET_RR=1.0
+MAIN_WATCHLIST_NET_RR=2.0
+RESEARCH_RR_THRESHOLDS=(1.0,1.5,2.0,2.5,3.0,4.0,5.0)
 
 def calculate_paper(candidate, *, equity_usdt,
                     risk_fraction=MAX_RISK_FRACTION,leverage_cap=MAX_LEVERAGE,
@@ -44,8 +47,19 @@ def calculate_paper(candidate, *, equity_usdt,
     r=calculate_v1(candidate,equity_usdt=equity_usdt,risk_fraction=risk_fraction,
         leverage_cap=leverage_cap,stop_buffer_bps=stop_buffer_bps,
         entry_slippage_bps=entry_slippage_bps,exit_slippage_bps=exit_slippage_bps,
-        taker_fee_bps_per_side=taker_fee_bps_per_side,now=now,venue=VENUE)
+        taker_fee_bps_per_side=taker_fee_bps_per_side,now=now,venue=VENUE,
+        min_net_rr=MIN_RESEARCH_NET_RR)
     r["venue"]=VENUE
+    r["research_rr_thresholds"]=list(RESEARCH_RR_THRESHOLDS)
+    r["min_research_rr_net"]=MIN_RESEARCH_NET_RR
+    r["main_watchlist_rr_net"]=MAIN_WATCHLIST_NET_RR
+    if r["status"]=="paper_scenario_only":
+        r["rr_category"]=("main_watchlist_candidate" if r["rr_net_estimate"]>=MAIN_WATCHLIST_NET_RR
+                          else "research_only")
+        r["rr_classification"]="computed_net_of_assumed_fees_and_slippage"
+        r["outcome"]="unobserved"
+    else:
+        r["rr_category"]=None
     r["risk_limit_fraction"]=risk_fraction
     r["execution_ready"]=False
     r["exchange_lot_tick_fee_verified"]=False
@@ -67,6 +81,14 @@ def assess_snapshot(observations, candle_snapshot=None, now=None):
     r["execution_ready"]=False
     r["max_account_risk_fraction"]=MAX_RISK_FRACTION
     r["max_notional_leverage"]=MAX_LEVERAGE
+    r["rr_policy"]={
+        "research_net_rr_from":MIN_RESEARCH_NET_RR,
+        "main_watchlist_net_rr_from":MAIN_WATCHLIST_NET_RR,
+        "counterfactual_targets_r":list(RESEARCH_RR_THRESHOLDS),
+        "outcomes_recorded":False,
+        "selection_policy":"compare_realized_outcomes_after_data_validation",
+        "target_policy":"no_target_fabrication; actual target needs verified opposing liquidity",
+    }
     r["requires"]=[
         "same_venue_confirmed_retest_close",
         "independently_confirmed_opposing_liquidity_target_before_entry",
