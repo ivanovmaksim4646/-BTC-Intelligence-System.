@@ -164,6 +164,10 @@ jobs:
         continue-on-error: true
         run: python src/okx_liquidity_derivatives_v1.py
 
+      - name: Accumulate verified OKX resting liquidity snapshots (no CVD claim)
+        if: always()
+        run: python src/okx_liquidity_history_v1.py
+
       - name: Build read-only OKX snapshot context for BTC reports
         if: always()
         run: python src/okx_derivatives_context_v1.py
