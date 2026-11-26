@@ -2,9 +2,11 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor]
     paths:
       - 'src/collector.py'
+      - 'src/okx_flow_history_v1.py'
+      - 'tests/test_okx_flow_history_v1.py'
       - 'src/report_feed.py'
       - 'tests/test_report_feed.py'
       - 'tests/test_collector.py'
@@ -27,7 +29,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: btc-intelligence-sync
+  group: btc-intelligence-sync-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:

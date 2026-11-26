@@ -39,10 +39,12 @@ def collect_one(inst,end):
     began=time.monotonic()
     def fetch(cursor):
         # Two parallel instruments, each at most four requests/s before latency.
-        if time.monotonic()-began>115:raise TimeoutError("bounded collection deadline")
+        if time.monotonic()-began>180:raise TimeoutError("bounded collection deadline")
         time.sleep(.25)
         p={"instId":inst,"type":"1","limit":"100"}
-        if cursor is not None:p["after"]=str(cursor)
+        if cursor is None:
+            p.update(type="2", after=str(end+1000))
+        else:p["after"]=str(cursor)
         return request("market/history-trades",p)
     try:
         r=probe(inst,fetch,end,max_pages=500 if inst.endswith("SWAP") else 180)
