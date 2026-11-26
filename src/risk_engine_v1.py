@@ -49,7 +49,7 @@ def calculate(candidate, *, equity_usdt, risk_fraction=0.01,
               leverage_cap=5, stop_buffer_bps=3,
               entry_slippage_bps=2, exit_slippage_bps=2,
               taker_fee_bps_per_side=5,
-              now=None):
+              now=None, venue=VENUE):
     """Explicit evidence contract, with conservative two-way cost adjustments.
 
     Target must be an actual pre-existing level with independently
@@ -61,14 +61,14 @@ def calculate(candidate, *, equity_usdt, risk_fraction=0.01,
         raise ValueError("timezone-aware now required")
     if not isinstance(candidate, dict):
         return out
-    if (candidate.get("source") != VENUE or
+    if (candidate.get("source") != venue or
         candidate.get("model") != "HTF_POI_QM_LTF" or
         candidate.get("direction") not in ("long", "short") or
         candidate.get("poi_touch_verified") is not True or
         candidate.get("qm_retest_verified") is not True or
         candidate.get("futures_closed_candle_confirmed") is not True or
         candidate.get("target_validated") is not True or
-        candidate.get("target_source") != VENUE or
+        candidate.get("target_source") != venue or
         candidate.get("entry_price_source") != "closed_retest_candle" or
         candidate.get("stop_source") != "confirmed_qm_head" or
         candidate.get("target_kind") not in ("opposing_liquidity", "prior_confirmed_swing")):
@@ -143,14 +143,14 @@ def calculate(candidate, *, equity_usdt, risk_fraction=0.01,
         "costs_assumed_bps":{"entry_slippage":entry_slippage_bps,
                              "exit_slippage":exit_slippage_bps,
                              "taker_fee_per_side":taker_fee_bps_per_side},
-        "evidence":{"venue":VENUE,"model":candidate["model"],
+        "evidence":{"venue":venue,"model":candidate["model"],
                     "retest_close_utc":candidate["retest_candle_close_utc"],
                     "target_kind":candidate["target_kind"],
                     "target_confirmed_utc":candidate["target_confirmed_utc"]},
     })
     return out
 
-def assess_snapshot(observations, now=None):
+def assess_snapshot(observations, now=None, venue=VENUE):
     """Current BingX research observations lack validated target & retest
     candle-close evidence. Never promote them to paper scenarios by inference.
     """
@@ -160,7 +160,7 @@ def assess_snapshot(observations, now=None):
         "schema_version":"1.0",
         "evaluated_at_utc":now.isoformat(),
         "classification":"risk_gate_research_only",
-        "venue":VENUE,
+        "venue":venue,
         "decision":"NO_TRADE",
         "trade_signal":None,
         "entry_signal":False,
@@ -168,7 +168,7 @@ def assess_snapshot(observations, now=None):
         "candidates_inspected":len(entries) if isinstance(entries,list) else 0,
         "reasons":[],
     }
-    if not isinstance(observations,dict) or observations.get("source")!=VENUE:
+    if not isinstance(observations,dict) or observations.get("source")!=venue:
         evaluation["reasons"].append("missing_or_wrong_venue")
         return evaluation
     stamp=observations.get("evaluated_at_utc")
