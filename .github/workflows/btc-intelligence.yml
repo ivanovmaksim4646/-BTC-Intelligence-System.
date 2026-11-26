@@ -1,6 +1,12 @@
 name: BTC Intelligence Sync
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/collector.py'
+      - 'tests/test_collector.py'
+      - '.github/workflows/btc-intelligence.yml'
   schedule:
     # Avoid the busiest minute of the hour. GitHub schedules use UTC.
     - cron: "2-59/5 * * * *"
