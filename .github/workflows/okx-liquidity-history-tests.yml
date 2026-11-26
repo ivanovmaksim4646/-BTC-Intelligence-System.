@@ -1,0 +1,33 @@
+name: OKX resting liquidity history tests
+on:
+  push:
+    branches:
+      - feature/okx-liquidity-history-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -q
+      - name: Verify live public REST snapshot history
+        run: |
+          python src/okx_liquidity_derivatives_v1.py
+          python src/okx_liquidity_history_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-liquidity-history-analysis-v1.json').read_text())
+          p=Path('data/BTC-okx-liquidity-history-v1.jsonl')
+          print('OKX liquidity journal:',o['saved_count'],'new',o['new_record'],'warnings',o['warnings'])
+          assert o['source']=='OKX BTC-USDT-SWAP'
+          assert o['trade_signal'] is None
+          assert o['complete_cvd_btc'] is None
+          assert o['complete_m5_delta_btc'] is None
+          assert o['liquidation_heatmap'] is None
+          assert p.exists()
+          PY
