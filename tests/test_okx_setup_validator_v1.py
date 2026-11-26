@@ -31,6 +31,18 @@ class OKXSetupValidatorTests(unittest.TestCase):
         self.assertIsNone(r["trade_signal"])
         for x in ("entry","stop_loss","take_profit","rr"):
             self.assertIsNone(r[x])
+    def test_real_github_ingestion_metadata_is_allowed(self):
+        e=event()
+        e["received_at_utc"]=NOW.isoformat()
+        r=evaluate_event(e,candles(),NOW)
+        self.assertEqual(r["status"],"observed_not_trade")
+        self.assertIsNone(r["trade_signal"])
+    def test_unexpected_ingestion_field_still_rejected(self):
+        e=event()
+        e["received_at_utc"]=NOW.isoformat()
+        e["order"]="buy"
+        r=evaluate_event(e,candles(),NOW)
+        self.assertIn("invalid_alert_schema",r["reasons"])
     def test_bingx_cannot_be_promoted_to_okx(self):
         r=evaluate_event(event("BINGX:BTCUSDT.P"),candles(),NOW)
         self.assertEqual(r["status"],"withheld")
