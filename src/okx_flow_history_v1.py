@@ -35,26 +35,59 @@ def summarize(rows,end):
             "segment_cvd_btc_reconciled":str(sum((decimal(r["delta_btc_reconciled"]) for r in chain),Decimal(0))) if chain else None,
             "complete_cvd_btc":None,"classification":"volume_reconciled_not_sequence_certified"}
     return out
-def collect_one(inst,end):
+def collect_one(inst,end,max_runtime_seconds=180,max_pages_override=None):
     began=time.monotonic()
     def fetch(cursor):
         # Two parallel instruments, each at most four requests/s before latency.
-        if time.monotonic()-began>180:raise TimeoutError("bounded collection deadline")
+        if time.monotonic()-began>max_runtime_seconds:raise TimeoutError("bounded collection deadline")
         time.sleep(.25)
         p={"instId":inst,"type":"1","limit":"100"}
         if cursor is None:
-            p.update(type="2", after=str(end+1000))
+            # Pagination type=2 returns trades STRICTLY earlier than the given
+            # timestamp. BTC Spot can have no print in the first second after
+            # M5 close; a +1s cursor then excludes all post-close trades and
+            # fails the independent upper-boundary evidence gate.
+            #
+            # Seed Spot from a bounded post-close margin, while preserving
+            # type=1 trade-id pagination and exact closed-candle volume match.
+            # If no actual post-close trade exists yet, provenance stays
+            # incomplete instead of inventing boundary coverage.
+            margin_ms=60000 if inst=="BTC-USDT" else 1000
+            p.update(type="2", after=str(end+margin_ms))
         else:p["after"]=str(cursor)
         return request("market/history-trades",p)
     try:
-        r=probe(inst,fetch,end,max_pages=500 if inst.endswith("SWAP") else 180)
-        candles=request("market/candles",{"instId":inst,"bar":"5m","limit":"10"})
+        r=probe(inst,fetch,end,max_pages=max_pages_override if max_pages_override is not None else (500 if inst.endswith("SWAP") else 180))
+        # The recent-candles endpoint only returns the latest bars. A
+        # retrospective gap up to four hours old must query the historical
+        # endpoint using a timestamp cursor or reconciliation will fail
+        # simply because the target candle is no longer in the latest ten.
+        current_end=int(time.time()*1000)//M5*M5
+        if current_end-end>8*M5:
+            candles=request("market/history-candles",
+                            {"instId":inst,"bar":"5m","after":str(end+M5),"limit":"10"})
+        else:
+            candles=request("market/candles",{"instId":inst,"bar":"5m","limit":"10"})
         meta=request("public/instruments",{"instType":"SWAP","instId":inst}) if inst.endswith("SWAP") else []
         r=reconcile(r,candles,meta)
     except Exception as exc:
         r={"instrument":inst,"end_ms":end,"volume_reconciled":False,"error":type(exc).__name__}
     r["elapsed_seconds"]=round(time.monotonic()-began,2)
     return r
+def spot_backfill_target(rows,end,max_age_buckets=48):
+    """Nearest missing recent Spot M5; at most one extra REST window per sync.
+
+    Do not retry the just-closed bucket in the same run. Missing data is
+    never inferred; only the existing merge() verifier can persist it.
+    """
+    confirmed={r.get("end_ms") for r in rows
+               if isinstance(r,dict) and r.get("instrument")=="BTC-USDT"
+               and r.get("volume_reconciled") is True}
+    for t in range(end-M5,end-(max_age_buckets+1)*M5,-M5):
+        if t not in confirmed:
+            return t
+    return None
+
 def write(path,obj):
     tmp=path.with_suffix(".tmp")
     tmp.write_text(json.dumps(obj,indent=2)+"\n")
@@ -66,8 +99,15 @@ def main():
     if not isinstance(old,list):raise ValueError("invalid history")
     with ThreadPoolExecutor(max_workers=2) as pool:
         results=list(pool.map(lambda i:collect_one(i,end),INSTRUMENTS))
-    rows=merge(old,results,end)
+    # One bounded Spot backfill per sync: no unbounded retries or fabricated
+    # historical CVD. Backfill reuses the exact same provenance gates.
+    target=spot_backfill_target(old+results,end)
+    backfill=collect_one("BTC-USDT",target,max_runtime_seconds=35,max_pages_override=100) if target is not None else None
+    rows=merge(old,results+([backfill] if backfill else []),end)
     out={"classification":"volume_reconciled_rest_research_only","end_ms":end,"results":results,
+         "spot_backfill":{"target_end_ms":target,
+                          "volume_reconciled":backfill.get("volume_reconciled") if backfill else None,
+                          "error":backfill.get("error") if backfill else None},
          "history_count":len(rows),"instruments":summarize(rows,end),"trade_signal":None}
     write(HISTORY,rows);write(CURRENT,out)
     print("PERSISTENT FLOW",json.dumps(out),flush=True)
