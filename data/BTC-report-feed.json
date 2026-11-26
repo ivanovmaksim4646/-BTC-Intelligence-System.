@@ -1,13 +1,13 @@
 {
   "basis": {
-    "mark_minus_index_usd": 0.99997581,
-    "percent": 0.0016539053,
-    "source_time_utc": "2026-11-26T22:55:26.236Z"
+    "mark_minus_index_usd": 2.07231042,
+    "percent": 0.0034300019,
+    "source_time_utc": "2026-11-26T22:57:37.273Z"
   },
-  "collected_at_utc": "2026-11-26T22:55:25.242269Z",
-  "collection_age_seconds_at_generation": 52,
+  "collected_at_utc": "2026-11-26T22:57:36.347650Z",
+  "collection_age_seconds_at_generation": 55,
   "economic_calendar": {
-    "coverage": "BEA GDP/PCE only; BLS/FOMC unavailable",
+    "coverage": "Official schedule only; source-specific gaps possible; JOLTS and conflicting FOMC dates not guaranteed; consensus/actual/reaction unavailable",
     "events": [
       {
         "actual": null,
@@ -69,15 +69,26 @@
     "generated_at_utc": "2026-11-26T22:16:53.399886+00:00",
     "max_age_seconds": 129600,
     "source": "https://apps.bea.gov/API/signup/release_dates.json",
+    "sources": {
+      "BEA": {
+        "status": "official_schedule_only"
+      },
+      "BLS": {
+        "status": "missing_or_stale"
+      },
+      "FED": {
+        "status": "missing_or_stale"
+      }
+    },
     "status": "official_schedule_only"
   },
   "funding": {
     "absolute": 0.5351785531379369,
     "relative_hourly": 8.810379166667e-06,
     "relative_percent_hourly": 0.0008810379166667001,
-    "source_time_utc": "2026-11-26T22:55:26.236Z"
+    "source_time_utc": "2026-11-26T22:57:37.273Z"
   },
-  "generated_at_utc": "2026-11-26T22:56:17.181179Z",
+  "generated_at_utc": "2026-11-26T22:58:30.957963Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -96,27 +107,27 @@
         "funding": {
           "next_funding_time_ms": 1795766400000,
           "not_realized_funding": true,
-          "rate_fraction": -4.3820892875e-06,
-          "rate_percent": -0.0004382,
+          "rate_fraction": -3.9931265978e-06,
+          "rate_percent": -0.0003993,
           "status": "quoted_rate_snapshot"
         },
         "mark_index": {
-          "index_price": 60491.9,
-          "index_timestamp_ms": 1795733760508,
-          "mark_minus_index_usdt": -27.8,
-          "mark_price": 60464.1,
-          "mark_timestamp_ms": 1795733760609,
-          "premium_bps": -4.595657,
+          "index_price": 60499.8,
+          "index_timestamp_ms": 1795733894109,
+          "mark_minus_index_usdt": -27.9,
+          "mark_price": 60471.9,
+          "mark_timestamp_ms": 1795733894298,
+          "premium_bps": -4.611585,
           "status": "two_recent_public_snapshots",
           "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
         },
         "oi_change": {
-          "current_timestamp_ms": 1795733759994,
-          "delta_btc": -18.598,
-          "delta_percent": -0.05823,
-          "elapsed_seconds": 301.191,
+          "current_timestamp_ms": 1795733893676,
+          "delta_btc": -30.9212,
+          "delta_percent": -0.09686,
+          "elapsed_seconds": 133.682,
           "limitation": "not_continuous_intraperiod_OI",
-          "previous_timestamp_ms": 1795733458803,
+          "previous_timestamp_ms": 1795733759994,
           "status": "two_verified_snapshots"
         }
       },
@@ -168,11 +179,11 @@
           }
         }
       },
-      "generated_at_utc": "2026-11-26T22:56:17.123938+00:00",
+      "generated_at_utc": "2026-11-26T22:58:30.887504+00:00",
       "liquidity": {
         "interpretation": "cancellable_resting_orders_not_directional_vote",
         "resting_side": "bid_heavier",
-        "timestamp_ms": 1795733760350
+        "timestamp_ms": 1795733894050
       },
       "m5_close_s": 1795733700,
       "missing": [
@@ -201,9 +212,9 @@
       "M15": -0.8024,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T22:55:26.236Z",
+    "source_time_utc": "2026-11-26T22:57:37.273Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2118.5396
+    "value": 2119.1252
   },
   "order_flow": {
     "H1": {
@@ -258,9 +269,9 @@
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "workflow_dispatch",
-    "slot": "2026-11-26T22:55:00.000Z",
-    "source": "cloudflare"
+    "event": "push",
+    "slot": "",
+    "source": "github"
   },
   "schema_version": "1.1",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
