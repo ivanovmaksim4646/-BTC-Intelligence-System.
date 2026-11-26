@@ -35,7 +35,7 @@ def read(name):
         return None
 
 
-def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None, bea=None):
+def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None, bea=None, bls_fed=None):
     now = now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:
         raise ValueError("now must have timezone")
@@ -124,6 +124,32 @@ def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None
                                    and timestamp(e.get("release_at_utc"))
                                    and now <= timestamp(e["release_at_utc"])],
                         "coverage": "BEA GDP/PCE only; BLS/FOMC unavailable"}
+    # Keep independently verified BEA data if another source is unavailable.
+    sources = {"BEA": {"status": calendar["status"]}}
+    for agency in ("BLS", "FED"):
+        sources[agency] = {"status": "missing_or_stale"}
+    if isinstance(bls_fed, dict):
+        stamp = timestamp(bls_fed.get("generated_at_utc"))
+        if stamp and 0 <= (now-stamp).total_seconds() <= 129600:
+            for agency in ("BLS", "FED"):
+                info = (bls_fed.get("sources") or {}).get(agency) or {}
+                sources[agency] = {"status": info.get("status", "unavailable"),
+                                   "generated_at_utc": bls_fed["generated_at_utc"]}
+                if info.get("status") != "official_schedule_only":
+                    continue
+                for e in bls_fed.get("events") or []:
+                    if (isinstance(e, dict) and e.get("agency")==agency
+                            and e.get("classification")=="official_published_schedule_only"
+                            and timestamp(e.get("release_at_utc"))
+                            and now <= timestamp(e["release_at_utc"])):
+                        calendar["events"].append(e)
+    calendar["events"] = sorted({(e.get("agency"),e.get("category"),e["release_at_utc"]):e
+                                  for e in calendar["events"]}.values(),
+                                 key=lambda e:(e["release_at_utc"],e.get("category","")))
+    calendar["sources"] = sources
+    calendar["coverage"] = "Official schedule only; source-specific gaps possible; JOLTS and conflicting FOMC dates not guaranteed; consensus/actual/reaction unavailable"
+    if calendar["events"]:
+        calendar["status"] = "official_schedule_only"
     return {
         "economic_calendar": calendar,
         "okx_confluence": okx_section,
@@ -159,7 +185,8 @@ def main():
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
         read("BTC-structure-current.json"), read("BTC-setup-candidates.json"),
         read("BTC-scheduler-health.json"), okx=read("BTC-okx-confluence-v2.json"),
-        bea=read("BTC-official-bea-calendar-v1.json")
+        bea=read("BTC-official-bea-calendar-v1.json"),
+        bls_fed=read("BTC-official-bls-fed-calendar-v1.json")
     )
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")

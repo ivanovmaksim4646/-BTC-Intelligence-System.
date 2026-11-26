@@ -1,0 +1,18 @@
+name: Combined official macro report validation
+on:
+  push:
+    branches: [feature/combined-macro-report-final]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: |
+          python -m src.official_bea_calendar_v1
+          python -m src.official_bls_fed_calendar_v1
+          python src/report_feed.py
+          python -c "import json; d=json.load(open('data/BTC-report-feed.json')); c=d['economic_calendar']; assert {e['agency'] for e in c['events']}=={'BEA','BLS','FED'}; assert d['trade_signal'] is None; print(c)"
