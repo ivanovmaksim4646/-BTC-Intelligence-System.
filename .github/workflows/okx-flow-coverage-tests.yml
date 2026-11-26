@@ -1,0 +1,33 @@
+name: OKX sampled orderflow & OI changes tests
+on:
+  push:
+    branches:
+      - feature/okx-flow-coverage-oi-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -q
+      - name: Collect current OKX public trade page & OI independently
+        run: |
+          python src/okx_futures_orderflow_v1.py
+          python src/okx_flow_coverage_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-flow-coverage-v1.json').read_text())
+          print('OKX FLOW:',o['status'],'page:',o['sampled_rest_page'],'OI:',o['oi_snapshot'])
+          print('Coverage:',o['coverage_by_window'])
+          assert o['source']=='OKX BTC-USDT-SWAP'
+          assert o['trade_signal'] is None
+          assert o['complete_m5_delta_btc'] is None
+          assert o['complete_cvd_btc'] is None
+          assert not o['continuous_cvd_5m_15m_1h_4h']
+          assert all(not x['full_coverage_verified'] for x in o['coverage_by_window'].values())
+          PY
