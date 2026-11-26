@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 3.32033965,
-    "percent": 0.0054641801,
-    "source_time_utc": "2026-11-26T13:25:19.133Z"
+    "mark_minus_index_usd": 3.69881284,
+    "percent": 0.0060857218,
+    "source_time_utc": "2026-11-26T13:30:21.322Z"
   },
-  "collected_at_utc": "2026-11-26T13:25:18.489228Z",
-  "collection_age_seconds_at_generation": 2,
+  "collected_at_utc": "2026-11-26T13:30:20.172678Z",
+  "collection_age_seconds_at_generation": 4,
   "funding": {
     "absolute": 0.481313797706625,
     "relative_hourly": 7.9202625e-06,
     "relative_percent_hourly": 0.00079202625,
-    "source_time_utc": "2026-11-26T13:25:19.133Z"
+    "source_time_utc": "2026-11-26T13:30:21.322Z"
   },
-  "generated_at_utc": "2026-11-26T13:25:20.563836Z",
+  "generated_at_utc": "2026-11-26T13:30:23.879660Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -24,12 +24,12 @@
     "change": {
       "H1": -77.0184,
       "H4": -6.3032,
-      "M15": 0.9401,
+      "M15": 6.6023,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T13:25:19.133Z",
+    "source_time_utc": "2026-11-26T13:30:21.322Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2093.4543
+    "value": 2094.325
   },
   "order_flow": {
     "H1": {
@@ -61,31 +61,31 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 1.1088,
-      "futures_volume": 30.2062,
-      "observation": "mixed_or_neutral",
-      "spot_delta": -6.20728228,
-      "spot_volume": 15.03705218,
-      "window_end_utc": "2026-11-26T13:15:00Z"
+      "futures_delta": -10.5042,
+      "futures_volume": 91.2656,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -3.81972359,
+      "spot_volume": 12.84951511,
+      "window_end_utc": "2026-11-26T13:30:00Z"
     },
     "M5": {
       "coverage": {
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 0.9953,
-      "futures_volume": 33.1571,
-      "observation": "mixed_or_neutral",
-      "spot_delta": 1.93306384,
-      "spot_volume": 4.22108372,
-      "window_end_utc": "2026-11-26T13:25:00Z"
+      "futures_delta": -7.188,
+      "futures_volume": 38.9258,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -0.78486155,
+      "spot_volume": 2.32091297,
+      "window_end_utc": "2026-11-26T13:30:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
     "event": "workflow_dispatch",
-    "slot": "2026-11-26T13:25:00.000Z",
+    "slot": "2026-11-26T13:30:00.000Z",
     "source": "cloudflare"
   },
   "schema_version": "1.0",
@@ -878,14 +878,13 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
-      "fvg": [
+      "events": [
         {
-          "formed_at": 1795626900,
-          "high": 58937.7,
-          "kind": "bullish_fvg",
-          "low": 58557.8
-        },
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60799.0
+        }
+      ],
+      "fvg": [
         {
           "formed_at": 1795650300,
           "high": 60254.1,
@@ -905,10 +904,10 @@
           "low": 60641.4
         }
       ],
-      "last_close": 60744.0,
-      "last_high": 60799.0,
-      "last_low": 60714.0,
-      "latest_closed_utc": "2026-11-26T13:00:00Z",
+      "last_close": 60779.0,
+      "last_high": 60813.2,
+      "last_low": 60720.1,
+      "latest_closed_utc": "2026-11-26T13:15:00Z",
       "qm": [
         {
           "broken_level": 60659.8,
@@ -1026,8 +1025,8 @@
     "M5": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60783.3
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60754.1
         }
       ],
       "fvg": [
@@ -1044,10 +1043,10 @@
           "low": 60611.0
         }
       ],
-      "last_close": 60767.5,
-      "last_high": 60813.2,
-      "last_low": 60754.1,
-      "latest_closed_utc": "2026-11-26T13:20:00Z",
+      "last_close": 60779.0,
+      "last_high": 60779.0,
+      "last_low": 60743.3,
+      "latest_closed_utc": "2026-11-26T13:25:00Z",
       "qm": [
         {
           "broken_level": 58375.7,

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "research_confluence_only",
-  "evaluated_at_utc": "2026-11-26T13:25:20.612868+00:00",
+  "evaluated_at_utc": "2026-11-26T13:30:23.916678+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "entry": null,
@@ -22,7 +22,7 @@
           "low": 65425.5,
           "high": 68850.9,
           "inverted_at": 1794441600,
-          "flow_aligned": false,
+          "flow_aligned": true,
           "oi": {
             "venue": "Kraken Futures",
             "h1_change": -77.0184,
@@ -38,7 +38,7 @@
           "low": 70001.8,
           "high": 76236.9,
           "inverted_at": 1794441600,
-          "flow_aligned": false,
+          "flow_aligned": true,
           "oi": {
             "venue": "Kraken Futures",
             "h1_change": -77.0184,
@@ -52,78 +52,8 @@
       "entry_signal": false
     },
     "HTF_POI_QM_LTF": {
-      "status": "unverified_context_pairs",
-      "observations": [
-        {
-          "htf": "H1",
-          "ltf": "M5",
-          "direction": "long",
-          "poi": {
-            "low": 58926.8,
-            "high": 59410.6,
-            "kind": "bullish_fvg"
-          },
-          "qm_shoulder": 60557.8,
-          "qm_head": 60516.7,
-          "qm_extreme_time": 1795696800,
-          "flow_aligned": true,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": -77.0184,
-            "direction": "decreasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "poi_touch_verified": false,
-          "qm_retest_verified": false,
-          "futures_validated": false
-        },
-        {
-          "htf": "H1",
-          "ltf": "M5",
-          "direction": "long",
-          "poi": {
-            "low": 60181.3,
-            "high": 60284.7,
-            "kind": "bullish_fvg"
-          },
-          "qm_shoulder": 60557.8,
-          "qm_head": 60516.7,
-          "qm_extreme_time": 1795696800,
-          "flow_aligned": true,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": -77.0184,
-            "direction": "decreasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "poi_touch_verified": false,
-          "qm_retest_verified": false,
-          "futures_validated": false
-        },
-        {
-          "htf": "H4",
-          "ltf": "M5",
-          "direction": "long",
-          "poi": {
-            "low": 58839.3,
-            "high": 59719.8,
-            "kind": "bullish_fvg"
-          },
-          "qm_shoulder": 60557.8,
-          "qm_head": 60516.7,
-          "qm_extreme_time": 1795696800,
-          "flow_aligned": true,
-          "oi": {
-            "venue": "Kraken Futures",
-            "h1_change": -77.0184,
-            "direction": "decreasing",
-            "interpretation": "non_directional_context_only"
-          },
-          "poi_touch_verified": false,
-          "qm_retest_verified": false,
-          "futures_validated": false
-        }
-      ],
+      "status": "no_recent_directional_pair",
+      "observations": [],
       "entry_signal": false
     }
   },
