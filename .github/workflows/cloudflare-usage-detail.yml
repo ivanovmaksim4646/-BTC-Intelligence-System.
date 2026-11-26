@@ -57,5 +57,23 @@ jobs:
               print("DO PERIODIC METRICS GROUPS:",len(rows))
               print("DO DURATION GB-SECONDS SINCE NOV25 UTC:",sum((r.get("sum") or {}).get("duration") or 0 for r in rows))
               print("DO CPU TOTAL:",sum((r.get("sum") or {}).get("cpuTime") or 0 for r in rows))
+          # Separate TODAY's duration from the combined Nov25+Nov26 history.
+          dayquery='query($aid:string!){viewer{accounts(filter:{accountTag:$aid}){durableObjectsPeriodicGroups(limit:1000,filter:{date_geq:"2026-11-26"}){sum{duration}}}}}'
+          today=gql(dayquery,{"aid":aid})
+          if today:
+              print("DO TODAY UTC GB-S:",sum((r.get("sum") or {}).get("duration") or 0 for r in today.get("durableObjectsPeriodicGroups") or []))
+          # Confirm whether cron errors are continuing after token repair.
+          recentvars={"aid":aid,"start":fmt(now-dt.timedelta(hours=2)),"end":fmt(now)}
+          recent=gql(q,recentvars)
+          if recent:
+              recentstats={}
+              for item in recent.get("workersInvocationsAdaptive") or []:
+                  d=item.get("dimensions") or {}
+                  if d.get("eventType")!="cron": continue
+                  key=d.get("status","unknown")
+                  z=recentstats.setdefault(key,{"requests":0,"errors":0})
+                  z["requests"]+=(item.get("sum") or {}).get("requests") or 0
+                  z["errors"]+=(item.get("sum") or {}).get("errors") or 0
+              print("CRON LAST TWO HOURS:",json.dumps(recentstats,sort_keys=True))
           print("API ANALYTICS WINDOW:",v["start"],v["end"])
           PY
