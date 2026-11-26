@@ -1,37 +1,43 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-26T21:41:10.639995+00:00",
+  "generated_at_utc": "2026-11-26T21:46:05.612931+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
   "directional_probability": null,
   "watch_direction": null,
   "support": [],
-  "conflicts": [],
+  "conflicts": [
+    "m5_flow_vs_htf"
+  ],
   "missing": [
     "macro",
     "liquidation_heatmap",
-    "reconciled_flow_5m",
     "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
-      "spot": null,
+      "spot": {
+        "delta_btc": "0.19361829",
+        "volume_btc": "1.01727855",
+        "direction": "long",
+        "quality": "volume_reconciled_not_sequence_certified"
+      },
       "futures": {
-        "delta_btc": "-23.6333",
-        "volume_btc": "121.8875",
-        "direction": "short",
+        "delta_btc": "2.4140",
+        "volume_btc": "56.4968",
+        "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "15m": {
       "spot": null,
       "futures": {
-        "delta_btc": "41.3771",
-        "volume_btc": "630.8265",
+        "delta_btc": "60.0931",
+        "volume_btc": "530.6053",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       }
@@ -46,7 +52,7 @@
     }
   },
   "structure": {
-    "5m": "mixed",
+    "5m": "bullish",
     "15m": "mixed",
     "1h": "bearish",
     "4h": "bearish"
@@ -54,34 +60,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": -1.5795,
-      "delta_percent": -0.00494,
-      "elapsed_seconds": 266.15,
-      "previous_timestamp_ms": 1795728987372,
-      "current_timestamp_ms": 1795729253522,
+      "delta_btc": -8.9304,
+      "delta_percent": -0.0279,
+      "elapsed_seconds": 294.768,
+      "previous_timestamp_ms": 1795729253522,
+      "current_timestamp_ms": 1795729548290,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 3.0500280913e-06,
-      "rate_percent": 0.000305,
+      "rate_fraction": 1.7735566991e-06,
+      "rate_percent": 0.0001774,
       "next_funding_time_ms": 1795766400000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 60887.1,
-      "index_price": 60915.8,
-      "mark_timestamp_ms": 1795729254216,
-      "index_timestamp_ms": 1795729254317,
-      "mark_minus_index_usdt": -28.7,
-      "premium_bps": -4.711421,
+      "mark_price": 60850.2,
+      "index_price": 60885.3,
+      "mark_timestamp_ms": 1795729549136,
+      "index_timestamp_ms": 1795729548470,
+      "mark_minus_index_usdt": -35.1,
+      "premium_bps": -5.764938,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
     "resting_side": "ask_heavier",
-    "timestamp_ms": 1795729253958,
+    "timestamp_ms": 1795729548758,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -138,17 +144,17 @@
   },
   "breadth": {
     "source": "CoinGecko global",
-    "asof_utc": "2026-11-26T21:31:34+00:00",
-    "btc_d_pct": 57.9476700382781,
-    "total_usd": 2109857868218.1067,
-    "total_ex_btc_usd": 887244392466.4299,
-    "total_ex_btc_eth_usd": 679168845672.337,
+    "asof_utc": "2026-11-26T21:41:35+00:00",
+    "btc_d_pct": 57.92870598853154,
+    "total_usd": 2108675555858.308,
+    "total_ex_btc_usd": 887147092853.1157,
+    "total_ex_btc_eth_usd": 678997254802.7428,
     "classification": "provider_universe_proxies_not_tradingview_indices"
   },
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795729200,
+  "m5_close_s": 1795729500,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
