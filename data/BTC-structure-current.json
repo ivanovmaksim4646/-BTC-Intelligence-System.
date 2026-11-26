@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-26T12:27:04.451264Z",
+  "collected_at_utc": "2026-11-26T12:30:20.658132Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -804,8 +804,8 @@
     "M15": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60685.4
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60558.0
         }
       ],
       "fvg": [
@@ -826,18 +826,12 @@
           "high": 60527.5,
           "kind": "bullish_fvg",
           "low": 60461.5
-        },
-        {
-          "formed_at": 1795692600,
-          "high": 60557.8,
-          "kind": "bullish_fvg",
-          "low": 60554.4
         }
       ],
-      "last_close": 60597.1,
-      "last_high": 60843.0,
-      "last_low": 60558.0,
-      "latest_closed_utc": "2026-11-26T12:00:00Z",
+      "last_close": 60562.0,
+      "last_high": 60641.4,
+      "last_low": 60516.7,
+      "latest_closed_utc": "2026-11-26T12:15:00Z",
       "qm": [
         {
           "broken_level": 60659.8,
@@ -955,12 +949,9 @@
     "M5": {
       "events": [
         {
-          "break_level": 60557.8,
-          "broken_swing_utc": "2026-11-26T11:30:00Z",
-          "confirmation": "closed_candle_below_confirmed_swing_low",
-          "kind": "bearish_shift_candidate",
-          "not_bos": true,
-          "previous_structure": "higher_highs_higher_lows"
+          "kind": "inside_bar",
+          "reference_high": 60633.8,
+          "reference_low": 60516.7
         }
       ],
       "fvg": [
@@ -977,10 +968,10 @@
           "low": 60641.4
         }
       ],
-      "last_close": 60544.9,
-      "last_high": 60633.8,
-      "last_low": 60516.7,
-      "latest_closed_utc": "2026-11-26T12:20:00Z",
+      "last_close": 60562.0,
+      "last_high": 60608.5,
+      "last_low": 60545.0,
+      "latest_closed_utc": "2026-11-26T12:25:00Z",
       "qm": [
         {
           "broken_level": 59080.2,
