@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "btc-okx-ws-flow-pilot",
+  "main": "./okx-flow-pilot.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [{"name": "OKX_FLOW_PILOT", "class_name": "OkxFlowPilot"}]
+  },
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["OkxFlowPilot"]}],
+  "vars": {
+    "FLOW_PILOT_ENABLED": "false"
+  }
+}
