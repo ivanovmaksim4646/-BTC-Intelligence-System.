@@ -1,0 +1,32 @@
+name: OKX RR research and outcome comparison tests
+on:
+  push:
+    branches:
+      - feature/okx-rr-research-buckets-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Full BTC regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Live OKX paper risk policy still NO TRADE
+        run: |
+          python src/okx_futures_candles.py
+          python src/okx_poi_qm_v1.py
+          python src/risk_engine_v2_okx.py
+          python - <<'PY'
+          import json
+          r=json.load(open("data/BTC-risk-engine-v2-okx.json"))
+          print("OKX risk:",r["decision"],r["rr_policy"])
+          assert r["trade_signal"] is None
+          assert r["decision"]=="NO_TRADE"
+          assert r["rr_policy"]["research_net_rr_from"]==1.0
+          assert r["rr_policy"]["main_watchlist_net_rr_from"]==2.0
+          assert r["max_account_risk_fraction"]==0.01
+          assert r["max_notional_leverage"]==5
+          PY
