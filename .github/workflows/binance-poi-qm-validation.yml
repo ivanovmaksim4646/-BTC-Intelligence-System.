@@ -1,0 +1,34 @@
+name: Binance Futures POI-QM isolated validation
+on:
+  push:
+    branches:
+      - feature/binance-futures-poi-qm-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python regression suite
+        run: python -m unittest discover -s tests -v
+      - name: Verify source syntax
+        run: python -m py_compile src/binance_futures_candles.py src/binance_poi_qm_v1.py
+      - name: Probe Binance read-only candles and compute observations
+        run: |
+          python src/binance_futures_candles.py
+          python src/binance_poi_qm_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          record=json.loads(Path('data/BTC-binance-futures-candles.json').read_text())
+          print('Binance API result:', record['status'], record['errors'])
+          result=json.loads(Path('data/BTC-binance-poi-qm-v1.json').read_text())
+          assert result['trade_signal'] is None and result['entry'] is None and result['rr'] is None
+          print('Research-only sequence observations:',len(result['observations']))
+          PY
