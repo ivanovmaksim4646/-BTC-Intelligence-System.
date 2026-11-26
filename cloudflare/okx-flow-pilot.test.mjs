@@ -45,3 +45,48 @@ test("pilot stop is authenticated, even when never started",async()=>{
  const health=await worker.fetch(new Request("https://example.test/status"),x.env);
  assert.equal((await health.json()).complete_cvd_btc,null);
 });
+
+test("opt-in pilot subscribes to trades-all, records raw observation and stops at bounded alarm",async()=>{
+ const x=mock();
+ x.state.env.FLOW_PILOT_ENABLED="true";
+ const previousFetch=globalThis.fetch,previousSocket=globalThis.WebSocket;
+ let socket;
+ class FakeSocket {
+   constructor(url){assert.equal(url,"wss://ws.okx.com/ws/v5/business");this.listeners={};this.sent=[];socket=this;}
+   addEventListener(name,fn){this.listeners[name]=fn;}
+   send(payload){this.sent.push(JSON.parse(payload));}
+   close(){this.closed=true;}
+   emit(name,arg){this.listeners[name]?.(arg);}
+ }
+ globalThis.fetch=async()=>Response.json({code:"0",data:[{
+   instId:"BTC-USDT-SWAP",ctValCcy:"BTC",ctVal:"0.01"
+ }]});
+ globalThis.WebSocket=FakeSocket;
+ try {
+   const started=await worker.fetch(new Request("https://example.test/start",{
+     method:"POST",headers:{Authorization:`Bearer ${control}`}}),x.env);
+   assert.equal(started.status,200);
+   assert.equal((await started.json()).max_duration_seconds,420);
+   assert.ok(x.getAlarm()>=Date.now()+410000);
+   socket.emit("open");
+   assert.equal(socket.sent[0].args[0].channel,"trades-all");
+   x.state.onMessage(JSON.stringify({event:"subscribe",arg:{
+     channel:"trades-all",instId:"BTC-USDT-SWAP"}}));
+   x.state.onMessage(JSON.stringify({arg:{channel:"trades-all",instId:"BTC-USDT-SWAP"},
+     data:[{instId:"BTC-USDT-SWAP",tradeId:"919191",px:"60000",
+       sz:"2",side:"buy",ts:String(Date.now()-1000)}]}));
+   const running=await(await worker.fetch(new Request("https://example.test/status"),x.env)).json();
+   assert.equal(running.total_unique_trades,1);
+   assert.equal(running.complete_m5_delta_btc,null);
+   assert.equal(running.trade_signal,null);
+   await x.state.alarm();
+   assert.equal(socket.closed,true);
+   const completed=await(await worker.fetch(new Request("https://example.test/status"),x.env)).json();
+   assert.equal(completed.pilot_completed,true);
+   assert.equal(completed.completeness_verified,false);
+   assert.equal(completed.complete_cvd_btc,null);
+ } finally {
+   globalThis.fetch=previousFetch;
+   globalThis.WebSocket=previousSocket;
+ }
+});
