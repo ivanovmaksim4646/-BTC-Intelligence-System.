@@ -1,0 +1,33 @@
+name: OKX paper Outcome Tracker tests
+on:
+  push:
+    branches:
+      - feature/okx-outcome-tracker-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -v
+      - name: Track real closed OKX M5 history with zero fabricated entries
+        run: |
+          python src/okx_futures_candles.py
+          python src/okx_outcome_tracker_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path("data/BTC-okx-outcome-tracker-v1.json").read_text())
+          s=json.loads(Path("data/BTC-rr-statistics-v1.json").read_text())
+          print("OKX outcome audit:",o["source"],"new",o["newly_finalized"],"pending",o["pending_entries"],"warnings",o["warnings"])
+          print("RR journal:",s["entry_count"],"2R expectancy",s["by_rr"]["2.0"]["expectancy_r"])
+          assert o["source"]=="OKX BTC-USDT-SWAP"
+          assert o["trade_signal"] is None and not o["execution_enabled"]
+          assert o["warnings"]==[]
+          assert s["entry_count"]==0 and s["by_rr"]["2.0"]["expectancy_r"] is None
+          assert Path("data/BTC-okx-m5-closed-history-v1.jsonl").exists()
+          PY
