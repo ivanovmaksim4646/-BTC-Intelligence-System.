@@ -3,7 +3,7 @@ from src.tradingview_validation import validate
 
 NOW = 1795688100000
 BASE = {
-    "source": "btc-intelligence-tv-v2", "event": "m5_bullish_break",
+    "source": "btc-intelligence-tv-v2", "event": "m5_bullish_bos",
     "symbol": "BINGX:BTCUSDT.P", "timeframe": "5",
     "time_ms": NOW, "price": 60500.0,
 }
@@ -12,7 +12,7 @@ V2 = {**BASE, "level": 60480.0, "level_kind": "pivot_high", "volume": 15.0}
 
 class TradingViewValidationTests(unittest.TestCase):
     def test_accept_v2_close_break(self):
-        self.assertEqual(validate(V2, NOW)["event"], "m5_bullish_break")
+        self.assertEqual(validate(V2, NOW)["event"], "m5_bullish_bos")
 
     def test_accept_old_inside_bar(self):
         old = {
