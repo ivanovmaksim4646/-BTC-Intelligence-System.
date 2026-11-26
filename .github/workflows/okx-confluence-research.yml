@@ -1,0 +1,18 @@
+name: OKX confluence research
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/okx-confluence-v2]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python -m src.okx_confluence_v2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-confluence-research
+          path: data/BTC-okx-confluence-v2.json
