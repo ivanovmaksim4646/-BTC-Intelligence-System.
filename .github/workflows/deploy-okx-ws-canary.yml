@@ -1,0 +1,40 @@
+name: Deploy OKX WebSocket canary to Cloudflare
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cloudflare/okx-ws-canary.mjs'
+      - 'cloudflare/okx-trade-utils.mjs'
+      - 'cloudflare/wrangler-okx-canary.jsonc'
+      - 'cloudflare/okx-ws-canary.test.mjs'
+      - '.github/workflows/deploy-okx-ws-canary.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: btc-okx-ws-canary-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test trade feed and 35s canary safety
+        run: node --test cloudflare/okx-ws-canary.test.mjs
+      - name: Ensure Cloudflare deployment credential exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Cloudflare deploy secret missing"; exit 1; }
+      - name: Deploy separate canary Worker (DO trial runs once)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 250b0a0e7ffc849880ba1f6af31b3c28
+          wranglerVersion: '4'
+          command: deploy --config cloudflare/wrangler-okx-canary.jsonc
+      - name: Explain scope
+        run: |
+          echo "Deployed btc-okx-ws-canary, independent of btc-intelligence-scheduler."
+          echo "One 35-second trial per Durable Object. No complete M5 CVD or trading signals."
