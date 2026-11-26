@@ -142,6 +142,10 @@ jobs:
         if: always()
         run: python src/risk_engine_v1.py
 
+      - name: Evaluate OKX Risk Engine v2 (paper-only, no execution)
+        if: always()
+        run: python src/risk_engine_v2_okx.py
+
       - name: Collect OKX BTC swap public data (independent, research only)
         if: always()
         continue-on-error: true
