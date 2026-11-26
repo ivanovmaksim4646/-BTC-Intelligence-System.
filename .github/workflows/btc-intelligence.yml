@@ -138,6 +138,10 @@ jobs:
         continue-on-error: true
         run: python src/okx_poi_qm_v1.py
 
+      - name: Verify TradingView alerts against closed OKX M5 and append observations (NO TRADE)
+        if: always()
+        run: python src/okx_setup_validator_v1.py
+
       - name: Evaluate BTC Risk Engine v1 (paper-only, fail-closed)
         if: always()
         run: python src/risk_engine_v1.py
