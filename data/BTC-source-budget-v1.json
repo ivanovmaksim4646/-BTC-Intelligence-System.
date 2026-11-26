@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "evaluated_at_utc": "2026-11-26T12:25:34.352383+00:00",
+  "evaluated_at_utc": "2026-11-26T12:27:17.147658+00:00",
   "decision": "RETAIN_BINGX",
   "switch_approved": false,
   "classification": "data_cost_and_venue_migration_audit_only",
@@ -11,7 +11,8 @@
     "oi_snapshot": true,
     "complete_m5_delta": false,
     "continuous_cvd_5m_15m_1h_4h": false,
-    "closed_candles_5m_15m_1h_4h_1d_1w": false,
+    "closed_candles_5m_15m_1h_4h_1d_1w": true,
+    "okx_ict_observations_available": true,
     "validated_okx_poi_qm_ifvg": false,
     "risk_engine_venue_migrated": false,
     "tradingview_venue_aligned": false
@@ -26,7 +27,7 @@
   },
   "reasons": [
     "OKX REST trade page is not complete Delta/CVD",
-    "OKX has not replaced BingX M5-W1 candle and POI/QM pipeline",
+    "OKX M5-W1 candles and ICT research are being verified; model is not validated for trading",
     "Risk Engine v1 and TradingView still reference BingX",
     "Kraken provides independent Spot/Futures confirmation",
     "Removing BingX saves GitHub API calls, not persistent Cloudflare DO duration"
