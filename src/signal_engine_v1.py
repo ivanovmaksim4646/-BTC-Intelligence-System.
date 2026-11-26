@@ -120,6 +120,14 @@ def main():
     candidates = read_json(DATA / "BTC-setup-candidates.json")
     events = read_events(DATA / "BTC-tradingview-events.jsonl")
     output = evaluate(report, candidates, events)
+    confluence = read_json(DATA / "BTC-setup-confluence-v1.json")
+    output["confluence"] = {
+        "classification": confluence.get("classification", "unavailable"),
+        "decision": confluence.get("decision", "NO_TRADE"),
+        "models": {name: (model or {}).get("status", "unavailable")
+                   for name, model in (confluence.get("models") or {}).items()},
+        "note": "Research context only; confluence never authorizes trade entries.",
+    }
     (DATA / "BTC-signal-engine-v1.json").write_text(
         json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Signal Engine v1:", output["decision"], "(research only)")
