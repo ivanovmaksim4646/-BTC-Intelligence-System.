@@ -12,7 +12,7 @@ PL=ZoneInfo("Europe/Warsaw")
 ICS="https://www.bls.gov/schedule/news_release/bls.ics"
 FED="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
 FED_TIME="https://www.federalreserve.gov/newsevents/pressreleases/monetary20240809a.htm"
-CATEGORIES={"Consumer Price Index":"CPI","Producer Price Index":"PPI","Employment Situation":"NFP_UNEMPLOYMENT","Job Openings and Labor Turnover Survey":"JOLTS"}
+CATEGORIES={"Consumer Price Index":"CPI","Producer Price Index":"PPI","Employment Situation":"NFP_UNEMPLOYMENT","Job Openings and Labor Turnover Survey":"JOLTS","Job Openings and Labor Turnover":"JOLTS"}
 OUTPUT=Path("data/BTC-official-bls-fed-calendar-v1.json")
 class Text(HTMLParser):
     def __init__(self):
@@ -40,7 +40,7 @@ def parse_fed(raw,now):
     t=plain(raw)
     rows=[]
     # Only ordinary two-day meetings; strategy-only October 2027 explicitly excluded.
-    for year in (now.year,(now+dt.timedelta(days=90)).year):
+    for year in sorted({now.year,(now+dt.timedelta(days=90)).year}):
         m=re.search(r"\b"+str(year)+r" FOMC Meetings\b(.*?)(?=\b\d{4} FOMC Meetings\b|$)",t)
         if not m:continue
         for month,first,last in re.findall(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})\b",m.group(1)):
@@ -49,7 +49,13 @@ def parse_fed(raw,now):
             when=dt.datetime.strptime(f"{year} {month} {last} 14:00","%Y %B %d %H:%M").replace(tzinfo=NY)
             if now<=when<=now+dt.timedelta(days=90):
                 e=event("FED","FOMC","FOMC scheduled policy decision",when,FED);e["time_source_url"]=FED_TIME;rows.append(e)
-    return rows
+    # Revised schedules or repeated page sections can show multiple dates for a month.
+    # Never choose between conflicting official dates automatically.
+    by_month={}
+    for e in rows:
+        key=e["release_at_poland"][:7]
+        by_month.setdefault(key,{})[e["release_at_utc"]]=e
+    return [next(iter(v.values())) for v in by_month.values() if len(v)==1]
 def bls_collect(now):
     try:
         rows=[event("BLS",e["event"],e["title"],dt.datetime.fromisoformat(e["scheduled_utc"]),ICS) for e in parse_ics(download(ICS),now)]
