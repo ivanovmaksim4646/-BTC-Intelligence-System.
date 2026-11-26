@@ -112,7 +112,6 @@ def observe(trades, candles, oi, instrument, now=None):
     return result
 
 def collect(now=None, getter=get_json):
-    now=now or dt.datetime.now(dt.timezone.utc)
     reqs={
         "trades":("/api/v5/market/trades",{"instId":SYMBOL,"limit":500}),
         "candles":("/api/v5/market/candles",{"instId":SYMBOL,"bar":"5m","limit":60}),
@@ -125,7 +124,10 @@ def collect(now=None, getter=get_json):
         except (OSError,ValueError,TypeError,KeyError,TimeoutError) as exc:
             datasets[name]=[]
             failures[name]=type(exc).__name__
-    result=observe(datasets["trades"],datasets["candles"],datasets["oi"],datasets["instrument"],now)
+    # Timestamp AFTER network I/O so fresh exchange OI timestamps are not
+    # incorrectly flagged as future relative to the request-start clock.
+    observed_at=now or dt.datetime.now(dt.timezone.utc)
+    result=observe(datasets["trades"],datasets["candles"],datasets["oi"],datasets["instrument"],observed_at)
     result["endpoint_errors"]=failures
     if failures:result["status"]="partial"
     return result
