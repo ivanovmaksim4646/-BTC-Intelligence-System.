@@ -1,0 +1,29 @@
+name: OKX TradingView setup validator tests
+on:
+  push:
+    branches:
+      - feature/okx-setup-validator-journal-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -q
+      - name: Fetch live OKX candles and validate existing TradingView events
+        run: |
+          python src/okx_futures_candles.py
+          python src/okx_setup_validator_v1.py
+          python - <<'PY'
+          import json
+          r=json.load(open("data/BTC-okx-setup-validator-v1.json"))
+          print("OKX SETUP VALIDATOR:", r["decision"], "events:",r["alerts_inspected"],"new:",r["okx_observations_new"])
+          print("Reasons:",r["reason_counts"])
+          assert r["source"]=="OKX BTC-USDT-SWAP"
+          assert r["trade_signal"] is None
+          assert r["decision"]=="NO_TRADE"
+          PY
