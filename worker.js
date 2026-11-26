@@ -1,3 +1,5 @@
+import { TradingViewInbox } from "./cloudflare/tradingview-inbox.mjs";
+export { TradingViewInbox };
 // Cloudflare Cron -> Durable Object -> GitHub Actions workflow_dispatch.
 // Never store credentials in source control. Set GITHUB_DISPATCH_TOKEN with Wrangler secret.
 // Deployment uses the CLOUDFLARE_API_TOKEN repository secret; rotating it requires a new deployment to verify access.
@@ -116,36 +118,25 @@ async function receiveTradingView(request, env) {
   if (!validateTradingViewAlert(alert)) {
     return new Response("Invalid alert", { status: 400 });
   }
-  const token = env.GITHUB_DISPATCH_TOKEN;
-  if (!token) return new Response("Dispatcher not configured", { status: 503 });
-  const payload = Object.fromEntries(Object.entries(alert));
-  const url = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/actions/workflows/tradingview-intelligence.yml/dispatches`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-      "User-Agent": "btc-intelligence-tv-webhook"
-    },
-    body: JSON.stringify({ ref: "main", inputs: { tv_payload: JSON.stringify(payload) } })
-  });
-  if (!response.ok) {
-    // GitHub error bodies may contain sensitive diagnostics; never echo them.
-    const category = response.status === 401 ? "invalid_dispatch_token"
-      : response.status === 403 ? "dispatch_permission_denied"
-      : response.status === 404 ? "repository_or_workflow_not_found"
-      : response.status === 422 ? "invalid_dispatch_request"
-      : response.status === 429 ? "github_rate_limit"
-      : "github_dispatch_error";
-    console.error("TradingView webhook: GitHub rejected dispatch", {
-      status: response.status, category, workflow: "tradingview-intelligence.yml"
+  const id=env.TV_INBOX.idFromName("btc-tradingview-alerts-v1");
+  const stub=env.TV_INBOX.get(id);
+  // TradingView has a 3-second deadline. Persist to DO and return immediately
+  // instead of waiting for GitHub Actions / external network.
+  try {
+    const response=await stub.fetch("https://tv-inbox.internal/enqueue",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(alert)
     });
-    return Response.json({ error: category, upstream_http_status: response.status },
-      { status: 502, headers: { "Cache-Control": "no-store" } });
+    if(!response.ok){
+      console.error("TradingView durable inbox unavailable",response.status);
+      return Response.json({error:"inbox_unavailable"},{status:503,headers:{"Cache-Control":"no-store"}});
+    }
+    const accepted=await response.json();
+    return Response.json(accepted,{status:202,headers:{"Cache-Control":"no-store"}});
+  }catch(ex){
+    console.error("TradingView inbox request failed",ex?.name||"error");
+    return Response.json({error:"inbox_unavailable"},{status:503,headers:{"Cache-Control":"no-store"}});
   }
-  console.log("TradingView webhook accepted", payload.event, payload.symbol, payload.time_ms);
-  return Response.json({accepted: true}, { status: 202 });
 }
 
 export default {
@@ -165,6 +156,14 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/tv-webhook") return receiveTradingView(request, env);
+    if (url.pathname === "/tv-queue-health" && request.method === "GET") {
+      const id=env.TV_INBOX.idFromName("btc-tradingview-alerts-v1");
+      try {
+        return await env.TV_INBOX.get(id).fetch("https://tv-inbox.internal/status");
+      }catch{
+        return Response.json({status:"unavailable"},{status:503});
+      }
+    }
     return new Response("BTC Intelligence scheduler: use Cron Trigger", { status: 200 });
   }
 };
