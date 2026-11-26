@@ -33,7 +33,8 @@ test("session starting midbar cannot be continuous coverage",()=>{
 });
 test("a full observed session does NOT certify complete CVD",()=>{
  const s=markSubscribed(makeState(barStart-3000),barStart-3000);
- acceptTrades(s,[trade(1,barStart+1000,"buy"),trade(2,barStart+M5_MS-1000,"sell")],
+ acceptTrades(s,[trade(1,barStart+1000,"buy")],0.01,barStart+1200);
+ acceptTrades(s,[trade(2,barStart+M5_MS-1000,"sell")],
   0.01,barStart+M5_MS+1000);
  const d=snapshot(s,barStart+M5_MS+6000);
  assert.equal(d.observed_m5[0].connection_window_observed,true);
