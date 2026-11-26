@@ -2,9 +2,11 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1]
     paths:
       - 'src/collector.py'
+      - 'src/okx_paper_signal_v1.py'
+      - 'tests/test_okx_paper_signal_v1.py'
       - 'src/okx_flow_history_v1.py'
       - 'tests/test_okx_flow_history_v1.py'
       - 'src/report_feed.py'
@@ -210,6 +212,10 @@ jobs:
         if: always()
         continue-on-error: true
         run: python -m src.okx_confluence_v2
+
+      - name: Evaluate synchronized OKX paper signal preview (no execution)
+        if: always()
+        run: python -m src.okx_paper_signal_v1
 
       - name: Generate synchronized BTC report feed after OKX confluence
         if: always()
