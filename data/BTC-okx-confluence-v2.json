@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-26T19:15:28.110141+00:00",
+  "generated_at_utc": "2026-11-26T19:16:24.524853+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -20,11 +20,21 @@
   "flow": {
     "5m": {
       "spot": null,
-      "futures": null
+      "futures": {
+        "delta_btc": "19.2090",
+        "volume_btc": "51.8124",
+        "direction": "long",
+        "quality": "volume_reconciled_not_sequence_certified"
+      }
     },
     "15m": {
       "spot": null,
-      "futures": null
+      "futures": {
+        "delta_btc": "82.1930",
+        "volume_btc": "212.2030",
+        "direction": "long",
+        "quality": "volume_reconciled_not_sequence_certified"
+      }
     },
     "1h": {
       "spot": null,
@@ -44,34 +54,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 4.0003,
-      "delta_percent": 0.01247,
-      "elapsed_seconds": 267.025,
-      "previous_timestamp_ms": 1795720243503,
-      "current_timestamp_ms": 1795720510528,
+      "delta_btc": 2.0672,
+      "delta_percent": 0.00644,
+      "elapsed_seconds": 56.576,
+      "previous_timestamp_ms": 1795720510528,
+      "current_timestamp_ms": 1795720567104,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 3.96890827705e-05,
-      "rate_percent": 0.0039689,
+      "rate_fraction": 3.92513364449e-05,
+      "rate_percent": 0.0039251,
       "next_funding_time_ms": 1795766400000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 60506.3,
-      "index_price": 60539.0,
-      "mark_timestamp_ms": 1795720511501,
-      "index_timestamp_ms": 1795720510536,
-      "mark_minus_index_usdt": -32.7,
-      "premium_bps": -5.401477,
+      "mark_price": 60494.6,
+      "index_price": 60528.0,
+      "mark_timestamp_ms": 1795720568020,
+      "index_timestamp_ms": 1795720567691,
+      "mark_minus_index_usdt": -33.4,
+      "premium_bps": -5.518107,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
     "resting_side": "ask_heavier",
-    "timestamp_ms": 1795720511001,
+    "timestamp_ms": 1795720567651,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
