@@ -16,3 +16,9 @@ class CalendarTests(unittest.TestCase):
     def test_strategy_only(self):
         now=dt.datetime(2027,10,1,tzinfo=dt.timezone.utc)
         self.assertEqual(parse_fed("<h4>2027 FOMC Meetings</h4>October 26-27",now),[])
+    def test_conflicting_fed_dates(self):
+        r=parse_fed("<h4>2026 FOMC Meetings</h4>December 8-9<h4>2027 FOMC Meetings</h4>January 25-26 January 26-27",NOW)
+        self.assertEqual(len(r),1)
+    def test_duplicate_fed_dates(self):
+        r=parse_fed("<h4>2026 FOMC Meetings</h4>December 8-9 December 8-9",NOW)
+        self.assertEqual(len(r),1)
