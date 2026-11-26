@@ -21,6 +21,8 @@ jobs:
         run: python -m py_compile src/binance_futures_candles.py src/binance_poi_qm_v1.py
       - name: Probe Binance Vision historical USD-M futures archives
         run: python src/binance_vision_archive.py
+      - name: Probe BingX same-chart futures candles (separate venue)
+        run: python src/bingx_futures_probe.py
       - name: Probe Binance read-only candles and compute observations
         run: |
           python src/binance_futures_candles.py
