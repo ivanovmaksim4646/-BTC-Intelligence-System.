@@ -1,0 +1,15 @@
+name: Official BLS Fed calendar validation
+on:
+  push:
+    branches: [feature/official-bls-fed-final]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python -m src.official_bls_fed_calendar_v1
+      - run: python -c "import json; d=json.load(open('data/BTC-official-bls-fed-calendar-v1.json')); assert d['sources']['FED']['count']>0; print(d['sources'])"
