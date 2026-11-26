@@ -6,7 +6,7 @@
   "workers_dev": true,
   "triggers": { "crons": ["*/5 * * * *"] },
   "durable_objects": {
-    "bindings": [{ "name": "DISPATCH_LOCK", "class_name": "DispatchLock" }]
+    "bindings": [{ "name": "DISPATCH_LOCK", "class_name": "DispatchLock" }, { "name": "TV_INBOX", "class_name": "TradingViewInbox" }]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DispatchLock"] }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DispatchLock"] }, { "tag": "v2_tv_inbox", "new_sqlite_classes": ["TradingViewInbox"] }]
 }
