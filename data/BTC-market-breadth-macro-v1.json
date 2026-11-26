@@ -1,22 +1,67 @@
 {
-  "generated_at_utc": "2026-11-26T16:08:31.303982+00:00",
+  "generated_at_utc": "2026-11-26T16:11:16.160710+00:00",
   "breadth": {
     "source": "CoinGecko global",
-    "asof_utc": "2026-11-26T16:00:42+00:00",
-    "btc_d_pct": 57.987433986472226,
-    "total_usd": 2098569136024.5837,
-    "total_ex_btc_usd": 881662743611.8478,
-    "total_ex_btc_eth_usd": 675166176869.9062,
+    "asof_utc": "2026-11-26T16:10:43+00:00",
+    "btc_d_pct": 57.99146349897565,
+    "total_usd": 2093940907780.573,
+    "total_ex_btc_usd": 879633930554.8827,
+    "total_ex_btc_eth_usd": 673857657705.0834,
     "classification": "provider_universe_proxies_not_tradingview_indices"
   },
-  "macro": {},
-  "errors": {
-    "cpi_index": "TimeoutError",
-    "unemployment_pct": "TimeoutError",
-    "payrolls_thousands": "TimeoutError",
-    "effective_fed_funds_pct": "TimeoutError",
-    "ppi_index": "TimeoutError"
+  "macro": {
+    "cpi_index": {
+      "source": "BLS",
+      "series": "CUSR0000SA0",
+      "observation_date": "2026-10-01",
+      "actual": 337.476,
+      "previous": 336.298,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "unemployment_pct": {
+      "source": "BLS",
+      "series": "LNS14000000",
+      "observation_date": "2026-10-01",
+      "actual": 4.1,
+      "previous": 4.2,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "payrolls_thousands": {
+      "source": "BLS",
+      "series": "CES0000000001",
+      "observation_date": "2026-10-01",
+      "actual": 159293.0,
+      "previous": 159128.0,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "ppi_index": {
+      "source": "BLS",
+      "series": "WPU00000000",
+      "observation_date": "2026-10-01",
+      "actual": 293.921,
+      "previous": 294.473,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "effective_fed_funds_pct": {
+      "source": "New York Fed",
+      "series": "EFFR_daily",
+      "observation_date": "2026-11-24",
+      "actual": 3.88,
+      "previous": 3.88,
+      "previous_date": "2026-11-23",
+      "consensus_forecast": null,
+      "surprise": null
+    }
   },
+  "errors": {},
   "trade_signal": null,
   "macro_status": "observations_only_no_release_calendar_or_consensus"
 }

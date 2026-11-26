@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-26T16:08:46.687186+00:00",
+  "generated_at_utc": "2026-11-26T16:11:31.864966+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,33 +12,19 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
+    "reconciled_flow_5m",
     "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
-      "spot": {
-        "delta_btc": "8.53052089",
-        "volume_btc": "33.81329561",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      },
-      "futures": {
-        "delta_btc": "107.3641",
-        "volume_btc": "825.3833",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "spot": null,
+      "futures": null
     },
     "15m": {
       "spot": null,
-      "futures": {
-        "delta_btc": "217.6864",
-        "volume_btc": "1493.2058",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "1h": {
       "spot": null,
@@ -58,50 +44,101 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 10.8826,
-      "delta_percent": 0.03409,
-      "elapsed_seconds": 183.282,
-      "previous_timestamp_ms": 1795709126249,
-      "current_timestamp_ms": 1795709309531,
+      "delta_btc": 1.7592,
+      "delta_percent": 0.00551,
+      "elapsed_seconds": 165.254,
+      "previous_timestamp_ms": 1795709309531,
+      "current_timestamp_ms": 1795709474785,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 4.55722047867e-05,
-      "rate_percent": 0.0045572,
+      "rate_fraction": 4.56233753603e-05,
+      "rate_percent": 0.0045623,
       "next_funding_time_ms": 1795766400000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 60650.4,
-      "index_price": 60676.3,
-      "mark_timestamp_ms": 1795709310423,
-      "index_timestamp_ms": 1795709309613,
-      "mark_minus_index_usdt": -25.9,
-      "premium_bps": -4.268553,
+      "mark_price": 60649.2,
+      "index_price": 60684.3,
+      "mark_timestamp_ms": 1795709475414,
+      "index_timestamp_ms": 1795709474511,
+      "mark_minus_index_usdt": -35.1,
+      "premium_bps": -5.784033,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "balanced",
-    "timestamp_ms": 1795709310052,
+    "resting_side": "ask_heavier",
+    "timestamp_ms": 1795709475152,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
-  "macro": null,
+  "macro": {
+    "cpi_index": {
+      "source": "BLS",
+      "series": "CUSR0000SA0",
+      "observation_date": "2026-10-01",
+      "actual": 337.476,
+      "previous": 336.298,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "unemployment_pct": {
+      "source": "BLS",
+      "series": "LNS14000000",
+      "observation_date": "2026-10-01",
+      "actual": 4.1,
+      "previous": 4.2,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "payrolls_thousands": {
+      "source": "BLS",
+      "series": "CES0000000001",
+      "observation_date": "2026-10-01",
+      "actual": 159293.0,
+      "previous": 159128.0,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "ppi_index": {
+      "source": "BLS",
+      "series": "WPU00000000",
+      "observation_date": "2026-10-01",
+      "actual": 293.921,
+      "previous": 294.473,
+      "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "effective_fed_funds_pct": {
+      "source": "New York Fed",
+      "series": "EFFR_daily",
+      "observation_date": "2026-11-24",
+      "actual": 3.88,
+      "previous": 3.88,
+      "previous_date": "2026-11-23",
+      "consensus_forecast": null,
+      "surprise": null
+    }
+  },
   "breadth": {
     "source": "CoinGecko global",
-    "asof_utc": "2026-11-26T16:00:42+00:00",
-    "btc_d_pct": 57.987433986472226,
-    "total_usd": 2098569136024.5837,
-    "total_ex_btc_usd": 881662743611.8478,
-    "total_ex_btc_eth_usd": 675166176869.9062,
+    "asof_utc": "2026-11-26T16:10:43+00:00",
+    "btc_d_pct": 57.99146349897565,
+    "total_usd": 2093940907780.573,
+    "total_ex_btc_usd": 879633930554.8827,
+    "total_ex_btc_eth_usd": 673857657705.0834,
     "classification": "provider_universe_proxies_not_tradingview_indices"
   },
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795709100,
+  "m5_close_s": 1795709400,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
