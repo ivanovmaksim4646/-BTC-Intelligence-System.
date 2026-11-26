@@ -18,12 +18,14 @@ try:
     from src.okx_market_context_v1 import fresh_structure_break
     from src.okx_outcome_tracker_v1 import check_bar,canonical,VENUE
     from src.rr_outcome_research_v1 import valid_number
+    from src.okx_structural_risk_v3 import plan
 except ModuleNotFoundError:
     from binance_poi_qm_v1 import fvg_zones,overlaps
     from strategy_models_v1 import scan_qm, scan_ifvg
     from okx_market_context_v1 import fresh_structure_break
     from okx_outcome_tracker_v1 import check_bar,canonical,VENUE
     from rr_outcome_research_v1 import valid_number
+    from okx_structural_risk_v3 import plan
 
 DATA=Path(__file__).resolve().parents[1]/"data"
 OUT=DATA/"BTC-okx-entry-evidence-gate-v1.json"
@@ -87,13 +89,47 @@ def prior_poi_zones(bars,step,head,direction):
         (b["c"]<p["low"] if direction=="long" else b["c"]>p["high"])
         for b in prior if b["t"]>=p["available_at"])]
 
+
+def structural_plan(frames, direction, entry, head_price, poi, close):
+    """Closed H1/H4 FVG/IFVG and unswept pivot proxy; no inferred OBs."""
+    long=direction=="long"
+    zones=[]
+    levels=set()
+    m5=frames["5m"]["bars"]
+    for tf,step in HTF_SECONDS.items():
+        bars=[b for b in frames[tf]["bars"] if b["t"]+step<=close]
+        for side in ("long","short"):
+            for z in prior_poi_zones(bars,step,close,side):
+                if any((b["c"]<z["low"] if side=="long" else b["c"]>z["high"])
+                       for b in m5 if b["t"]>=z["available_at"]):
+                    continue
+                # Exclude fully traversed imbalance as a fresh FTA.
+                if any((b["l"]<=z["low"] if side=="long" else b["h"]>=z["high"])
+                       for b in bars+m5 if b["t"]>=z["available_at"]):
+                    continue
+                zones.append(z)
+        for side in ("long","short"):
+            for p in confirmed_pivots(bars,step,side,close):
+                level=p["level"]
+                later=[b for b in bars+m5 if b["t"]>=p["pivot_at"]+step]
+                # M5 observations within pivot candle must not count as sweeps.
+                if any((b["h"]>=level if side=="long" else b["l"]<=level) for b in later):
+                    continue
+                levels.add(level)
+    # Retain the selected, close-valid setup POI even if already touched.
+    # Adverse structure beyond it is not automatically inferred from distant pivots.
+    anchor=min(head_price,poi["low"]) if long else max(head_price,poi["high"])
+    result=plan(direction,entry,anchor,zones,sorted(levels),cost_bps=COST_ESTIMATE_BPS)
+    result["evidence_scope"]="H1_H4_FVG_IFVG_and_unswept_swings_only_OB_unverified"
+    return result
+
 def evaluate(snapshot,observations,now=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.utcoffset() is None:raise ValueError("timezone-aware now required")
     report={"schema_version":"1.0","generated_at_utc":now.isoformat(),
        "classification":"independently_reconstructed_okx_paper_hypotheses",
        "source":VENUE,"decision":"NO_TRADE","trade_signal":None,
-       "candidates_evaluated":0,"paper_entries":[],"reasons":[],
+       "candidates_evaluated":0,"paper_entries":[],"structural_research":[],"reasons":[],
        "diagnostics":{"latest_m5_close_s":None,"matching_tv_events":0,
           "qm_patterns":0,"direction_matched_qm":0,"confirmed_qm":0,
           "first_retest_matches":0,"directional_break_matches":0,
@@ -205,6 +241,8 @@ def evaluate(snapshot,observations,now=None):
                            for b in m5 if touches[0]["t"]<=b["t"]<=entry_bar["t"]):
                         continue
                     diag["poi_not_invalidated"]+=1
+                    proposal=structural_plan(frames,direction,entry,head_price,poi,close)
+                    report["structural_research"].append({"direction":direction,"entry_close_utc":close,"htf":tf,"poi_formed":poi["formed"],**proposal})
                     # Opposing TP pivot confirmed BEFORE entry. Must lie
                     # beyond entry in profit direction, and not be selected
                     # from bars formed after entry.
@@ -294,6 +332,7 @@ def main():
         with ENTRY_JOURNAL.open("a",encoding="utf-8") as file:
             for e in new:file.write(canonical(e)+"\n")
     report["new_paper_entries"]=len(new)
+    report["structural_research_status"]="shadow_only_not_signal_not_outcome_journal"
     report["paper_entries_count"]=len(report.pop("paper_entries"))
     OUT.parent.mkdir(parents=True,exist_ok=True)
     t=OUT.with_suffix(".json.tmp")
