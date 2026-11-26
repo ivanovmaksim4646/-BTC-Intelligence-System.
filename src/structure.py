@@ -10,6 +10,10 @@ import json
 import math
 from pathlib import Path
 from urllib.request import Request, urlopen
+try:
+    from src.strategy_models_v1 import scan_ifvg, scan_qm
+except ModuleNotFoundError:
+    from strategy_models_v1 import scan_ifvg, scan_qm
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "BTC-structure-current.json"
@@ -147,7 +151,9 @@ def events_for(bars, timeframe):
                   else any(item["h"] >= gap["high"] for item in later))
         if not filled:
             active.append(gap)
-    return {"status": "ok", "events": events, "fvg": active[-10:],
+    extra = ({"ifvg": scan_ifvg(bars)} if timeframe in ("H1", "H4", "D1", "W1") else
+             {"qm": scan_qm(bars)} if timeframe in ("M5", "M15") else {})
+    return {"status": "ok", "events": events, "fvg": active[-10:], **extra,
             "latest_closed_utc": dt.datetime.fromtimestamp(b["t"], dt.timezone.utc).isoformat().replace("+00:00","Z"),
             "last_close": b["c"], "last_high": b["h"], "last_low": b["l"]}
 
