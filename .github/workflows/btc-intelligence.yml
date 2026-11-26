@@ -110,6 +110,10 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/report_feed.py
 
+      - name: Connect IFVG POI QM Delta and OI confluence (research only)
+        if: steps.collect.outcome == 'success'
+        run: python src/setup_confluence_v1.py
+
       - name: Evaluate BTC Signal Engine v1 (research only)
         if: steps.collect.outcome == 'success'
         run: python src/signal_engine_v1.py
