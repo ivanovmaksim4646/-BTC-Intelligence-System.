@@ -1,0 +1,50 @@
+name: OKX WebSocket flow bucket pilot safety tests
+on:
+  push:
+    branches:
+      - feature/okx-ws-bucket-engine-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node built-in tests for non-certified buckets and disabled pilot
+        run: node --test cloudflare/okx-flow-bucket-engine.test.mjs cloudflare/okx-flow-pilot.test.mjs
+      - name: Check JS and dedicated no-trigger config
+        run: |
+          node --check cloudflare/okx-flow-bucket-engine.mjs
+          node --check cloudflare/okx-flow-pilot.mjs
+          node - <<'JS'
+          const fs=require('node:fs');
+          const c=JSON.parse(fs.readFileSync('cloudflare/wrangler-okx-flow-pilot.jsonc'));
+          if(c.vars.FLOW_PILOT_ENABLED!=='false'||c.triggers||c.name==='btc-intelligence-scheduler')throw Error('Unsafe pilot config');
+          console.log('PILOT_DISABLED_BY_DEFAULT=true; NO_SCHEDULE=true; NO_PRODUCTION_WORKER_CHANGES=true');
+          JS
+      - name: Read-only Cloudflare plan check (no deployment)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_PLAN_VERIFIED=false; reason=token_not_available"
+            exit 0
+          fi
+          code=$(curl -sS --max-time 12 -o /tmp/cf-plan.json -w '%{http_code}' \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            'https://api.cloudflare.com/client/v4/accounts/250b0a0e7ffc849880ba1f6af31b3c28/subscriptions' || true)
+          export CF_HTTP_CODE="$code"
+          python - <<'PY'
+          import json,os
+          code=os.environ.get('CF_HTTP_CODE','')
+          try:
+            d=json.load(open('/tmp/cf-plan.json'))
+            ok=(code=='200' and d.get('success') is True and isinstance(d.get('result'),list))
+          except (OSError,ValueError,TypeError):ok=False
+          # Never print tokens, subscriptions, account information or balances.
+          print('CLOUDFLARE_PLAN_API_HTTP=',code)
+          print('CLOUDFLARE_PLAN_API_READABLE=',ok)
+          print('PERSISTENT_OUTBOUND_WEBSOCKET_DEPLOY_APPROVED=false')
+          PY
