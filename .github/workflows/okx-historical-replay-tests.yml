@@ -1,0 +1,18 @@
+name: OKX historical replay research
+on:
+  push:
+    branches: [feature/okx-historical-replay-v1]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python src/okx_historical_replay_v1.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-historical-replay
+          path: data/BTC-okx-historical-replay-v1.json
