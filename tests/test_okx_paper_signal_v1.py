@@ -21,3 +21,11 @@ class Tests(unittest.TestCase):
     def test_mismatch(self):
         c,g=fixture();g["diagnostics"]["latest_m5_close_s"]-=300
         self.assertEqual(evaluate(c,g,NOW)["decision"],"NO_TRADE")
+
+    def test_heatmap_optional_only(self):
+        c,g=fixture();c["missing"]=["liquidation_heatmap"]
+        r=evaluate(c,g,NOW)
+        self.assertEqual(r["decision"],"LONG")
+        self.assertIn("liquidation_heatmap_unavailable",r["warnings"])
+        c["missing"].append("reconciled_flow_4h")
+        self.assertEqual(evaluate(c,g,NOW)["decision"],"NO_TRADE")
