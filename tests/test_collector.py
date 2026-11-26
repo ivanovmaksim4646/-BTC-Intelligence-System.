@@ -46,6 +46,17 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(value["coverage"], "partial")
 
 
+    def test_spot_retention_preserves_last_closed_h4_until_next_boundary(self):
+        h4 = collector.WINDOWS["H4"]
+        # One second before the next 4-hour boundary, a closed H4
+        # started almost eight hours ago and must remain fully buffered.
+        now = 2 * h4 - 1
+        last_closed_h4_start = now // h4 * h4 - h4
+        self.assertLessEqual(
+            now - collector.RETAIN_SECONDS, last_closed_h4_start
+        )
+        self.assertGreaterEqual(collector.RETAIN_SECONDS, 2 * h4)
+
     def test_spot_h4_backfill_rebuilds_without_double_counting(self):
         from unittest.mock import patch
 
