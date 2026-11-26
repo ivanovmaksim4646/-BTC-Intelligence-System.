@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 1.08513235,
-    "percent": 0.0017860247,
-    "source_time_utc": "2026-11-26T14:15:18.314Z"
+    "mark_minus_index_usd": 3.2376634,
+    "percent": 0.0053304724,
+    "source_time_utc": "2026-11-26T14:20:20.196Z"
   },
-  "collected_at_utc": "2026-11-26T14:15:17.480813Z",
-  "collection_age_seconds_at_generation": 2,
+  "collected_at_utc": "2026-11-26T14:20:19.110535Z",
+  "collection_age_seconds_at_generation": 3,
   "funding": {
     "absolute": 0.1965297342243964,
     "relative_hourly": 3.232495833333e-06,
     "relative_percent_hourly": 0.0003232495833333,
-    "source_time_utc": "2026-11-26T14:15:18.314Z"
+    "source_time_utc": "2026-11-26T14:20:20.196Z"
   },
-  "generated_at_utc": "2026-11-26T14:15:19.476795Z",
+  "generated_at_utc": "2026-11-26T14:20:22.006355Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,9 +27,9 @@
       "M15": 3.2686,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T14:15:18.314Z",
+    "source_time_utc": "2026-11-26T14:20:20.196Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2124.8796
+    "value": 2123.0985
   },
   "order_flow": {
     "H1": {
@@ -73,19 +73,19 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 3.3531,
-      "futures_volume": 22.5187,
-      "observation": "both_aggressive_buy",
-      "spot_delta": 1.75655564,
-      "spot_volume": 7.5026584,
-      "window_end_utc": "2026-11-26T14:15:00Z"
+      "futures_delta": 0.2783,
+      "futures_volume": 14.2117,
+      "observation": "mixed_or_neutral",
+      "spot_delta": -7.27932757,
+      "spot_volume": 20.02082755,
+      "window_end_utc": "2026-11-26T14:20:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
     "event": "workflow_dispatch",
-    "slot": "2026-11-26T14:15:00.000Z",
+    "slot": "2026-11-26T14:20:00.000Z",
     "source": "cloudflare"
   },
   "schema_version": "1.0",
@@ -1035,12 +1035,7 @@
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60820.4
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795691700,
@@ -1053,12 +1048,18 @@
           "high": 60774.1,
           "kind": "bullish_fvg",
           "low": 60611.0
+        },
+        {
+          "formed_at": 1795702500,
+          "high": 60792.4,
+          "kind": "bearish_fvg",
+          "low": 60792.3
         }
       ],
-      "last_close": 60779.9,
-      "last_high": 60883.8,
-      "last_low": 60779.9,
-      "latest_closed_utc": "2026-11-26T14:10:00Z",
+      "last_close": 60733.9,
+      "last_high": 60792.3,
+      "last_low": 60707.4,
+      "latest_closed_utc": "2026-11-26T14:15:00Z",
       "qm": [
         {
           "broken_level": 58375.7,
