@@ -2,9 +2,11 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence]
     paths:
       - 'src/collector.py'
+      - 'src/report_feed.py'
+      - 'tests/test_report_feed.py'
       - 'tests/test_collector.py'
       - '.github/workflows/btc-intelligence.yml'
   schedule:
@@ -114,9 +116,6 @@ jobs:
         if: always()
         run: python src/system_health.py
 
-      - name: Generate synchronized BTC report feed
-        if: steps.collect.outcome == 'success'
-        run: python src/report_feed.py
 
       - name: Connect IFVG POI QM Delta and OI confluence (research only)
         if: steps.collect.outcome == 'success'
@@ -209,6 +208,10 @@ jobs:
         if: always()
         continue-on-error: true
         run: python -m src.okx_confluence_v2
+
+      - name: Generate synchronized BTC report feed after OKX confluence
+        if: always()
+        run: python src/report_feed.py
 
       - name: Track verified OKX paper entries and update RR outcomes (no execution)
         if: always()

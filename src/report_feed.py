@@ -35,7 +35,7 @@ def read(name):
         return None
 
 
-def build(current, analysis, structure, watchlist, scheduler, now=None):
+def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None):
     now = now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:
         raise ValueError("now must have timezone")
@@ -94,8 +94,25 @@ def build(current, analysis, structure, watchlist, scheduler, now=None):
             "observation": item.get("observation", "unavailable"),
             "coverage": coverage[tf],
         }
+    okx = okx if isinstance(okx, dict) else {}
+    okx_stamp = timestamp(okx.get("generated_at_utc"))
+    okx_valid = (okx.get("source") == "OKX BTC-USDT-SWAP"
+                 and okx.get("classification") == "okx_confluence_research_only"
+                 and okx_stamp is not None
+                 and 0 <= (now - okx_stamp).total_seconds() <= MAX_AGE_SECONDS)
+    okx_section = {"status": "missing_or_stale", "data": None}
+    if okx_valid:
+        close = okx.get("m5_close_s")
+        if type(close) is int and close % 300 == 0 and 0 <= now.timestamp() - close <= 420:
+            okx_section = {"status": "research_partial" if okx.get("missing") else "research_only",
+                           "data": {k: okx.get(k) for k in (
+                               "source", "generated_at_utc", "m5_close_s", "structure",
+                               "flow", "derivatives", "liquidity", "support", "conflicts",
+                               "missing", "watch_direction", "paper_candidates_count")},
+                           "trade_signal": None}
     return {
-        "schema_version": "1.0",
+        "okx_confluence": okx_section,
+        "schema_version": "1.1",
         "generated_at_utc": now.isoformat().replace("+00:00", "Z"),
         "collected_at_utc": current.get("collected_at_utc"),
         "collection_age_seconds_at_generation": round(age) if age is not None else None,
@@ -116,7 +133,7 @@ def build(current, analysis, structure, watchlist, scheduler, now=None):
         "notes": [
             "Age must be recomputed at report-reading time using collected_at_utc.",
             "Window Delta is exactly the same measurement as window CVD change, not an independent confirmation.",
-            "Only Kraken Spot/Futures data and available derived observations are included; no ETF, liquidation heatmap, Binance/BingX order flow or macro feed.",
+            "Legacy fields are Kraken-only; OKX confluence is separately labeled. No cross-venue combination or unverified macro, ETF or liquidation heatmap values.",
             "Structure is based on Kraken Spot closed candles; TradingView events are recorded separately."
         ]
     }
@@ -126,7 +143,7 @@ def main():
     report = build(
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
         read("BTC-structure-current.json"), read("BTC-setup-candidates.json"),
-        read("BTC-scheduler-health.json")
+        read("BTC-scheduler-health.json"), okx=read("BTC-okx-confluence-v2.json")
     )
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
