@@ -34,7 +34,47 @@ jobs:
           accountId: 250b0a0e7ffc849880ba1f6af31b3c28
           wranglerVersion: '4'
           command: deploy --config cloudflare/wrangler-okx-canary.jsonc
+      - name: Generate hidden one-use test access token
+        run: |
+          token=$(openssl rand -hex 32)
+          echo "::add-mask::$token"
+          echo "CANARY_START_TOKEN=$token" >> "$GITHUB_ENV"
+      - name: Sync canary start secret to its own Cloudflare Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 250b0a0e7ffc849880ba1f6af31b3c28
+        run: |
+          printf '%s' "$CANARY_START_TOKEN" | npx --yes wrangler@4 secret put CANARY_START_TOKEN --config cloudflare/wrangler-okx-canary.jsonc
+      - name: Start single bounded canary trial
+        run: |
+          curl -fsS --max-time 25 -X POST \
+            -H "Authorization: Bearer $CANARY_START_TOKEN" \
+            'https://btc-okx-ws-canary.ivanovmaksim812.workers.dev/start'
+      - name: Verify the recorded WS subscription and trade sample
+        run: |
+          set -euo pipefail
+          url='https://btc-okx-ws-canary.ivanovmaksim812.workers.dev/status'
+          for i in $(seq 1 14); do
+            curl -fsS --max-time 15 "$url" -o /tmp/okx-canary-status.json
+            if python - <<'PY'
+          import json
+          d=json.load(open('/tmp/okx-canary-status.json'))
+          print("OKX canary phase:",d.get("phase"),"subscribed:",d.get("subscribed"),
+                "trades:",d.get("trade_count"),"reason:",d.get("completion_reason"))
+          assert d.get("complete_m5") is not True
+          assert d.get("m5_cvd") is None or 'm5_cvd' not in d
+          assert d.get("trade_signal") is None or 'trade_signal' not in d
+          raise SystemExit(0 if d.get("canary_complete") else 1)
+          PY
+            then
+              echo "One-shot canary finished; review status to see whether OKX subscribed."
+              exit 0
+            fi
+            sleep 7
+          done
+          echo "Canary did not finish in time" >&2
+          exit 1
       - name: Explain scope
         run: |
-          echo "Deployed btc-okx-ws-canary, independent of btc-intelligence-scheduler."
-          echo "One 35-second trial per Durable Object. No complete M5 CVD or trading signals."
+          echo "The existing btc-intelligence-scheduler was not modified."
+          echo "This canary stops after 35 seconds. It never certifies full M5 CVD."
