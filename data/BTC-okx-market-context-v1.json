@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-26T15:58:39.411334+00:00",
+  "generated_at_utc": "2026-11-26T16:01:24.565843+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "bearish",
-      "last_closed_candle_open_s": 1795708200,
-      "last_closed_candle_close_s": 1795708500,
-      "last_close": 60629.5,
+      "last_closed_candle_open_s": 1795708500,
+      "last_closed_candle_close_s": 1795708800,
+      "last_close": 60597.9,
       "confirmed_swing_highs": [
         {
           "t": 1795704600,
@@ -34,27 +34,16 @@
         }
       ],
       "swing_confirmation_delay_bars": 2,
-      "fresh_bos_or_choch": {
-        "kind": "bullish_shift_candidate",
-        "break_level": 60582.0,
-        "broken_swing_utc": "2026-11-26T15:35:00Z",
-        "confirmation": "closed_candle_above_confirmed_swing_high",
-        "previous_structure": "lower_highs_lower_lows",
-        "not_bos": true,
-        "source": "OKX BTC-USDT-SWAP",
-        "timeframe": "5m",
-        "event_close_s": 1795708500,
-        "classification": "algorithmic_closed_candle_structure_candidate_not_entry"
-      },
+      "fresh_bos_or_choch": null,
       "note": "HH/HL or LH/LL is descriptive; any fresh break is an algorithmic candidate, not an entry."
     },
     "15m": {
       "timeframe": "15m",
       "status": "observed",
       "structure": "bearish",
-      "last_closed_candle_open_s": 1795707000,
-      "last_closed_candle_close_s": 1795707900,
-      "last_close": 60423.3,
+      "last_closed_candle_open_s": 1795707900,
+      "last_closed_candle_close_s": 1795708800,
+      "last_close": 60597.9,
       "confirmed_swing_highs": [
         {
           "t": 1795696200,
@@ -83,9 +72,9 @@
       "timeframe": "1h",
       "status": "observed",
       "structure": "mixed",
-      "last_closed_candle_open_s": 1795701600,
-      "last_closed_candle_close_s": 1795705200,
-      "last_close": 60702.3,
+      "last_closed_candle_open_s": 1795705200,
+      "last_closed_candle_close_s": 1795708800,
+      "last_close": 60597.9,
       "confirmed_swing_highs": [
         {
           "t": 1795665600,
@@ -114,9 +103,9 @@
       "timeframe": "4h",
       "status": "observed",
       "structure": "bearish",
-      "last_closed_candle_open_s": 1795680000,
-      "last_closed_candle_close_s": 1795694400,
-      "last_close": 60684.5,
+      "last_closed_candle_open_s": 1795694400,
+      "last_closed_candle_close_s": 1795708800,
+      "last_close": 60597.9,
       "confirmed_swing_highs": [
         {
           "t": 1795435200,
@@ -145,27 +134,27 @@
   "htf_structure": "mixed",
   "ltf_structure": "bearish",
   "liquidity_context": {
-    "book_timestamp_ms": 1795708718652,
-    "resting_side": "balanced",
-    "resting_imbalance": 0.002533,
+    "book_timestamp_ms": 1795708883352,
+    "resting_side": "ask_heavier",
+    "resting_imbalance": -0.418234,
     "open_interest_change": {
-      "delta_btc": 4.1386,
-      "delta_percent": 0.01293,
-      "oi_btc": 32013.571800000114,
-      "elapsed_seconds": 107.118,
+      "delta_btc": -57.2187,
+      "delta_percent": -0.17873,
+      "oi_btc": 31956.353100000124,
+      "elapsed_seconds": 164.514,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 4.47101810776e-05,
-      "next_funding_time_ms": 1795737600000,
+      "rate_fraction": 4.58676446287e-05,
+      "next_funding_time_ms": 1795766400000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 60599.2,
-      "index_price": 60627.5,
-      "premium_bps": -4.667849,
-      "mark_timestamp_ms": 1795708718903,
-      "index_timestamp_ms": 1795708718467,
+      "mark_price": 60803.5,
+      "index_price": 60817.4,
+      "premium_bps": -2.28553,
+      "mark_timestamp_ms": 1795708883802,
+      "index_timestamp_ms": 1795708883320,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": null,
