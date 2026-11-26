@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-26T21:21:24.912730+00:00",
+  "generated_at_utc": "2026-11-26T21:26:04.667090+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,26 +12,30 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
-    "reconciled_flow_5m",
     "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
-      "spot": null,
+      "spot": {
+        "delta_btc": "-0.75259953",
+        "volume_btc": "1.97641901",
+        "direction": "short",
+        "quality": "volume_reconciled_not_sequence_certified"
+      },
       "futures": {
-        "delta_btc": "106.4143",
-        "volume_btc": "224.1483",
-        "direction": "long",
+        "delta_btc": "-0.9414",
+        "volume_btc": "87.9558",
+        "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "15m": {
       "spot": null,
       "futures": {
-        "delta_btc": "115.0381",
-        "volume_btc": "297.0239",
+        "delta_btc": "102.1072",
+        "volume_btc": "344.4890",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       }
@@ -54,34 +58,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": -47.9222,
-      "delta_percent": -0.14933,
-      "elapsed_seconds": 166.39,
-      "previous_timestamp_ms": 1795727900878,
-      "current_timestamp_ms": 1795728067268,
+      "delta_btc": -14.7446,
+      "delta_percent": -0.04602,
+      "elapsed_seconds": 280.073,
+      "previous_timestamp_ms": 1795728067268,
+      "current_timestamp_ms": 1795728347341,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 8.6812731667e-06,
-      "rate_percent": 0.0008681,
+      "rate_fraction": 7.5571803546e-06,
+      "rate_percent": 0.0007557,
       "next_funding_time_ms": 1795766400000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 60820.5,
-      "index_price": 60852.5,
-      "mark_timestamp_ms": 1795728068186,
-      "index_timestamp_ms": 1795728068010,
-      "mark_minus_index_usdt": -32.0,
-      "premium_bps": -5.258617,
+      "mark_price": 60805.4,
+      "index_price": 60837.0,
+      "mark_timestamp_ms": 1795728348215,
+      "index_timestamp_ms": 1795728348215,
+      "mark_minus_index_usdt": -31.6,
+      "premium_bps": -5.194207,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "balanced",
-    "timestamp_ms": 1795728067802,
+    "resting_side": "ask_heavier",
+    "timestamp_ms": 1795728347852,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -138,17 +142,17 @@
   },
   "breadth": {
     "source": "CoinGecko global",
-    "asof_utc": "2026-11-26T21:11:32+00:00",
-    "btc_d_pct": 57.91557416987077,
-    "total_usd": 2106542662008.8315,
-    "total_ex_btc_usd": 886526384173.1365,
-    "total_ex_btc_eth_usd": 678591806203.446,
+    "asof_utc": "2026-11-26T21:21:33+00:00",
+    "btc_d_pct": 57.92623599184731,
+    "total_usd": 2109767658845.5203,
+    "total_ex_btc_usd": 887658665902.9922,
+    "total_ex_btc_eth_usd": 679457814762.7852,
     "classification": "provider_universe_proxies_not_tradingview_indices"
   },
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795728000,
+  "m5_close_s": 1795728300,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
