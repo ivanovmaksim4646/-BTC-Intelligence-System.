@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "classification": "research_watch_only",
-  "generated_at_utc": "2026-11-26T14:25:20.373118+00:00",
-  "decision": "NO_TRADE",
+  "generated_at_utc": "2026-11-26T14:30:21.335612+00:00",
+  "decision": "SHORT_WATCH",
   "entry_signal": false,
   "trade_signal": null,
   "entry": null,
@@ -10,9 +10,15 @@
   "take_profit": null,
   "rr": null,
   "probability": null,
-  "matched_event": null,
+  "matched_event": {
+    "event": "m5_bearish_shift",
+    "symbol": "OKX:BTCUSDT.P",
+    "time_ms": 1795703400000
+  },
   "reasons": [
-    "no_confirmed_m5_watch_candidate"
+    "watch_only_not_entry",
+    "futures_chart_poi_sl_tp_rr_not_validated",
+    "kraken_and_tradingview_cross_venue_limitations"
   ],
   "confluence": {
     "classification": "research_confluence_only",
