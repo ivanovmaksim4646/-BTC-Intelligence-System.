@@ -132,6 +132,11 @@ jobs:
         if: always()
         run: python src/risk_engine_v1.py
 
+      - name: Collect OKX BTC swap public data (independent, research only)
+        if: always()
+        continue-on-error: true
+        run: python src/okx_futures_orderflow_v1.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
