@@ -98,6 +98,10 @@ jobs:
         if: always()
         run: python src/system_health.py
 
+      - name: Generate synchronized BTC report feed
+        if: steps.collect.outcome == 'success'
+        run: python src/report_feed.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
