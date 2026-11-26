@@ -32,11 +32,11 @@ def fvg_zones(bars):
 def overlaps(b,lo,hi):
     return b["l"]<=hi and b["h"]>=lo
 
-def evaluate(snapshot, now=None):
+def evaluate(snapshot, now=None, expected_source="Binance USD-M Futures BTCUSDT PERPETUAL"):
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:raise ValueError("timezone required")
     result={"schema_version":"1.0","classification":"futures_research_only",
-            "evaluated_at_utc":now.isoformat(),"source":"Binance USD-M Futures BTCUSDT PERPETUAL",
+            "evaluated_at_utc":now.isoformat(),"source":expected_source,
             "decision":"NO_TRADE","trade_signal":None,"entry":None,"sl":None,"tp":None,"rr":None,
             "observations":[],"ifvg":{},"reasons":[]}
     stamp=dt.datetime.fromisoformat(snapshot.get("collected_at_utc","1970-01-01T00:00:00+00:00").replace("Z","+00:00"))
