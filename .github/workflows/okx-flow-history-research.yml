@@ -1,0 +1,22 @@
+name: OKX persistent flow research
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/okx-rest-pagination-probe]
+    paths: ['src/okx_flow_history_v1.py','tests/test_okx_flow_history_v1.py','.github/workflows/okx-flow-history-research.yml']
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python -m src.okx_flow_history_v1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-persistent-flow-research
+          path: |
+            data/BTC-okx-reconciled-m5-history.json
+            data/BTC-okx-reconciled-flow-current.json
