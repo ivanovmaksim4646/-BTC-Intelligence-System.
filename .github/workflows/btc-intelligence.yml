@@ -159,6 +159,10 @@ jobs:
         if: always()
         run: python src/rr_statistics_v1.py
 
+      - name: Track verified OKX paper entries and update RR outcomes (no execution)
+        if: always()
+        run: python src/okx_outcome_tracker_v1.py
+
       - name: Audit BTC data-source budget and retirement readiness
         if: always()
         run: python src/source_budget_v1.py
