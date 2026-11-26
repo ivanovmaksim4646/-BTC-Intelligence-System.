@@ -4,7 +4,7 @@
 const OWNER="ivanovmaksim4646";
 const REPO="-BTC-Intelligence-System.";
 const WORKFLOW="tradingview-intelligence.yml";
-const URL=`https://api.github.com/repos/${encodeURIComponent(OWNER)}/${encodeURIComponent(REPO)}/actions/workflows/${WORKFLOW}/dispatches`;
+const DISPATCH_URL=`https://api.github.com/repos/${encodeURIComponent(OWNER)}/${encodeURIComponent(REPO)}/actions/workflows/${WORKFLOW}/dispatches`;
 const MAX_PENDING=200;
 const MAX_ATTEMPTS=8;
 const RETENTION_MS=24*60*60*1000;
@@ -80,7 +80,7 @@ export class TradingViewInbox {
       let status=0;
       try{
         if(!token)throw new Error("dispatch_token_missing");
-        const resp=await fetch(URL,{method:"POST",headers:{
+        const resp=await fetch(DISPATCH_URL,{method:"POST",headers:{
           Authorization:`Bearer ${token}`,
           Accept:"application/vnd.github+json",
           "X-GitHub-Api-Version":"2022-11-28",
