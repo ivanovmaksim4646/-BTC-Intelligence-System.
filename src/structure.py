@@ -10,7 +10,10 @@ import json
 import math
 from pathlib import Path
 from urllib.request import Request, urlopen
-from src.strategy_models_v1 import scan_ifvg, scan_qm
+try:
+    from src.strategy_models_v1 import scan_ifvg, scan_qm
+except ModuleNotFoundError:
+    from strategy_models_v1 import scan_ifvg, scan_qm
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "BTC-structure-current.json"
