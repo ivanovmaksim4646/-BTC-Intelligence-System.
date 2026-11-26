@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 1.8702659,
-    "percent": 0.0030772867,
-    "source_time_utc": "2026-11-26T14:50:20.111Z"
+    "mark_minus_index_usd": 2.81017365,
+    "percent": 0.0046268399,
+    "source_time_utc": "2026-11-26T14:55:20.003Z"
   },
-  "collected_at_utc": "2026-11-26T14:50:19.182178Z",
-  "collection_age_seconds_at_generation": 2,
+  "collected_at_utc": "2026-11-26T14:55:18.935365Z",
+  "collection_age_seconds_at_generation": 4,
   "funding": {
     "absolute": 0.1965297342243964,
     "relative_hourly": 3.232495833333e-06,
     "relative_percent_hourly": 0.0003232495833333,
-    "source_time_utc": "2026-11-26T14:50:20.111Z"
+    "source_time_utc": "2026-11-26T14:55:20.003Z"
   },
-  "generated_at_utc": "2026-11-26T14:50:21.428129Z",
+  "generated_at_utc": "2026-11-26T14:55:22.558940Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,9 +27,9 @@
       "M15": -3.8378,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T14:50:20.111Z",
+    "source_time_utc": "2026-11-26T14:55:20.003Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2118.8315
+    "value": 2149.1729
   },
   "order_flow": {
     "H1": {
@@ -73,19 +73,19 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 50.976,
-      "futures_volume": 123.4982,
-      "observation": "spot_sell_futures_buy_divergence",
-      "spot_delta": -2.88394735,
-      "spot_volume": 5.65873501,
-      "window_end_utc": "2026-11-26T14:50:00Z"
+      "futures_delta": -55.6903,
+      "futures_volume": 67.7959,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -0.44849711,
+      "spot_volume": 2.91720811,
+      "window_end_utc": "2026-11-26T14:55:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
     "event": "workflow_dispatch",
-    "slot": "2026-11-26T14:50:00.000Z",
+    "slot": "2026-11-26T14:55:00.000Z",
     "source": "cloudflare"
   },
   "schema_version": "1.0",
@@ -1033,7 +1033,12 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60759.4
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795691700,
@@ -1048,10 +1053,10 @@
           "low": 60611.0
         }
       ],
-      "last_close": 60749.4,
-      "last_high": 60759.4,
-      "last_low": 60660.6,
-      "latest_closed_utc": "2026-11-26T14:45:00Z",
+      "last_close": 60696.9,
+      "last_high": 60779.8,
+      "last_low": 60664.7,
+      "latest_closed_utc": "2026-11-26T14:50:00Z",
       "qm": [
         {
           "broken_level": 58187.8,
