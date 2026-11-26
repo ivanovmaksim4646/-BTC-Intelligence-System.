@@ -23,13 +23,14 @@ def recent_iso(value,now,minutes=15):
     except (ValueError,TypeError,AttributeError):
         return False
 
-def evaluate(okx, bingx, now=None, okx_candles=None, okx_ict=None, okx_risk=None):
+def evaluate(okx, bingx, now=None, okx_candles=None, okx_ict=None, okx_risk=None, okx_flow=None):
     now=now or datetime.now(timezone.utc)
     okx=okx if isinstance(okx,dict) else {}
     bingx=bingx if isinstance(bingx,dict) else {}
     okx_candles=okx_candles if isinstance(okx_candles,dict) else {}
     okx_ict=okx_ict if isinstance(okx_ict,dict) else {}
     okx_risk=okx_risk if isinstance(okx_risk,dict) else {}
+    okx_flow=okx_flow if isinstance(okx_flow,dict) else {}
     o=okx.get("open_interest") if isinstance(okx.get("open_interest"),dict) else {}
     c=okx.get("candles") if isinstance(okx.get("candles"),dict) else {}
     tr=okx.get("recent_trades") if isinstance(okx.get("recent_trades"),dict) else {}
@@ -58,10 +59,17 @@ def evaluate(okx, bingx, now=None, okx_candles=None, okx_ict=None, okx_risk=None
         okx_risk.get("max_account_risk_fraction")==0.01 and
         okx_risk.get("max_notional_leverage")==5 and
         recent_iso(okx_risk.get("evaluated_at_utc"),now))
+    flow_fresh=(okx_flow.get("source")==SOURCE and
+        okx_flow.get("classification")=="partial_rest_flow_audit_only" and
+        recent_iso(okx_flow.get("generated_at_utc"),now))
+    oi_change_verified=(flow_fresh and isinstance(okx_flow.get("oi_change"),dict)
+         and okx_flow["oi_change"].get("status")=="two_verified_snapshots")
     okx_features={
         "live_rest_trade_page":okx_fresh and tr.get("status")=="observed",
         "closed_m5_candles":okx_fresh and c.get("status")=="observed",
         "oi_snapshot":okx_fresh and o.get("status")=="snapshot_only",
+        "oi_change_two_verified_snapshots":oi_change_verified,
+        "okx_rest_trade_coverage_audit_available":flow_fresh and isinstance(okx_flow.get("coverage_by_window"),dict),
         "complete_m5_delta":False,
         "continuous_cvd_5m_15m_1h_4h":False,
         "closed_candles_5m_15m_1h_4h_1d_1w":okx_candle_verified,
@@ -107,7 +115,8 @@ def main():
         except (OSError,ValueError):return {}
     output=evaluate(read("BTC-okx-orderflow-v1.json"),read("BTC-bingx-futures-probe.json"),
                     okx_candles=read("BTC-okx-futures-candles.json"),okx_ict=read("BTC-okx-poi-qm-v1.json"),
-                    okx_risk=read("BTC-risk-engine-v2-okx.json"))
+                    okx_risk=read("BTC-risk-engine-v2-okx.json"),
+                    okx_flow=read("BTC-okx-flow-coverage-v1.json"))
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     OUTPUT.write_text(json.dumps(output,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     print("SOURCE BUDGET GUARD:",output["decision"],"OKX verified REST trade page",
