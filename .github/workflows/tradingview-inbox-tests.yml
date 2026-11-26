@@ -1,0 +1,22 @@
+name: TradingView durable inbox v1 tests
+on:
+  push:
+    branches:
+      - feature/tradingview-durable-async-inbox-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: TradingView inbox mock integration
+        run: node --test cloudflare/tradingview-inbox.test.mjs
+      - name: Worker JavaScript syntax
+        run: |
+          node --check worker.js
+          node --check cloudflare/tradingview-inbox.mjs
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -q
