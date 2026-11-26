@@ -29,7 +29,9 @@ ERROR_FILE = DATA / "BTC-intelligence-errors.csv"
 SPOT_PAIR = "XBTUSD"
 PERP_SYMBOL = "PF_XBTUSD"
 WINDOWS = {"M5": 300, "M15": 900, "H1": 3600, "H4": 14400}
-RETAIN_SECONDS = 6 * 3600
+# A closed H4 window can begin nearly 8 hours before the current time.
+# Keep two extra hours for schedule delays and late backfills.
+RETAIN_SECONDS = 10 * 3600
 # Bootstrap only enough data for M5/M15/H1. H4 becomes complete after the
 # collector has accumulated four hours. This keeps the first Actions run short.
 BOOTSTRAP_SECONDS = 90 * 60
