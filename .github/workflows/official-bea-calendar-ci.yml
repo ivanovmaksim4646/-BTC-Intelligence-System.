@@ -1,0 +1,30 @@
+name: Official BEA Calendar Validation
+on:
+  push:
+    branches: [feature/official-bea-machine-calendar-v1]
+    paths:
+      - 'src/official_bea_calendar_v1.py'
+      - 'tests/test_official_bea_calendar_v1.py'
+      - '.github/workflows/official-bea-calendar-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run official calendar tests
+        run: python -m unittest discover -s tests -p 'test_official_bea_calendar_v1.py' -v
+      - name: Verify real government endpoint on GitHub runner
+        run: |
+          python - <<'PY'
+          from src.official_bea_calendar_v1 import collect
+          result=collect()
+          print(result['status'], 'events',len(result['events']))
+          assert result['source']=='https://apps.bea.gov/API/signup/release_dates.json'
+          assert result['decision']=='NO_TRADE'
+          PY
