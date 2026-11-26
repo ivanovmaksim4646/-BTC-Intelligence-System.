@@ -1,0 +1,22 @@
+name: OKX Cloudflare WS canary tests
+on:
+  push:
+    branches:
+      - feature/okx-cloudflare-ws-canary-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node.js unit tests
+        run: node --test cloudflare/okx-ws-canary.test.mjs
+      - name: Syntax validation
+        run: |
+          node --check cloudflare/okx-ws-canary.mjs
+          node --check cloudflare/okx-trade-utils.mjs
+      - name: Existing Python regressions
+        run: python -m unittest discover -s tests -q
