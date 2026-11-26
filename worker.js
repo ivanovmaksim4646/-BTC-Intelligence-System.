@@ -56,9 +56,45 @@ export class DispatchLock {
 const TV_ALLOWED_IPS = new Set([
   "52.89.214.238", "34.212.75.30", "54.218.53.128", "52.32.178.7"
 ]);
-const TV_EVENTS = new Set([
+const TV_EVENTS_V1 = new Set([
   "h1_inside_bar", "h1_sweep_high_reject", "h1_sweep_low_reclaim"
 ]);
+const TV_LEVEL_KINDS_V2 = Object.freeze({
+  m5_bullish_break: "pivot_high",
+  m5_bearish_break: "pivot_low",
+  m5_bullish_fvg: "fvg_upper",
+  m5_bearish_fvg: "fvg_lower",
+  m5_sweep_pdh: "pdh",
+  m5_sweep_pdl: "pdl"
+});
+function btcPrice(value) {
+  return typeof value === "number" && Number.isFinite(value) && value > 0 && value < 1e8;
+}
+function validateTradingViewAlert(alert) {
+  if (!alert || typeof alert !== "object" || Array.isArray(alert) ||
+      typeof alert.symbol !== "string" ||
+      !/^(?:[A-Z0-9_]+:)?(?:BTC|XBT)[A-Z0-9_.]*$/i.test(alert.symbol) ||
+      String(alert.timeframe) !== "5" ||
+      !Number.isSafeInteger(alert.time_ms) ||
+      Math.abs(Date.now() - alert.time_ms) > 15 * 60 * 1000 ||
+      !btcPrice(alert.price)) return false;
+  const base = ["source", "event", "symbol", "timeframe", "time_ms", "price"];
+  let fields;
+  if (alert.source === "btc-intelligence-tv-v1" && TV_EVENTS_V1.has(alert.event)) {
+    fields = [...base, "mother_high", "mother_low", "inside_high", "inside_low"];
+    if (![alert.mother_high, alert.mother_low, alert.inside_high, alert.inside_low].every(btcPrice) ||
+        !(alert.mother_low < alert.inside_low && alert.inside_low < alert.inside_high &&
+          alert.inside_high < alert.mother_high)) return false;
+  } else if (alert.source === "btc-intelligence-tv-v2" &&
+             Object.hasOwn(TV_LEVEL_KINDS_V2, alert.event)) {
+    fields = [...base, "level", "level_kind", "volume"];
+    if (!btcPrice(alert.level) || alert.level_kind !== TV_LEVEL_KINDS_V2[alert.event] ||
+        typeof alert.volume !== "number" || !Number.isFinite(alert.volume) ||
+        alert.volume < 0) return false;
+  } else return false;
+  return Object.keys(alert).length === fields.length &&
+         fields.every(key => Object.hasOwn(alert, key));
+}
 
 async function receiveTradingView(request, env) {
   if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
@@ -75,30 +111,12 @@ async function receiveTradingView(request, env) {
   } catch {
     return new Response("Invalid JSON", { status: 400 });
   }
-  if (!alert || alert.source !== "btc-intelligence-tv-v1" ||
-      !TV_EVENTS.has(alert.event) ||
-      typeof alert.symbol !== "string" ||
-      !/^(?:[A-Z0-9_]+:)?(?:BTC|XBT)[A-Z0-9_.]*$/i.test(alert.symbol) ||
-      String(alert.timeframe) !== "5" ||
-      !Number.isSafeInteger(alert.time_ms) ||
-      Math.abs(Date.now() - alert.time_ms) > 15 * 60 * 1000 ||
-      ![alert.price, alert.mother_high, alert.mother_low, alert.inside_high, alert.inside_low].every(
-        x => typeof x === "number" && Number.isFinite(x) && x > 0
-      ) ||
-      alert.mother_high <= alert.mother_low ||
-      alert.inside_high >= alert.mother_high ||
-      alert.inside_low <= alert.mother_low ||
-      alert.inside_high <= alert.inside_low) {
+  if (!validateTradingViewAlert(alert)) {
     return new Response("Invalid alert", { status: 400 });
   }
   const token = env.GITHUB_DISPATCH_TOKEN;
   if (!token) return new Response("Dispatcher not configured", { status: 503 });
-  const payload = {
-    source: alert.source, event: alert.event, symbol: alert.symbol,
-    timeframe: "5", time_ms: alert.time_ms, price: alert.price,
-    mother_high: alert.mother_high, mother_low: alert.mother_low,
-    inside_high: alert.inside_high, inside_low: alert.inside_low
-  };
+  const payload = Object.fromEntries(Object.entries(alert));
   const url = `https://api.github.com/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/actions/workflows/tradingview-intelligence.yml/dispatches`;
   const response = await fetch(url, {
     method: "POST",
