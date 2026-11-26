@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-26T16:46:32.222666+00:00",
+  "generated_at_utc": "2026-11-26T16:51:31.384326+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -9,10 +9,10 @@
     "5m": {
       "timeframe": "5m",
       "status": "observed",
-      "structure": "mixed",
-      "last_closed_candle_open_s": 1795711200,
-      "last_closed_candle_close_s": 1795711500,
-      "last_close": 60525.5,
+      "structure": "bullish",
+      "last_closed_candle_open_s": 1795711500,
+      "last_closed_candle_close_s": 1795711800,
+      "last_close": 60557.6,
       "confirmed_swing_highs": [
         {
           "t": 1795707300,
@@ -25,12 +25,12 @@
       ],
       "confirmed_swing_lows": [
         {
-          "t": 1795704000,
-          "price": 60674.0
-        },
-        {
           "t": 1795705500,
           "price": 59886.8
+        },
+        {
+          "t": 1795710900,
+          "price": 60315.2
         }
       ],
       "swing_confirmation_delay_bars": 2,
@@ -134,27 +134,27 @@
   "htf_structure": "mixed",
   "ltf_structure": "mixed",
   "liquidity_context": {
-    "book_timestamp_ms": 1795711591152,
-    "resting_side": "bid_heavier",
-    "resting_imbalance": 0.488483,
+    "book_timestamp_ms": 1795711890352,
+    "resting_side": "ask_heavier",
+    "resting_imbalance": -0.712059,
     "open_interest_change": {
-      "delta_btc": 5.7641,
-      "delta_percent": 0.01803,
-      "oi_btc": 31974.09160000012,
-      "elapsed_seconds": 307.275,
+      "delta_btc": 8.6533,
+      "delta_percent": 0.02706,
+      "oi_btc": 31982.744900000125,
+      "elapsed_seconds": 299.261,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 4.86425075639e-05,
+      "rate_fraction": 4.85653625665e-05,
       "next_funding_time_ms": 1795766400000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 60488.3,
-      "index_price": 60515.2,
-      "premium_bps": -4.445164,
-      "mark_timestamp_ms": 1795711591534,
-      "index_timestamp_ms": 1795711591243,
+      "mark_price": 60501.2,
+      "index_price": 60529.5,
+      "premium_bps": -4.675406,
+      "mark_timestamp_ms": 1795711890712,
+      "index_timestamp_ms": 1795711890825,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": {
