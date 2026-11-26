@@ -58,7 +58,16 @@ def collect_one(inst,end):
         return request("market/history-trades",p)
     try:
         r=probe(inst,fetch,end,max_pages=500 if inst.endswith("SWAP") else 180)
-        candles=request("market/candles",{"instId":inst,"bar":"5m","limit":"10"})
+        # The recent-candles endpoint only returns the latest bars. A
+        # retrospective gap up to four hours old must query the historical
+        # endpoint using a timestamp cursor or reconciliation will fail
+        # simply because the target candle is no longer in the latest ten.
+        current_end=int(time.time()*1000)//M5*M5
+        if current_end-end>8*M5:
+            candles=request("market/history-candles",
+                            {"instId":inst,"bar":"5m","after":str(end+M5),"limit":"10"})
+        else:
+            candles=request("market/candles",{"instId":inst,"bar":"5m","limit":"10"})
         meta=request("public/instruments",{"instType":"SWAP","instId":inst}) if inst.endswith("SWAP") else []
         r=reconcile(r,candles,meta)
     except Exception as exc:
