@@ -1,0 +1,20 @@
+name: OKX annual historical research
+on:
+  push:
+    branches: [feature/okx-365-replay]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python src/okx_history_365.py --days 365
+      - run: python src/okx_historical_replay_v2.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-365-replay
+          path: data/BTC-okx-historical-replay-v2.json

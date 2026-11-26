@@ -88,6 +88,12 @@ def prior_poi_zones(bars,step,head,direction):
         for b in prior if b["t"]>=p["available_at"])]
 
 def evaluate(snapshot,observations,now=None):
+    return _evaluate(snapshot,observations,now,False)
+
+def evaluate_historical(snapshot,now):
+    return _evaluate(snapshot,[],now,True)
+
+def _evaluate(snapshot,observations,now,historical):
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.utcoffset() is None:raise ValueError("timezone-aware now required")
     report={"schema_version":"1.0","generated_at_utc":now.isoformat(),
@@ -103,7 +109,7 @@ def evaluate(snapshot,observations,now=None):
           "entry":"closed_M5_retest_close_only",
           "stop":"QM_head_extreme_with_outward_3bps",
           "target":"pre_entry_confirmed_opposing_HTF_swing",
-          "requires_TV_OKX_observation":True,
+          "requires_TV_OKX_observation":not historical,
           "requires_directional_bos_or_shift_after_qm_head":True,
           "execution":"not_executed"}}
     frames=(snapshot or {}).get("timeframes") if isinstance(snapshot,dict) else None
@@ -149,6 +155,10 @@ def evaluate(snapshot,observations,now=None):
     diag["matching_tv_events"]=len(corroborated)
     qms=scan_qm(m5)
     diag["qm_patterns"]=len(qms)
+    if historical:
+        report["classification"]="historical_research_only"
+        # Directional evaluation paths, not fabricated TradingView events.
+        corroborated=[{"side":"long"},{"side":"short"}]
     if not corroborated:
         report["reasons"].append("no_same_bar_independently_corroborated_okx_tv_alert")
         return report
@@ -236,8 +246,8 @@ def evaluate(snapshot,observations,now=None):
                          "target_confirmed":target["confirmed_at"],
                          "tv_event_id":o.get("event_id")}
                     ident=hashlib.sha256(canonical([VENUE,close,direction,evidence]).encode()).hexdigest()[:32]
-                    record={"entry_id":"paper-"+ident,
-                       "source":VENUE,"classification":"validated_paper_entry_only",
+                    record={"entry_id":("backtest-" if historical else "paper-")+ident,
+                       "source":VENUE,"classification":"historical_research_only" if historical else "validated_paper_entry_only",
                        "execution":"not_executed","entry_signal":False,"trade_signal":None,
                        "independent_entry_validator":"okx_poi_qm_execution_validator_v1",
                        "venue_candle_close_verified":True,"independent_target_verified":True,
