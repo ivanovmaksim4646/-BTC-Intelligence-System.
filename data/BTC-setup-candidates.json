@@ -1,6 +1,6 @@
 {
   "classification": "watchlist_only",
-  "evaluated_at_utc": "2026-11-26T12:00:24.658278Z",
+  "evaluated_at_utc": "2026-11-26T12:05:31.606128Z",
   "notes": [
     "Sweep is optional and cannot independently trigger a candidate.",
     "Candidate requires completed aligned Kraken Spot and Futures pressure and a close-confirmed structural break.",
@@ -18,8 +18,17 @@
       "status": "no_structure_break"
     },
     "M5": {
-      "reason": "no_confirmed_close_break",
-      "status": "no_structure_break"
+      "break_level": 60705.4,
+      "direction": "long",
+      "entry_signal": false,
+      "futures_pressure": 0.0172,
+      "futures_supports": false,
+      "reason": "structure_break_without_both_venue_pressure_confirmation",
+      "spot_pressure": 0.6157,
+      "spot_supports": true,
+      "status": "unconfirmed",
+      "structure": "bullish_bos_candidate",
+      "sweep_bonus": true
     }
   },
   "trade_signal": null
