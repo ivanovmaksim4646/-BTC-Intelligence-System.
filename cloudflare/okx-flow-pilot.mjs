@@ -18,7 +18,7 @@ export class OkxFlowPilot {
     const path=new URL(req.url).pathname;
     if(path==="/status" && req.method==="GET") {
       const prev=await this.ctx.storage.get(SUMMARY_KEY);
-      return Response.json(this.state?{
+      return Response.json(this.state && !this.done?{
         ...snapshot(this.state,Date.now()),phase:this.done?"complete":"active",
         messages:this.messages,bounded_seconds:420,pilot:true
       }:(prev??{phase:"not_started",pilot:true,completeness_verified:false,
