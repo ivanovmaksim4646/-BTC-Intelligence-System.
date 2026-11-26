@@ -27,6 +27,20 @@ class SpotBoundaryTests(unittest.TestCase):
             collect_one(instrument,END)
         return seen[0]
 
+    def test_bounded_backfill_probe_page_budget(self):
+        budgets=[]
+        def fake_probe(inst,fetch,end,max_pages):
+            budgets.append(max_pages)
+            return {"instrument":inst,"end_ms":end,"volume_reconciled":False}
+        with (
+            patch("src.okx_flow_history_v1.probe",side_effect=fake_probe),
+            patch("src.okx_flow_history_v1.request",return_value=[]),
+            patch("src.okx_flow_history_v1.reconcile",side_effect=lambda r,c,m:r),
+            patch("src.okx_flow_history_v1.time.sleep"),
+        ):
+            collect_one("BTC-USDT",END,max_runtime_seconds=35,max_pages_override=100)
+        self.assertEqual(budgets,[100])
+
     def test_nearest_missing_spot_bucket_is_retried(self):
         rows=[{"instrument":"BTC-USDT","end_ms":END-300000,
                "volume_reconciled":True}]
