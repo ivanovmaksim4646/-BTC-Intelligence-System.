@@ -389,6 +389,10 @@ def collect() -> None:
                 if h4_start <= minute < h4_start + WINDOWS["H4"]:
                     del spot_buckets[minute]
             spot_buckets.update(repaired)
+            # Backfill itself independently proves coverage of this closed interval.
+            spot_state["coverage_start_ns"] = min(
+                int(spot_state["coverage_start_ns"]), h4_start * 1_000_000_000
+            )
             spot_state["minute_buckets"] = {
                 str(k): value for k, value in sorted(spot_buckets.items())
             }
