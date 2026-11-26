@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-26T15:46:08.201495+00:00",
+  "generated_at_utc": "2026-11-26T15:47:28.013197+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "multi_observation_liquidity_context_research_only",
   "status": "multi_source_observational_context",
@@ -10,57 +10,51 @@
   "execution_ready": false,
   "observations": {
     "book": {
-      "timestamp_ms": 1795707967152,
-      "bid_depth_btc": 20.5374,
-      "ask_depth_btc": 5.3129,
-      "resting_imbalance": 0.588949,
+      "timestamp_ms": 1795708047302,
+      "bid_depth_btc": 28.9176,
+      "ask_depth_btc": 8.3706,
+      "resting_imbalance": 0.551032,
       "sample_only": true
     },
-    "wall_persistence": {
-      "samples_considered": 12,
-      "bid_zones": 0,
-      "ask_zones": 0,
-      "bid_zone_prices": [],
-      "ask_zone_prices": [],
-      "intraperiod_persistence_verified": false
-    },
+    "wall_persistence": null,
     "depth_change": {
-      "elapsed_seconds": 279.5,
-      "bid_depth_change_btc": 11.494,
-      "ask_depth_change_btc": -16.6253,
-      "imbalance_change": 1.005157,
+      "elapsed_seconds": 80.15,
+      "bid_depth_change_btc": 8.3802,
+      "ask_depth_change_btc": 3.0577,
+      "imbalance_change": -0.037917,
       "interval_fully_observed": false
     },
     "open_interest_change": {
-      "delta_btc": 34.3303,
-      "delta_percent": 0.10728,
-      "oi_btc": 32035.97830000012,
-      "elapsed_seconds": 279.513,
+      "delta_btc": -14.5167,
+      "delta_percent": -0.04531,
+      "oi_btc": 32021.46160000012,
+      "elapsed_seconds": 80.296,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 4.62988944512e-05,
+      "rate_fraction": 4.66900398165e-05,
       "next_funding_time_ms": 1795737600000,
       "classification": "quoted_not_realized"
     },
     "mark_index_premium": {
-      "mark_price": 60375.2,
-      "index_price": 60403.0,
-      "premium_bps": -4.60242,
-      "mark_timestamp_ms": 1795707967555,
-      "index_timestamp_ms": 1795707967105,
+      "mark_price": 60505.5,
+      "index_price": 60532.2,
+      "premium_bps": -4.410876,
+      "mark_timestamp_ms": 1795708047568,
+      "index_timestamp_ms": 1795708046905,
       "classification": "instantaneous_premium_not_expiry_basis"
     }
   },
   "context_tags": [
     "resting_book_snapshot_observed",
     "two_sample_depth_change_observed",
-    "sampled_wall_zone_comparison_available",
     "quoted_funding_observed",
     "mark_index_premium_observed",
     "two_snapshot_oi_change_observed"
   ],
-  "warnings": [],
+  "warnings": [
+    "wall_persistence_missing_or_misaligned"
+  ],
   "price_action_confirmation": null,
   "complete_delta_btc": null,
   "complete_cvd_btc": null,
