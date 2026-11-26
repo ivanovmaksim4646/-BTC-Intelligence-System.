@@ -69,14 +69,25 @@ def observe(trades, candles, oi, instrument, now=None):
     # OKX candle confirm=1 indicates closed; do not use forming candle.
     if isinstance(candles,list) and candles:
         parsed=[]
+        valid_rows=True
         for row in candles:
-            if not isinstance(row,list) or len(row)<9 or str(row[8])!="1":continue
+            if not isinstance(row,list) or len(row)<9:
+                valid_rows=False
+                break
+            if str(row[8])!="1":
+                continue
             try:
                 ts=int(row[0]);o,h,l,c=map(float,row[1:5])
-            except (ValueError,TypeError):continue
-            if (all(math.isfinite(v) and v>0 for v in (o,h,l,c))
-                and l<=min(o,c)<=max(o,c)<=h):
-                parsed.append({"t":ts//1000,"o":o,"h":h,"l":l,"c":c})
+            except (ValueError,TypeError):
+                valid_rows=False
+                break
+            if (not all(math.isfinite(v) and v>0 for v in (o,h,l,c))
+                or not l<=min(o,c)<=max(o,c)<=h):
+                valid_rows=False
+                break
+            parsed.append({"t":ts//1000,"o":o,"h":h,"l":l,"c":c})
+        if not valid_rows:
+            parsed=[]
         parsed.sort(key=lambda x:x["t"])
         if (len(parsed)>=20 and all(parsed[i]["t"]-parsed[i-1]["t"]==300 for i in range(1,len(parsed)))
             and 0<=now.timestamp()-(parsed[-1]["t"]+300)<=600):
