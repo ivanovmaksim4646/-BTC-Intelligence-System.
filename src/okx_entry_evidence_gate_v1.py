@@ -62,14 +62,16 @@ def chronological_break(bars,head,extreme,retest_open,direction):
     prefix="bullish" if direction=="long" else "bearish"
     latest=None
     for i,bar in enumerate(bars):
-        if not head<bar["t"]<=extreme or bar["t"]+M5>retest_open:
+        if not head<bar["t"] or bar["t"]+M5>retest_open:
             continue
         event=fresh_structure_break(bars[:i+1],"5m")
-        if event is not None:
+        if event is None:
+            continue
+        if not event["kind"].startswith(prefix):
+            latest=None
+        elif bar["t"]<=extreme:
             latest=event
-    if latest and latest["kind"].startswith(prefix):
-        return latest
-    return None
+    return latest
 
 def prior_poi_zones(bars,step,head,direction):
     """Only HTF candles closed before QM head; IFVG usable after inversion closes."""
@@ -80,7 +82,10 @@ def prior_poi_zones(bars,step,head,direction):
                   "formed":p["formed_at"],"kind":"IFVG",
                   "available_at":p["inverted_at"]+step}
                  for p in scan_ifvg(prior) if p["direction"]==direction)
-    return zones
+    # Never reuse a zone invalidated by a later HTF close before the head.
+    return [p for p in zones if p["available_at"]<=head and not any(
+        (b["c"]<p["low"] if direction=="long" else b["c"]>p["high"])
+        for b in prior if b["t"]>=p["available_at"])]
 
 def evaluate(snapshot,observations,now=None):
     now=now or dt.datetime.now(dt.timezone.utc)
@@ -176,6 +181,10 @@ def evaluate(snapshot,observations,now=None):
                     touches=[b for b in m5 if poi["available_at"]<=b["t"]<head
                              and overlaps(b,poi["low"],poi["high"])]
                     if not touches:continue
+                    # A close through the far edge after touch invalidates the POI.
+                    if any((b["c"]<poi["low"] if direction=="long" else b["c"]>poi["high"])
+                           for b in m5 if touches[0]["t"]<=b["t"]<=entry_bar["t"]):
+                        continue
                     # Opposing TP pivot confirmed BEFORE entry. Must lie
                     # beyond entry in profit direction, and not be selected
                     # from bars formed after entry.
@@ -220,8 +229,17 @@ def evaluate(snapshot,observations,now=None):
                        "rr_category":"main_watchlist_candidate" if net>=2 else "research_only",
                        "evidence":evidence,"paper_only":True}
                     report["paper_entries"].append(record)
-    unique={p["entry_id"]:p for p in report["paper_entries"]}
-    report["paper_entries"]=list(unique.values())
+    # Multiple zones can explain the same directional M5 retest. Count one
+    # paper hypothesis, choosing the nearest eligible opposing target, then
+    # newest available POI and stable ID as deterministic tie breakers.
+    unique={}
+    for p in report["paper_entries"]:
+        key=(p["source"],p["entry_close_utc"],p["direction"])
+        rank=(abs(p["take_profit"]-p["entry"]),-p["evidence"]["poi_available_at"],p["entry_id"])
+        old=unique.get(key)
+        if old is None or rank<old[0]:
+            unique[key]=(rank,p)
+    report["paper_entries"]=[value[1] for value in unique.values()]
     if not report["paper_entries"]:
         report["reasons"].append("no_full_chronological_poi_qm_retest_and_preconfirmed_target")
     # Always NO_TRADE even if research hypothesis exists; no user account

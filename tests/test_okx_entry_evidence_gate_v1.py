@@ -57,6 +57,7 @@ class EntryEvidenceGateTests(unittest.TestCase):
         self.assertEqual(r["decision"],"NO_TRADE")
     def test_no_prior_poi_touch_denies(self):
         with patch("src.okx_entry_evidence_gate_v1.scan_qm",return_value=qm()),\
+             patch("src.okx_entry_evidence_gate_v1.chronological_break",return_value={"kind":"bullish_shift_candidate"}),\
              patch("src.okx_entry_evidence_gate_v1.fvg_zones",return_value=[]):
             r=evaluate(fixture(),observations(),NOW)
         self.assertEqual(r["paper_entries"],[])
@@ -91,6 +92,7 @@ class EntryEvidenceGateTests(unittest.TestCase):
             bars[-1]["h"]=150
         poi={"direction":"long","low":99,"high":101,"formed":ENTRY_OPEN-10000}
         with patch("src.okx_entry_evidence_gate_v1.scan_qm",return_value=qm()),\
+             patch("src.okx_entry_evidence_gate_v1.chronological_break",return_value={"kind":"bullish_shift_candidate"}),\
              patch("src.okx_entry_evidence_gate_v1.fvg_zones",return_value=[poi]):
             result=evaluate(snap,observations(),NOW)
         self.assertEqual(result["paper_entries"],[])
@@ -123,6 +125,32 @@ class EntryEvidenceGateTests(unittest.TestCase):
         with patch("src.okx_entry_evidence_gate_v1.scan_ifvg",return_value=[z]):
             zones=prior_poi_zones(bars,3600,inv+3600,"long")
         self.assertEqual(zones[-1]["available_at"],inv+3600)
+    def test_real_ifvg_only_after_inversion_close(self):
+        step=3600
+        bars=[{"t":step*(100+i),"o":x,"h":x+1,"l":x-1,"c":x}
+              for i,x in enumerate([100,103,106,108,98,97])]
+        inv=bars[4]["t"]
+        early=prior_poi_zones(bars,step,inv,"short")
+        late=prior_poi_zones(bars,step,inv+step,"short")
+        self.assertFalse(any(z["kind"]=="IFVG" for z in early))
+        self.assertTrue(any(z["kind"]=="IFVG" and z["available_at"]==inv+step for z in late))
+    def test_invalidated_htf_poi_excluded(self):
+        bars=series(3600)
+        formed=bars[-5]["t"]
+        bars[-2].update({"o":97,"h":98,"l":96,"c":97})
+        with patch("src.okx_entry_evidence_gate_v1.fvg_zones",return_value=[
+                {"direction":"long","low":99,"high":101,"formed":formed}]):
+            zones=prior_poi_zones(bars,3600,bars[-1]["t"],"long")
+        self.assertFalse(any(z["kind"]=="FVG" for z in zones))
+    def test_duplicate_zones_one_directional_entry(self):
+        snap=fixture()
+        pois=[{"direction":"long","low":99,"high":101,"formed":ENTRY_OPEN-20000},
+              {"direction":"long","low":99.5,"high":101,"formed":ENTRY_OPEN-21000}]
+        with patch("src.okx_entry_evidence_gate_v1.scan_qm",return_value=qm()),\
+             patch("src.okx_entry_evidence_gate_v1.chronological_break",return_value={"kind":"bullish_shift_candidate"}),\
+             patch("src.okx_entry_evidence_gate_v1.fvg_zones",return_value=pois):
+            r=evaluate(snap,observations(),NOW)
+        self.assertEqual(len(r["paper_entries"]),1)
     def test_future_htf_bars_excluded(self):
         bars=series(3600)
         head=bars[-3]["t"]
