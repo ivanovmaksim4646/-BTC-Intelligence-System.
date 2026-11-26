@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "checked_at_utc": "2026-11-26T09:35:43.551706Z",
+  "classification": "operational_diagnostics_only",
+  "components": {
+    "kraken_collection": {
+      "status": "ok",
+      "age_seconds": 4
+    },
+    "order_flow_analysis": {
+      "status": "ok",
+      "age_seconds": 1
+    },
+    "structure_observation": {
+      "status": "ok",
+      "age_seconds": 1
+    },
+    "watchlist_evaluation": {
+      "status": "ok",
+      "age_seconds": 0
+    },
+    "github_workflow_trigger": {
+      "status": "ok",
+      "age_seconds": 0,
+      "event": "schedule",
+      "source": "github",
+      "slot": ""
+    },
+    "cloudflare_dispatch": {
+      "status": "last_dispatch_unverified",
+      "note": "A GitHub schedule event does not prove Cloudflare dispatch works"
+    },
+    "tradingview_intake": {
+      "status": "not_yet_verified",
+      "events_saved": null,
+      "note": "No saved events is not proof there were no TradingView alerts"
+    }
+  },
+  "fully_operational_confirmed": false,
+  "notes": [
+    "GitHub workflow success does not guarantee five-minute scheduling.",
+    "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
+    "Do not use this report as a trading signal."
+  ]
+}
