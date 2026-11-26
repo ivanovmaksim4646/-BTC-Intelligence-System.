@@ -88,6 +88,10 @@ jobs:
           print('BTC scheduler:', record['event'], record['source'], 'run', record['run_id'])
           PY
 
+      - name: Generate operational health snapshot
+        if: always()
+        run: python src/system_health.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
