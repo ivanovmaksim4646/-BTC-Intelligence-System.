@@ -3,7 +3,7 @@
 // Uses separate Worker/DO from the production GitHub scheduler + TradingView.
 import { INSTRUMENT, eventType, normalizeMetadata, parseTrade } from "./okx-trade-utils.mjs";
 
-const URL = "wss://ws.okx.com/ws/v5/public"; // port 443, 8443 retired in 2026
+const WS_URL = "wss://ws.okx.com/ws/v5/public"; // port 443, 8443 retired in 2026
 const START_MS = 35_000;
 const LIMIT_MESSAGES = 5000;
 const SUMMARY_KEY = "summary";
@@ -48,7 +48,7 @@ export class OkxCanary {
     // Alarm ensures the trial is bounded even when the WS goes silent.
     await this.ctx.storage.setAlarm(Date.now()+START_MS);
     try {
-      this.ws=new WebSocket(URL);
+      this.ws=new WebSocket(WS_URL);
       this.ws.addEventListener("open",()=>{
         this.ws.send(JSON.stringify({op:"subscribe",args:[{channel:"trades",instId:INSTRUMENT}]}));
       });
