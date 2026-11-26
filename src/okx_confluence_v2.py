@@ -1,5 +1,5 @@
 """OKX-only evidence integration. Observational watch, never an executed signal."""
-import json,datetime as dt
+import json,datetime as dt,math
 from pathlib import Path
 from decimal import Decimal
 DATA=Path("data")
@@ -22,7 +22,7 @@ def window(flow,inst,tf,close):
         if not d.is_finite() or not v.is_finite() or v<abs(d):return None
         return {"delta_btc":str(d),"volume_btc":str(v),"direction":"long" if d>0 else "short" if d<0 else "neutral","quality":"volume_reconciled_not_sequence_certified"}
     except (ArithmeticError,KeyError,ValueError):return None
-def evaluate(context,gate,flow,derivatives,now=None):
+def evaluate(context,gate,flow,derivatives,now=None,external=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.utcoffset() is None:raise ValueError("timezone required")
     context,gate,flow,derivatives=map(obj,(context,gate,flow,derivatives))
@@ -31,6 +31,19 @@ def evaluate(context,gate,flow,derivatives,now=None):
         "watch_direction":None,"support":[],"conflicts":[],"missing":[],"flow":{},"structure":{},"derivatives":None,"liquidity":None,"macro":None,"breadth":None,"liquidation_heatmap":None,"paper_candidates":[]}
     missing=out["missing"]
     missing.extend(["macro","breadth","liquidation_heatmap"])
+    external=obj(external)
+    breadth=obj(external.get("breadth"))
+    vals=[breadth.get(k) for k in ("btc_d_pct","total_usd","total_ex_btc_usd","total_ex_btc_eth_usd")]
+    if (breadth.get("source")=="CoinGecko global"
+        and breadth.get("classification")=="provider_universe_proxies_not_tradingview_indices"
+        and fresh(breadth.get("asof_utc"),now,1800)
+        and all(type(v) in (int,float) and math.isfinite(v) for v in vals)
+        and 0<vals[0]<100 and vals[1]>vals[2]>vals[3]>0):
+        out["breadth"]=breadth
+        missing.remove("breadth")
+    # Monthly observations alone do not establish event risk or consensus.
+    out["macro"]=obj(external.get("macro")) or None
+    out["macro_status"]=external.get("macro_status","unavailable")
     if context.get("source")!=VENUE or context.get("classification")!="closed_okx_swing_structure_plus_sampled_liquidity_research" or not fresh(context.get("generated_at_utc"),now):
         missing.append("fresh_verified_structure");return out
     frames=obj(context.get("timeframes"));m5=obj(frames.get("5m"))
@@ -79,7 +92,7 @@ def main():
     def read(name):
         try:return json.loads((DATA/name).read_text())
         except (OSError,ValueError):return {}
-    r=evaluate(read("BTC-okx-market-context-v1.json"),read("BTC-okx-entry-evidence-gate-v1.json"),read("BTC-okx-reconciled-flow-current.json"),read("BTC-okx-derivatives-context-v1.json"))
+    r=evaluate(read("BTC-okx-market-context-v1.json"),read("BTC-okx-entry-evidence-gate-v1.json"),read("BTC-okx-reconciled-flow-current.json"),read("BTC-okx-derivatives-context-v1.json"),external=read("BTC-market-breadth-macro-v1.json"))
     DATA.mkdir(exist_ok=True)
     p=DATA/"BTC-okx-confluence-v2.json";t=p.with_suffix(".tmp");t.write_text(json.dumps(r,indent=2)+"\n");t.replace(p)
     print("OKX CONFLUENCE",json.dumps(r),flush=True)
