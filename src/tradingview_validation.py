@@ -10,7 +10,8 @@ import re
 
 LEGACY = {"h1_inside_bar", "h1_sweep_high_reject", "h1_sweep_low_reclaim"}
 STRUCTURE = {
-    "m5_bullish_break", "m5_bearish_break",
+    "m5_bullish_bos", "m5_bearish_bos",
+    "m5_bullish_shift", "m5_bearish_shift",
     "m5_bullish_fvg", "m5_bearish_fvg",
     "m5_sweep_pdh", "m5_sweep_pdl",
 }
@@ -45,7 +46,8 @@ def validate(event, now_ms=None):
         if type(event["volume"]) not in (float, int) or not math.isfinite(event["volume"]) or event["volume"] < 0:
             raise ValueError("invalid volume")
         required_kind = {
-            "m5_bullish_break": "pivot_high", "m5_bearish_break": "pivot_low",
+            "m5_bullish_bos": "pivot_high", "m5_bearish_bos": "pivot_low",
+            "m5_bullish_shift": "pivot_high", "m5_bearish_shift": "pivot_low",
             "m5_bullish_fvg": "fvg_upper", "m5_bearish_fvg": "fvg_lower",
             "m5_sweep_pdh": "pdh", "m5_sweep_pdl": "pdl",
         }[name]
