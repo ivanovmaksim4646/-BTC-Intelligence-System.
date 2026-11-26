@@ -3,6 +3,7 @@ import datetime as dt
 import unittest
 from src.risk_engine_v2_okx import calculate_paper, assess_snapshot, VENUE
 from src.risk_engine_v1 import calculate as legacy_calculate,VENUE as LEGACY
+from src.source_budget_v1 import evaluate as budget_evaluate
 
 NOW=dt.datetime(2026,11,26,13,0,tzinfo=dt.timezone.utc)
 def stamp(minutes):
@@ -98,6 +99,13 @@ class RiskEngineOKXTests(unittest.TestCase):
         r=legacy_calculate(c,equity_usdt=10000,now=NOW)
         self.assertEqual(r["status"],"paper_scenario_only")
         self.assertEqual(r["evidence"]["venue"],LEGACY)
+    def test_budget_guard_identifies_okx_paper_migration_without_retiring_bingx(self):
+        risk=assess_snapshot(*snapshots(),now=NOW)
+        out=budget_evaluate({}, {}, NOW, okx_risk=risk)
+        self.assertTrue(out["okx_features"]["okx_paper_risk_engine_v2_available"])
+        self.assertFalse(out["okx_features"]["risk_engine_venue_migrated"])
+        self.assertFalse(out["switch_approved"])
+        self.assertEqual(out["decision"],"RETAIN_BINGX")
     def test_stale_retest_rejected(self):
         c=candidate();c["retest_candle_close_utc"]=stamp(-31)
         self.assertEqual(calculate_paper(c,equity_usdt=10000,now=NOW)["status"],"withheld")
