@@ -28,6 +28,19 @@ def macro_series(raw,series,now):
     a,b=valid[-2:]
     if (now.date()-b[0]).days>100:raise ValueError("stale monthly series")
     return {"source":"FRED","series":series,"observation_date":b[0].isoformat(),"actual":b[1],"previous":a[1],"previous_date":a[0].isoformat(),"consensus_forecast":None,"surprise":None}
+def official_observations(rows,source,series,now,max_age):
+    valid=sorted({date:float(value) for date,value in rows if date<=now.date() and math.isfinite(float(value))}.items())
+    if len(valid)<2 or (now.date()-valid[-1][0]).days>max_age:raise ValueError("stale or incomplete")
+    a,b=valid[-2:]
+    return {"source":source,"series":series,"observation_date":b[0].isoformat(),"actual":b[1],"previous":a[1],"previous_date":a[0].isoformat(),"consensus_forecast":None,"surprise":None}
+def bls(raw,series,now):
+    if raw.get("status")!="REQUEST_SUCCEEDED":raise ValueError("BLS request failed")
+    r=next(x for x in raw["Results"]["series"] if x["seriesID"]==series)
+    rows=[(dt.date(int(x["year"]),int(x["period"][1:]),1),x["value"]) for x in r["data"] if x["period"] in {f"M{i:02}" for i in range(1,13)} and x["value"] not in ("-","")]
+    return official_observations(rows,"BLS",series,now,100)
+def effr(raw,now):
+    rows=[(dt.date.fromisoformat(x["effectiveDate"]),x["percentRate"]) for x in raw["refRates"] if x.get("type")=="EFFR" and x.get("percentRate") is not None]
+    return official_observations(rows,"New York Fed","EFFR_daily",now,7)
 def main():
     now=dt.datetime.now(dt.timezone.utc)
     out={"generated_at_utc":now.isoformat(),"breadth":None,"macro":{},"errors":{},"trade_signal":None}
@@ -48,6 +61,23 @@ def main():
         for name,value,error in pool.map(get,series_map.items()):
             if value is not None:out["macro"][name]=value
             else:out["errors"][name]=error
+    alternatives={"cpi_index":"CUSR0000SA0","unemployment_pct":"LNS14000000","payrolls_thousands":"CES0000000001","ppi_index":"WPU00000000","effective_fed_funds_pct":"EFFR"}
+    def fallback(item):
+        name,series=item
+        if name in out["macro"]:return name,None,None
+        try:
+            if series=="EFFR":
+                value=effr(json.loads(fetch("https://markets.newyorkfed.org/api/rates/unsecured/effr/last/10.json")),now)
+            else:
+                value=bls(json.loads(fetch("https://api.bls.gov/publicAPI/v1/timeseries/data/"+series)),series,now)
+            return name,value,None
+        except Exception as exc:return name,None,type(exc).__name__
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        for name,value,error in pool.map(fallback,alternatives.items()):
+            if value is not None:
+                out["macro"][name]=value
+                out["errors"].pop(name,None)
+            elif error:out["errors"][name+"_fallback"]=error
     out["macro_status"]="observations_only_no_release_calendar_or_consensus"
     DATA.mkdir(exist_ok=True);p=DATA/"BTC-market-breadth-macro-v1.json";t=p.with_suffix(".tmp");t.write_text(json.dumps(out,indent=2)+"\n");t.replace(p)
     print("Breadth and macro availability",bool(out["breadth"]),list(out["macro"]),out["errors"])
