@@ -54,14 +54,14 @@ def verify_page(rows,prev_cursor,now_ms):
         raise ValueError("time ordering not descending")
     return parsed
 
-def collect(getter=fetch_page,clock=None,max_pages=MAX_PAGES,contract_btc=0.01):
+def collect(getter=fetch_page,clock=None,max_pages=MAX_PAGES,contract_btc=None):
     clock=clock or dt.datetime.now(dt.timezone.utc)
     if clock.utcoffset() is None:
         raise ValueError("timezone-aware clock required")
     if type(max_pages)!=int or not 1<=max_pages<=30:
         raise ValueError("invalid page cap")
     if type(contract_btc) not in (int,float) or not math.isfinite(contract_btc) or contract_btc<=0:
-        raise ValueError("invalid contract specification")
+        raise ValueError("unverified contract specification")
     # Most recently CLOSED UTC 5m interval; do not include active candle.
     now_ms=int(clock.timestamp()*1000)
     window_end_ms=now_ms//300000*300000
@@ -114,7 +114,22 @@ def collect(getter=fetch_page,clock=None,max_pages=MAX_PAGES,contract_btc=0.01):
     return out
 
 def main():
-    result=collect()
+    try:
+        from src.okx_futures_orderflow_v1 import get_json
+    except ModuleNotFoundError:
+        from okx_futures_orderflow_v1 import get_json
+    try:
+        spec=get_json("/api/v5/public/instruments",{"instType":"SWAP","instId":INST})
+        verified=[float(x["ctVal"]) for x in spec if x.get("instId")==INST and x.get("ctValCcy")=="BTC"]
+        if len(verified)!=1:
+            raise ValueError("contract metadata missing")
+        result=collect(contract_btc=verified[0])
+    except (OSError,ValueError,TypeError,KeyError,TimeoutError) as exc:
+        result={"schema_version":"1.0","source":"OKX BTC-USDT-SWAP",
+                "status":"unverified","coverage":"contract_metadata_unavailable",
+                "error":type(exc).__name__,"trade_signal":None,"m5_delta_btc":None,
+                "m5_cvd":None,"page_count":0,"trades_in_window":0}
+
     OUT.parent.mkdir(parents=True,exist_ok=True)
     tmp=OUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
