@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-26T14:55:21.486055Z",
+  "collected_at_utc": "2026-11-26T15:00:22.054771Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -280,9 +280,8 @@
     "H1": {
       "events": [
         {
-          "kind": "inside_bar",
-          "reference_high": 60914.7,
-          "reference_low": 60516.7
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60875.7
         }
       ],
       "fvg": [
@@ -309,26 +308,9 @@
           "high": 60284.7,
           "kind": "bullish_fvg",
           "low": 60181.3
-        },
-        {
-          "formed_at": 1795698000,
-          "high": 60714.0,
-          "kind": "bullish_fvg",
-          "low": 60705.4
         }
       ],
       "ifvg": [
-        {
-          "direction": "short",
-          "formed_at": 1795291200,
-          "high": 60177.7,
-          "inverted_at": 1795298400,
-          "low": 60147.6,
-          "model": "IFVG",
-          "original_fvg": "bullish_fvg",
-          "retest_observed": true,
-          "status": "inverted_observation"
-        },
         {
           "direction": "long",
           "formed_at": 1795316400,
@@ -537,12 +519,23 @@
           "original_fvg": "bullish_fvg",
           "retest_observed": true,
           "status": "inverted_observation"
+        },
+        {
+          "direction": "short",
+          "formed_at": 1795698000,
+          "high": 60714.0,
+          "inverted_at": 1795701600,
+          "low": 60705.4,
+          "model": "IFVG",
+          "original_fvg": "bullish_fvg",
+          "retest_observed": false,
+          "status": "inverted_observation"
         }
       ],
-      "last_close": 60793.5,
-      "last_high": 60875.7,
-      "last_low": 60714.0,
-      "latest_closed_utc": "2026-11-26T13:00:00Z",
+      "last_close": 60656.2,
+      "last_high": 60883.8,
+      "last_low": 60627.6,
+      "latest_closed_utc": "2026-11-26T14:00:00Z",
       "status": "ok"
     },
     "H4": {
@@ -810,12 +803,9 @@
     "M15": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60792.3
-        },
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60653.4
+          "kind": "inside_bar",
+          "reference_high": 60875.8,
+          "reference_low": 60627.6
         }
       ],
       "fvg": [
@@ -832,10 +822,10 @@
           "low": 60461.5
         }
       ],
-      "last_close": 60684.6,
-      "last_high": 60875.8,
-      "last_low": 60627.6,
-      "latest_closed_utc": "2026-11-26T14:30:00Z",
+      "last_close": 60656.2,
+      "last_high": 60779.8,
+      "last_low": 60656.2,
+      "latest_closed_utc": "2026-11-26T14:45:00Z",
       "qm": [
         {
           "broken_level": 60659.8,
@@ -951,12 +941,7 @@
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60759.4
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795691700,
@@ -971,10 +956,10 @@
           "low": 60611.0
         }
       ],
-      "last_close": 60696.9,
-      "last_high": 60779.8,
-      "last_low": 60664.7,
-      "latest_closed_utc": "2026-11-26T14:50:00Z",
+      "last_close": 60656.2,
+      "last_high": 60771.7,
+      "last_low": 60656.2,
+      "latest_closed_utc": "2026-11-26T14:55:00Z",
       "qm": [
         {
           "broken_level": 58187.8,
