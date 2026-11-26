@@ -1,0 +1,79 @@
+//@version=6
+indicator("BTC Intelligence — ICT M5 Structure v2", overlay=true, max_labels_count=300)
+
+// Observations only. Use on a BTC M5 chart (prefer intended Futures venue).
+// Pivot strength 2/2: a swing becomes known only after TWO additional closed bars.
+// BOS = close across confirmed swing WITH rising HH/HL or falling LH/LL.
+// Shift = close across confirmed swing AGAINST previously observed trend.
+// Not a validated ICT trade entry, POI, stop, target or RR.
+bool isM5 = timeframe.isminutes and timeframe.multiplier == 5
+bool confirmed = barstate.isconfirmed and isM5
+float pdh = request.security(syminfo.tickerid, "D", high[1], lookahead=barmerge.lookahead_on)
+float pdl = request.security(syminfo.tickerid, "D", low[1], lookahead=barmerge.lookahead_on)
+float ph = ta.pivothigh(high, 2, 2)
+float pl = ta.pivotlow(low, 2, 2)
+var float lastHigh = na
+var float prevHigh = na
+var float lastLow = na
+var float prevLow = na
+if not na(ph)
+    prevHigh := lastHigh
+    lastHigh := ph
+if not na(pl)
+    prevLow := lastLow
+    lastLow := pl
+bool uptrend = not na(prevHigh) and not na(prevLow) and lastHigh > prevHigh and lastLow > prevLow
+bool downtrend = not na(prevHigh) and not na(prevLow) and lastHigh < prevHigh and lastLow < prevLow
+
+// Closing-price break, not just a wick. No event without a confirmed trend.
+bool crossUp = ta.crossover(close, lastHigh)
+bool crossDown = ta.crossunder(close, lastLow)
+bool bullBos = confirmed and crossUp and uptrend
+bool bearBos = confirmed and crossDown and downtrend
+bool bullShift = confirmed and crossUp and downtrend
+bool bearShift = confirmed and crossDown and uptrend
+
+// Simple three-candle gap, NOT automatically an unfilled institutional FVG.
+bool bullFvg = confirmed and not na(high[2]) and low > high[2]
+bool bearFvg = confirmed and not na(low[2]) and high < low[2]
+
+// Confirmed previous day levels; no repaint from current D1 candle.
+bool sweepPDH = confirmed and not na(pdh) and high > pdh and close < pdh
+bool sweepPDL = confirmed and not na(pdl) and low < pdl and close > pdl
+
+// v2 narrow payload: server validates exact event, kind, BTC symbol and close time.
+makePayload(string evt, float lvl, string lvlKind) =>
+    '{"source":"btc-intelligence-tv-v2","event":"' + evt +
+     '","symbol":"' + syminfo.tickerid + '","timeframe":"5","time_ms":' +
+     str.tostring(time_close) + ',"price":' + str.tostring(close, format.mintick) +
+     ',"level":' + str.tostring(lvl, format.mintick) +
+     ',"level_kind":"' + lvlKind + '","volume":' + str.tostring(volume) + '}'
+
+// Priority avoids many alerts for the same bar; any alert() function call.
+if bullBos
+    alert(makePayload("m5_bullish_bos", lastHigh, "pivot_high"), alert.freq_once_per_bar_close)
+else if bearBos
+    alert(makePayload("m5_bearish_bos", lastLow, "pivot_low"), alert.freq_once_per_bar_close)
+else if bullShift
+    alert(makePayload("m5_bullish_shift", lastHigh, "pivot_high"), alert.freq_once_per_bar_close)
+else if bearShift
+    alert(makePayload("m5_bearish_shift", lastLow, "pivot_low"), alert.freq_once_per_bar_close)
+else if sweepPDH
+    alert(makePayload("m5_sweep_pdh", pdh, "pdh"), alert.freq_once_per_bar_close)
+else if sweepPDL
+    alert(makePayload("m5_sweep_pdl", pdl, "pdl"), alert.freq_once_per_bar_close)
+else if bullFvg
+    alert(makePayload("m5_bullish_fvg", low, "fvg_upper"), alert.freq_once_per_bar_close)
+else if bearFvg
+    alert(makePayload("m5_bearish_fvg", high, "fvg_lower"), alert.freq_once_per_bar_close)
+
+plot(isM5 ? pdh : na, title="Previous Day High", color=color.orange, style=plot.style_linebr)
+plot(isM5 ? pdl : na, title="Previous Day Low", color=color.aqua, style=plot.style_linebr)
+plot(isM5 ? lastHigh : na, title="Confirmed swing high", color=color.new(color.red, 60))
+plot(isM5 ? lastLow : na, title="Confirmed swing low", color=color.new(color.lime, 60))
+plotshape(bullBos, title="Bullish BOS candidate", location=location.belowbar, style=shape.triangleup, color=color.lime, size=size.tiny, text="BOS")
+plotshape(bearBos, title="Bearish BOS candidate", location=location.abovebar, style=shape.triangledown, color=color.red, size=size.tiny, text="BOS")
+plotshape(bullShift, title="Bullish Shift candidate", location=location.belowbar, style=shape.triangleup, color=color.teal, size=size.tiny, text="Shift")
+plotshape(bearShift, title="Bearish Shift candidate", location=location.abovebar, style=shape.triangledown, color=color.maroon, size=size.tiny, text="Shift")
+if barstate.islast and not isM5
+    label.new(bar_index, high, "Use BTC 5m for ICT v2 webhook", style=label.style_label_down)
