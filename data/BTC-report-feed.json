@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 0.85359851,
-    "percent": 0.0014042577,
-    "source_time_utc": "2026-11-26T13:23:20.378Z"
+    "mark_minus_index_usd": 3.32033965,
+    "percent": 0.0054641801,
+    "source_time_utc": "2026-11-26T13:25:19.133Z"
   },
-  "collected_at_utc": "2026-11-26T13:23:19.649692Z",
+  "collected_at_utc": "2026-11-26T13:25:18.489228Z",
   "collection_age_seconds_at_generation": 2,
   "funding": {
     "absolute": 0.481313797706625,
     "relative_hourly": 7.9202625e-06,
     "relative_percent_hourly": 0.00079202625,
-    "source_time_utc": "2026-11-26T13:23:20.378Z"
+    "source_time_utc": "2026-11-26T13:25:19.133Z"
   },
-  "generated_at_utc": "2026-11-26T13:23:21.286184Z",
+  "generated_at_utc": "2026-11-26T13:25:20.563836Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,9 +27,9 @@
       "M15": 0.9401,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T13:23:20.378Z",
+    "source_time_utc": "2026-11-26T13:25:19.133Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2091.7409
+    "value": 2093.4543
   },
   "order_flow": {
     "H1": {
@@ -73,20 +73,20 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": -4.3115,
-      "futures_volume": 19.1827,
-      "observation": "both_aggressive_sell",
-      "spot_delta": -4.96792588,
-      "spot_volume": 6.30751842,
-      "window_end_utc": "2026-11-26T13:20:00Z"
+      "futures_delta": 0.9953,
+      "futures_volume": 33.1571,
+      "observation": "mixed_or_neutral",
+      "spot_delta": 1.93306384,
+      "spot_volume": 4.22108372,
+      "window_end_utc": "2026-11-26T13:25:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "push",
-    "slot": "",
-    "source": "github"
+    "event": "workflow_dispatch",
+    "slot": "2026-11-26T13:25:00.000Z",
+    "source": "cloudflare"
   },
   "schema_version": "1.0",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
@@ -1026,8 +1026,8 @@
     "M5": {
       "events": [
         {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60741.0
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60783.3
         }
       ],
       "fvg": [
@@ -1044,10 +1044,10 @@
           "low": 60611.0
         }
       ],
-      "last_close": 60754.7,
-      "last_high": 60783.3,
-      "last_low": 60720.1,
-      "latest_closed_utc": "2026-11-26T13:15:00Z",
+      "last_close": 60767.5,
+      "last_high": 60813.2,
+      "last_low": 60754.1,
+      "latest_closed_utc": "2026-11-26T13:20:00Z",
       "qm": [
         {
           "broken_level": 58375.7,
