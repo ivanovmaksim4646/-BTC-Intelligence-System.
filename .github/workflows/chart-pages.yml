@@ -1,0 +1,32 @@
+name: Publish chart dashboard
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['charts/**', '.github/workflows/chart-pages.yml']
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: chart-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check charts/charts.mjs && node --test charts/chart-data.test.mjs
+      - uses: actions/configure-pages@v5
+      - run: |
+          mkdir -p public
+          cp charts/index.html charts/chart-data.mjs charts/charts.mjs public/
+          touch public/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - uses: actions/deploy-pages@v4
+        id: deployment
