@@ -1,18 +1,18 @@
 {
   "basis": {
-    "mark_minus_index_usd": 1.43255163,
-    "percent": 0.0023700034,
-    "source_time_utc": "2026-11-26T17:35:20.49Z"
+    "mark_minus_index_usd": 4.646112,
+    "percent": 0.0076943811,
+    "source_time_utc": "2026-11-26T17:40:27.611Z"
   },
-  "collected_at_utc": "2026-11-26T17:35:19.405961Z",
-  "collection_age_seconds_at_generation": 72,
+  "collected_at_utc": "2026-11-26T17:40:26.649864Z",
+  "collection_age_seconds_at_generation": 54,
   "funding": {
     "absolute": 0.37036931460002015,
     "relative_hourly": 6.126666666667e-06,
     "relative_percent_hourly": 0.0006126666666666999,
-    "source_time_utc": "2026-11-26T17:35:20.49Z"
+    "source_time_utc": "2026-11-26T17:40:27.611Z"
   },
-  "generated_at_utc": "2026-11-26T17:36:31.525430Z",
+  "generated_at_utc": "2026-11-26T17:41:20.235265Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -27,46 +27,46 @@
         "funding": {
           "next_funding_time_ms": 1795766400000,
           "not_realized_funding": true,
-          "rate_fraction": 5.36959659547e-05,
-          "rate_percent": 0.0053696,
+          "rate_fraction": 5.42072746323e-05,
+          "rate_percent": 0.0054207,
           "status": "quoted_rate_snapshot"
         },
         "mark_index": {
-          "index_price": 60524.2,
-          "index_timestamp_ms": 1795714574018,
-          "mark_minus_index_usdt": -30.2,
-          "mark_price": 60494.0,
-          "mark_timestamp_ms": 1795714574986,
-          "premium_bps": -4.98974,
+          "index_price": 60449.1,
+          "index_timestamp_ms": 1795714862485,
+          "mark_minus_index_usdt": -26.7,
+          "mark_price": 60422.4,
+          "mark_timestamp_ms": 1795714863667,
+          "premium_bps": -4.416939,
           "status": "two_recent_public_snapshots",
           "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
         },
         "oi_change": {
-          "current_timestamp_ms": 1795714574278,
-          "delta_btc": 60.2416,
-          "delta_percent": 0.18824,
-          "elapsed_seconds": 303.073,
+          "current_timestamp_ms": 1795714863007,
+          "delta_btc": 88.3854,
+          "delta_percent": 0.27566,
+          "elapsed_seconds": 288.729,
           "limitation": "not_continuous_intraperiod_OI",
-          "previous_timestamp_ms": 1795714271205,
+          "previous_timestamp_ms": 1795714574278,
           "status": "two_verified_snapshots"
         }
       },
       "flow": {
         "15m": {
           "futures": {
-            "delta_btc": "-386.3227",
+            "delta_btc": "-495.7292",
             "direction": "short",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "1155.8335"
+            "volume_btc": "1265.5260"
           },
           "spot": null
         },
         "1h": {
           "futures": {
-            "delta_btc": "-269.7831",
+            "delta_btc": "-352.4541",
             "direction": "short",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "2770.0215"
+            "volume_btc": "2662.4419"
           },
           "spot": null
         },
@@ -76,29 +76,25 @@
         },
         "5m": {
           "futures": {
-            "delta_btc": "-91.6535",
+            "delta_btc": "-97.9714",
             "direction": "short",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "517.3769"
+            "volume_btc": "190.7564"
           },
-          "spot": {
-            "delta_btc": "-6.01916513",
-            "direction": "short",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "22.98780275"
-          }
+          "spot": null
         }
       },
-      "generated_at_utc": "2026-11-26T17:36:31.439355+00:00",
+      "generated_at_utc": "2026-11-26T17:41:20.171766+00:00",
       "liquidity": {
         "interpretation": "cancellable_resting_orders_not_directional_vote",
         "resting_side": "ask_heavier",
-        "timestamp_ms": 1795714574702
+        "timestamp_ms": 1795714863402
       },
-      "m5_close_s": 1795714500,
+      "m5_close_s": 1795714800,
       "missing": [
         "macro",
         "liquidation_heatmap",
+        "reconciled_flow_5m",
         "reconciled_flow_15m",
         "reconciled_flow_1h",
         "reconciled_flow_4h"
@@ -124,9 +120,9 @@
       "M15": 74.1879,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T17:35:20.49Z",
+    "source_time_utc": "2026-11-26T17:40:27.611Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2119.5482
+    "value": 2118.8606
   },
   "order_flow": {
     "H1": {
@@ -170,19 +166,19 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 6.9315,
-      "futures_volume": 18.5381,
-      "observation": "spot_sell_futures_buy_divergence",
-      "spot_delta": -1.00514387,
-      "spot_volume": 8.18456507,
-      "window_end_utc": "2026-11-26T17:35:00Z"
+      "futures_delta": -0.6231,
+      "futures_volume": 5.0395,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -1.93284927,
+      "spot_volume": 2.88930411,
+      "window_end_utc": "2026-11-26T17:40:00Z"
     }
   },
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
     "event": "workflow_dispatch",
-    "slot": "2026-11-26T17:35:00.000Z",
+    "slot": "2026-11-26T17:40:00.000Z",
     "source": "cloudflare"
   },
   "schema_version": "1.1",
@@ -1095,15 +1091,16 @@
     "M5": {
       "events": [
         {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60400.4
+          "kind": "inside_bar",
+          "reference_high": 60479.9,
+          "reference_low": 60341.6
         }
       ],
       "fvg": [],
-      "last_close": 60462.4,
-      "last_high": 60479.9,
-      "last_low": 60341.6,
-      "latest_closed_utc": "2026-11-26T17:30:00Z",
+      "last_close": 60381.6,
+      "last_high": 60475.3,
+      "last_low": 60381.5,
+      "latest_closed_utc": "2026-11-26T17:35:00Z",
       "qm": [
         {
           "broken_level": 58187.8,
