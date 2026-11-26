@@ -1,0 +1,33 @@
+name: OKX liquidity intelligence v1 validation
+on:
+  push:
+    branches:
+      - feature/okx-liquidity-intelligence-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run full BTC Intelligence Python regression suite
+        run: python -m unittest discover -s tests -q
+      - name: Verify observational-only OKX liquidity intelligence output
+        run: |
+          python src/okx_liquidity_intelligence_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-liquidity-intelligence-v1.json').read_text())
+          print('OKX liquidity intelligence',o['status'],
+                'sources',sum(v is not None for v in o['observations'].values()),
+                'warnings',o['warnings'])
+          assert o['source']=='OKX BTC-USDT-SWAP'
+          assert o['decision']=='NO_TRADE'
+          assert o['trade_signal'] is None
+          assert o['complete_cvd_btc'] is None
+          assert o['confirmed_absorption'] is None
+          assert o['execution_ready'] is False
+          PY
