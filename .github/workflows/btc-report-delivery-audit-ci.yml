@@ -1,0 +1,22 @@
+name: BTC Report Delivery Evidence Audit CI
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/report_delivery_audit_v1.py'
+      - 'tests/test_report_delivery_audit_v1.py'
+      - '.github/workflows/btc-report-delivery-audit-ci.yml'
+  push:
+    branches: [feature/btc-report-delivery-audit-v1]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_report_delivery_audit_v1.py' -v
