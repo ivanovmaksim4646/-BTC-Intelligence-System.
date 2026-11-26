@@ -14,12 +14,14 @@ import json
 from pathlib import Path
 try:
     from src.binance_poi_qm_v1 import fvg_zones,overlaps
-    from src.strategy_models_v1 import scan_qm
+    from src.strategy_models_v1 import scan_qm, scan_ifvg
+    from src.okx_market_context_v1 import fresh_structure_break
     from src.okx_outcome_tracker_v1 import check_bar,canonical,VENUE
     from src.rr_outcome_research_v1 import valid_number
 except ModuleNotFoundError:
     from binance_poi_qm_v1 import fvg_zones,overlaps
-    from strategy_models_v1 import scan_qm
+    from strategy_models_v1 import scan_qm, scan_ifvg
+    from okx_market_context_v1 import fresh_structure_break
     from okx_outcome_tracker_v1 import check_bar,canonical,VENUE
     from rr_outcome_research_v1 import valid_number
 
@@ -53,6 +55,33 @@ def confirmed_pivots(bars,tf_seconds,direction,at):
         if ok:out.append({"level":val,"pivot_at":p["t"],"confirmed_at":confirmation})
     return out
 
+def chronological_break(bars,head,extreme,retest_open,direction):
+    """Reconstruct candidate breaks using only information available at each close."""
+    if direction not in ("long","short") or not head<extreme<retest_open:
+        return None
+    prefix="bullish" if direction=="long" else "bearish"
+    latest=None
+    for i,bar in enumerate(bars):
+        if not head<bar["t"]<=extreme or bar["t"]+M5>retest_open:
+            continue
+        event=fresh_structure_break(bars[:i+1],"5m")
+        if event is not None:
+            latest=event
+    if latest and latest["kind"].startswith(prefix):
+        return latest
+    return None
+
+def prior_poi_zones(bars,step,head,direction):
+    """Only HTF candles closed before QM head; IFVG usable after inversion closes."""
+    prior=[b for b in bars if b["t"]+step<=head]
+    zones=[dict(p,kind="FVG",available_at=p["formed"]+step)
+           for p in fvg_zones(prior) if p["direction"]==direction]
+    zones.extend({"direction":direction,"low":p["low"],"high":p["high"],
+                  "formed":p["formed_at"],"kind":"IFVG",
+                  "available_at":p["inverted_at"]+step}
+                 for p in scan_ifvg(prior) if p["direction"]==direction)
+    return zones
+
 def evaluate(snapshot,observations,now=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.utcoffset() is None:raise ValueError("timezone-aware now required")
@@ -65,6 +94,7 @@ def evaluate(snapshot,observations,now=None):
           "stop":"QM_head_extreme_with_outward_3bps",
           "target":"pre_entry_confirmed_opposing_HTF_swing",
           "requires_TV_OKX_observation":True,
+          "requires_directional_bos_or_shift_after_qm_head":True,
           "execution":"not_executed"}}
     frames=(snapshot or {}).get("timeframes") if isinstance(snapshot,dict) else None
     if (not isinstance(snapshot,dict) or snapshot.get("source")!=VENUE
@@ -83,7 +113,7 @@ def evaluate(snapshot,observations,now=None):
             report["reasons"].append("invalid_closed_okx_"+tf)
             return report
         step=M5 if tf=="5m" else HTF_SECONDS[tf]
-        if any(bars[i]["t"]-bars[i-1]["t"]!=step for i in range(1,len(bars))):
+        if any(b["t"]%step for b in bars) or any(bars[i]["t"]-bars[i-1]["t"]!=step for i in range(1,len(bars))):
             report["reasons"].append("gapped_okx_"+tf)
             return report
         if bars[-1]["t"]+step>now.timestamp():
@@ -129,6 +159,11 @@ def evaluate(snapshot,observations,now=None):
                b["l"]<=shoulder<=b["h"] and abs(b["c"]-shoulder)/shoulder<=0.001 and
                (b["c"]>shoulder if direction=="long" else b["c"]<shoulder)]
             if not first or first[0]["t"]!=entry_bar["t"]:continue
+            structure_break=chronological_break(m5,head,extreme,entry_bar["t"],direction)
+            if structure_break is None:
+                if "no_directional_bos_or_shift_in_qm_sequence" not in report["reasons"]:
+                    report["reasons"].append("no_directional_bos_or_shift_in_qm_sequence")
+                continue
             report["candidates_evaluated"]+=1
             stop=head_price*(0.9997 if direction=="long" else 1.0003)
             entry=entry_bar["c"]
@@ -136,10 +171,9 @@ def evaluate(snapshot,observations,now=None):
             for tf in ("1h","4h"):
                 ht=frames[tf]["bars"];step=HTF_SECONDS[tf]
                 # HTF POI formed and CONFIRMED before touch; no future HTF.
-                pois=[p for p in fvg_zones(ht) if p["direction"]==direction
-                      and p["formed"]+step<=head]
+                pois=prior_poi_zones(ht,step,head,direction)
                 for poi in pois:
-                    touches=[b for b in m5 if poi["formed"]+step<=b["t"]<head
+                    touches=[b for b in m5 if poi["available_at"]<=b["t"]<head
                              and overlaps(b,poi["low"],poi["high"])]
                     if not touches:continue
                     # Opposing TP pivot confirmed BEFORE entry. Must lie
@@ -161,6 +195,8 @@ def evaluate(snapshot,observations,now=None):
                     net=reward/risk if risk>0 else -1
                     if net<1:continue
                     evidence={"htf":tf,"poi_formed":poi["formed"],
+                         "poi_kind":poi["kind"],"poi_available_at":poi["available_at"],
+                         "structure_break":structure_break,
                          "poi_low":poi["low"],"poi_high":poi["high"],
                          "poi_touch":touches[0]["t"],"qm_head":head,
                          "qm_extreme":extreme,"qm_head_price":head_price,

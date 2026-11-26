@@ -28,3 +28,6 @@ For future integration, entry records must include `entry_id`, `source:"OKX BTC-
 ### Next milestone
 
 Build the deterministic independently sourced **OKX POI/QM retest and liquidity-target entry validator**, and confirm actual OKX TradingView venue before producing any paper entries for this tracker.
+
+## Setup chronology extension (research only)
+The existing entry gate now also requires a direction-matching first-cross BOS/Shift candidate reconstructed on historical closed M5 prefixes after the QM head and no later than its structural extreme, before the retest opens. HTF FVG and IFVG are reconstructed only on candles already closed by the head; an IFVG is available only after its inversion candle closes. This deliberately stricter experimental rule is not a discretionary ICT validation; it may reduce sample count. TV venue, first retest, independent target, risk and NO_TRADE safeguards remain unchanged.
