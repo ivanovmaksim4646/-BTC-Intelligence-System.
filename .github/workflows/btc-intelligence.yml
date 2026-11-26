@@ -128,6 +128,11 @@ jobs:
         continue-on-error: true
         run: python src/bingx_poi_qm_v1.py
 
+      - name: Collect and persist reconciled OKX order flow (bounded, nonblocking)
+        if: always()
+        continue-on-error: true
+        run: python -m src.okx_flow_history_v1
+
       - name: Collect OKX Futures M5-W1 closed candles (independent)
         id: okx_ict_candles
         continue-on-error: true
