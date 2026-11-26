@@ -8,7 +8,8 @@ NOW=dt.datetime(2026,11,26,15,0,tzinfo=dt.timezone.utc)
 EPOCH=int(NOW.timestamp())
 ENTRY_OPEN=EPOCH-300
 def series(step,n=40,base=100):
-    start=ENTRY_OPEN-(n-1)*step
+    latest=(EPOCH-step)//step*step
+    start=latest-(n-1)*step
     return [{"t":start+i*step,"o":base,"h":base+1,"l":base-1,"c":base}
             for i in range(n)]
 def fixture():
