@@ -1,0 +1,26 @@
+{
+  "schema_version": "2.0",
+  "evaluated_at_utc": "2026-11-26T12:37:43.094224+00:00",
+  "classification": "okx_risk_gate_research_only",
+  "venue": "OKX BTC-USDT-SWAP",
+  "decision": "NO_TRADE",
+  "trade_signal": null,
+  "entry_signal": false,
+  "scenarios": [],
+  "candidates_inspected": 0,
+  "reasons": [
+    "no_confirmed_poi_qm_retest",
+    "no_live_confirmed_okx_qm_retest_and_independent_target"
+  ],
+  "execution_ready": false,
+  "max_account_risk_fraction": 0.01,
+  "max_notional_leverage": 5,
+  "requires": [
+    "same_venue_confirmed_retest_close",
+    "independently_confirmed_opposing_liquidity_target_before_entry",
+    "actual_OKX_contract_lot_tick_minimum_and_fee_schedule",
+    "fresh_same_venue_orderflow_and_execution_slippage_evidence",
+    "backtesting_and_forward_validation"
+  ],
+  "okx_closed_candles_verified": true
+}
