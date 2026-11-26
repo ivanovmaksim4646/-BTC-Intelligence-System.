@@ -1,25 +1,104 @@
 {
   "basis": {
-    "mark_minus_index_usd": 3.26831324,
-    "percent": 0.0054159962,
-    "source_time_utc": "2026-11-26T15:39:17.399Z"
+    "mark_minus_index_usd": 2.39935329,
+    "percent": 0.0039753734,
+    "source_time_utc": "2026-11-26T15:43:57.416Z"
   },
-  "collected_at_utc": "2026-11-26T15:39:16.584658Z",
-  "collection_age_seconds_at_generation": 3,
+  "collected_at_utc": "2026-11-26T15:43:56.245844Z",
+  "collection_age_seconds_at_generation": 132,
   "funding": {
     "absolute": 0.34181823527875,
     "relative_hourly": 5.635375e-06,
     "relative_percent_hourly": 0.0005635375,
-    "source_time_utc": "2026-11-26T15:39:17.399Z"
+    "source_time_utc": "2026-11-26T15:43:57.416Z"
   },
-  "generated_at_utc": "2026-11-26T15:39:19.480807Z",
+  "generated_at_utc": "2026-11-26T15:46:08.457560Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
     "Window Delta is exactly the same measurement as window CVD change, not an independent confirmation.",
-    "Only Kraken Spot/Futures data and available derived observations are included; no ETF, liquidation heatmap, Binance/BingX order flow or macro feed.",
+    "Legacy fields are Kraken-only; OKX confluence is separately labeled. No cross-venue combination or unverified macro, ETF or liquidation heatmap values.",
     "Structure is based on Kraken Spot closed candles; TradingView events are recorded separately."
   ],
+  "okx_confluence": {
+    "data": {
+      "conflicts": [],
+      "derivatives": {
+        "funding": {
+          "next_funding_time_ms": 1795737600000,
+          "not_realized_funding": true,
+          "rate_fraction": 4.62988944512e-05,
+          "rate_percent": 0.0046299,
+          "status": "quoted_rate_snapshot"
+        },
+        "mark_index": {
+          "index_price": 60403.0,
+          "index_timestamp_ms": 1795707967105,
+          "mark_minus_index_usdt": -27.8,
+          "mark_price": 60375.2,
+          "mark_timestamp_ms": 1795707967555,
+          "premium_bps": -4.60242,
+          "status": "two_recent_public_snapshots",
+          "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
+        },
+        "oi_change": {
+          "current_timestamp_ms": 1795707966611,
+          "delta_btc": 34.3303,
+          "delta_percent": 0.10728,
+          "elapsed_seconds": 279.513,
+          "limitation": "not_continuous_intraperiod_OI",
+          "previous_timestamp_ms": 1795707687098,
+          "status": "two_verified_snapshots"
+        }
+      },
+      "flow": {
+        "15m": {
+          "futures": null,
+          "spot": null
+        },
+        "1h": {
+          "futures": null,
+          "spot": null
+        },
+        "4h": {
+          "futures": null,
+          "spot": null
+        },
+        "5m": {
+          "futures": null,
+          "spot": null
+        }
+      },
+      "generated_at_utc": "2026-11-26T15:46:08.421796+00:00",
+      "liquidity": {
+        "interpretation": "cancellable_resting_orders_not_directional_vote",
+        "resting_side": "bid_heavier",
+        "timestamp_ms": 1795707967152
+      },
+      "m5_close_s": 1795707900,
+      "missing": [
+        "macro",
+        "breadth",
+        "liquidation_heatmap",
+        "reconciled_flow_5m",
+        "reconciled_flow_15m",
+        "reconciled_flow_1h",
+        "reconciled_flow_4h"
+      ],
+      "paper_candidates_count": 0,
+      "source": "OKX BTC-USDT-SWAP",
+      "structure": {
+        "15m": "bearish",
+        "1h": "mixed",
+        "4h": "bearish",
+        "5m": "bearish"
+      },
+      "support": [],
+      "watch_direction": null
+    },
+    "status": "research_partial",
+    "trade_signal": null
+  },
   "open_interest": {
     "change": {
       "H1": -4.9979,
@@ -27,9 +106,9 @@
       "M15": 0.4602,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-26T15:39:17.399Z",
+    "source_time_utc": "2026-11-26T15:43:57.416Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2131.6502
+    "value": 2128.087
   },
   "order_flow": {
     "H1": {
@@ -73,12 +152,12 @@
         "futures": "complete",
         "spot": "complete"
       },
-      "futures_delta": 4.2061,
-      "futures_volume": 12.6915,
-      "observation": "both_aggressive_buy",
-      "spot_delta": 17.69207172,
-      "spot_volume": 19.69748768,
-      "window_end_utc": "2026-11-26T15:35:00Z"
+      "futures_delta": 3.0787,
+      "futures_volume": 95.3791,
+      "observation": "mixed_or_neutral",
+      "spot_delta": -1.12051078,
+      "spot_volume": 13.37328854,
+      "window_end_utc": "2026-11-26T15:40:00Z"
     }
   },
   "reasons": [],
@@ -88,7 +167,7 @@
     "slot": "",
     "source": "github"
   },
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
   "source": "Kraken Spot/Futures via BTC Intelligence GitHub Actions",
   "structure": {
@@ -1030,12 +1109,18 @@
           "high": 60656.2,
           "kind": "bearish_fvg",
           "low": 60307.8
+        },
+        {
+          "formed_at": 1795707300,
+          "high": 60310.5,
+          "kind": "bullish_fvg",
+          "low": 60300.0
         }
       ],
-      "last_close": 60310.6,
-      "last_high": 60310.6,
-      "last_low": 60220.9,
-      "latest_closed_utc": "2026-11-26T15:30:00Z",
+      "last_close": 60375.2,
+      "last_high": 60514.6,
+      "last_low": 60310.5,
+      "latest_closed_utc": "2026-11-26T15:35:00Z",
       "qm": [
         {
           "broken_level": 58187.8,
