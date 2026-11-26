@@ -102,6 +102,10 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/report_feed.py
 
+      - name: Evaluate BTC Signal Engine v1 (research only)
+        if: steps.collect.outcome == 'success'
+        run: python src/signal_engine_v1.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
