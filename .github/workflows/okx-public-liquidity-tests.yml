@@ -1,0 +1,35 @@
+name: OKX public liquidity derivatives validation
+on:
+  push:
+    branches:
+      - feature/okx-liquidity-funding-basis-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC unit regression
+        run: python -m unittest discover -s tests -q
+      - name: Public OKX live REST smoke check (no auth, no orders)
+        run: |
+          python src/okx_liquidity_derivatives_v1.py
+          python src/okx_derivatives_context_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('data/BTC-okx-liquidity-derivatives-v1.json').read_text())
+          c=json.loads(Path('data/BTC-okx-derivatives-context-v1.json').read_text())
+          print('Public snapshots',o['status'],
+                'book',o['book']['status'],
+                'funding',o['funding']['status'],
+                'premium',o['mark_index']['status'],
+                'endpoint_errors',o['endpoint_errors'])
+          assert o['trade_signal'] is None and c['trade_signal'] is None
+          assert o['complete_cvd_btc'] is None and c['full_cvd_btc'] is None
+          assert c['source']=='OKX BTC-USDT-SWAP'
+          assert not any('account' in k or 'order' in k for k in o['endpoint_errors'])
+          PY

@@ -159,6 +159,15 @@ jobs:
         if: always()
         run: python src/okx_flow_coverage_v1.py
 
+      - name: Collect OKX depth funding and mark/index snapshots (free public REST)
+        if: always()
+        continue-on-error: true
+        run: python src/okx_liquidity_derivatives_v1.py
+
+      - name: Build read-only OKX snapshot context for BTC reports
+        if: always()
+        run: python src/okx_derivatives_context_v1.py
+
       - name: Report RR statistics from independently validated historical outcomes
         if: always()
         run: python src/rr_statistics_v1.py
