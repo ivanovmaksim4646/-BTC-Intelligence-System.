@@ -175,3 +175,5 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | Chart Pages deployment staged** | PR49, commit 0204a42dad834261618b231387ac1344fd5a3dd0. Path-limited main deployment of three static dashboard assets, existing Node checks before deploy. Pages settings endpoint unavailable via connector; owner may need enable GitHub Actions source. Browser and report integration pending; no trading changes.
 
 - **2026-11-27 | Pages source enabled and deployment merged** | User screenshot confirms GitHub Actions source selected. PR49 CI 45911763869 and 45911763860 succeeded; merge 4c35d60fe9a6c72798958a686623bd17bdc8592d. Main push triggers publication. Actual deployment and browser display pending; no trading changes.
+
+- **2026-11-27 | Spot H4 full volume coverage milestone** | Main 23:35 UTC: OKX Spot M5/M15/H1/H4 1/1,3/3,12/12,48/48; Futures 1/1,2/3,11/12,42/48. Report ready at 23:36:18 UTC, eight macro events, OKX research_partial. Forward paper admission disabled, zero trades/outcomes; no performance proof. Chart Pages run 45911955599 failed; deployment not verified.
