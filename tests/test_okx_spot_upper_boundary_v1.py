@@ -1,7 +1,7 @@
 """Spot upper M5 boundary regression tests; no network requests."""
 import unittest
 from unittest.mock import patch
-from src.okx_flow_history_v1 import collect_one
+from src.okx_flow_history_v1 import collect_one, spot_backfill_target, merge
 from src.okx_rest_pagination_probe import probe
 from src.okx_flow_reconcile import reconcile
 
@@ -26,6 +26,31 @@ class SpotBoundaryTests(unittest.TestCase):
              patch("src.okx_flow_history_v1.time.sleep"):
             collect_one(instrument,END)
         return seen[0]
+
+    def test_nearest_missing_spot_bucket_is_retried(self):
+        rows=[{"instrument":"BTC-USDT","end_ms":END-300000,
+               "volume_reconciled":True}]
+        self.assertEqual(spot_backfill_target(rows,END),END-600000)
+
+    def test_futures_cannot_satisfy_spot_backfill(self):
+        rows=[{"instrument":"BTC-USDT-SWAP","end_ms":END-300000,
+               "volume_reconciled":True}]
+        self.assertEqual(spot_backfill_target(rows,END),END-300000)
+
+    def test_all_48_spot_buckets_present_no_backfill(self):
+        rows=[{"instrument":"BTC-USDT","end_ms":END-i*300000,
+               "volume_reconciled":True} for i in range(1,49)]
+        self.assertIsNone(spot_backfill_target(rows,END))
+
+    def test_backfill_outside_four_hours_is_ignored(self):
+        rows=[{"instrument":"BTC-USDT","end_ms":END-i*300000,
+               "volume_reconciled":True} for i in range(1,48)]
+        self.assertEqual(spot_backfill_target(rows,END),END-48*300000)
+
+    def test_failed_backfill_does_not_enter_history(self):
+        rows=merge([], [{"instrument":"BTC-USDT","end_ms":END-300000,
+             "start_ms":END-600000,"volume_reconciled":False}],END)
+        self.assertEqual(rows,[])
 
     def test_spot_initial_cursor_extends_beyond_boundary(self):
         p=self.collect_cursor("BTC-USDT")
