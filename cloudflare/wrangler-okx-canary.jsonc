@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "btc-okx-ws-canary",
+  "main": "./okx-ws-canary.mjs",
+  "compatibility_date": "2026-11-26",
+  "workers_dev": true,
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "durable_objects": {
+    "bindings": [{ "name": "OKX_CANARY", "class_name": "OkxCanary" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["OkxCanary"] }]
+}
