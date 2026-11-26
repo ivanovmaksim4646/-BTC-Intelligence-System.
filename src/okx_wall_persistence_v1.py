@@ -9,7 +9,10 @@ import datetime as dt
 import json
 import math
 from pathlib import Path
-from src.okx_liquidity_history_v1 import normalize, SOURCE, MAX_COMPARE_GAP
+if __package__:
+    from .okx_liquidity_history_v1 import normalize, SOURCE, MAX_COMPARE_GAP
+else:
+    from okx_liquidity_history_v1 import normalize, SOURCE, MAX_COMPARE_GAP
 
 DATA=Path(__file__).resolve().parents[1]/"data"
 IN=DATA/"BTC-okx-liquidity-history-v1.jsonl"
