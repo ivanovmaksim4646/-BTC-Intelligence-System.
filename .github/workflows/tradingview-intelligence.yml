@@ -39,22 +39,8 @@ jobs:
 
           raw = os.environ['BTC_TV_PAYLOAD']
           event = json.loads(raw)
-          required = {'source', 'event', 'symbol', 'timeframe', 'time_ms',
-                      'price', 'mother_high', 'mother_low', 'inside_high', 'inside_low'}
-          assert set(event) == required, 'Unexpected fields'
-          assert event['source'] == 'btc-intelligence-tv-v1'
-          assert event['event'] in {'h1_inside_bar', 'h1_sweep_high_reject',
-                                    'h1_sweep_low_reclaim'}
-          assert event['timeframe'] == '5'
-          assert event['symbol'].upper().startswith(('BINANCE:BTC', 'BYBIT:BTC',
-                                                       'BINGX:BTC', 'KRAKEN:XBT',
-                                                       'BTC', 'XBT')), 'Not BTC'
-          assert isinstance(event['time_ms'], int)
-          assert abs(dt.datetime.now(dt.timezone.utc).timestamp()*1000 -
-                     event['time_ms']) < 30*60*1000, 'Stale alert'
-          for key in ('price','mother_high','mother_low','inside_high','inside_low'):
-              assert isinstance(event[key], (int, float)) and 0 < event[key] < 1e8
-          assert event['mother_low'] < event['inside_low'] < event['inside_high'] < event['mother_high']
+          from src.tradingview_validation import validate
+          validate(event)
 
           path = Path('data/BTC-tradingview-events.jsonl')
           path.parent.mkdir(parents=True, exist_ok=True)
