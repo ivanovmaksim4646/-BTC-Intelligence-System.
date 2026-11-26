@@ -62,6 +62,25 @@ class SpotBoundaryTests(unittest.TestCase):
         self.assertEqual(p["type"],"2")
         self.assertEqual(p["after"],str(END+1000))
 
+    def test_historical_backfill_uses_targeted_closed_candle(self):
+        paths=[]
+        old_end=END-12*300000
+        def fake_probe(inst,fetch,end,max_pages):
+            fetch(None)
+            return {"instrument":inst,"end_ms":end,"volume_reconciled":False}
+        def fake_request(path,params):
+            paths.append((path,params))
+            return []
+        with patch("src.okx_flow_history_v1.probe",side_effect=fake_probe), \
+             patch("src.okx_flow_history_v1.request",side_effect=fake_request), \\
+             patch("src.okx_flow_history_v1.reconcile",side_effect=lambda r,c,m:r), \\
+             patch("src.okx_flow_history_v1.time.sleep"), \\
+             patch("src.okx_flow_history_v1.time.time",return_value=(END+600000)/1000):
+            collect_one("BTC-USDT",old_end)
+        historic=[p for path,p in paths if path=="market/history-candles"]
+        self.assertEqual(len(historic),1)
+        self.assertEqual(historic[0]["after"],str(old_end+300000))
+
     def test_missing_postclose_trade_still_not_reconciled(self):
         pages=iter([[row(9,END-1000),row(8,END-2000),row(7,END-300000-1)]])
         result=probe("BTC-USDT",lambda _:next(pages),END)
