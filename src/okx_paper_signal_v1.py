@@ -8,7 +8,7 @@ DATA=Path("data")
 def evaluate(confluence, gate, now=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     out={"generated_at_utc":now.isoformat(),"source":VENUE,"classification":"paper_signal_preview_only",
-         "decision":"NO_TRADE","paper_signal":None,"execution_enabled":False,"reasons":[]}
+         "decision":"NO_TRADE","paper_signal":None,"execution_enabled":False,"reasons":[],"warnings":[]}
     def reject(reason):
         out["reasons"].append(reason)
         return out
@@ -23,7 +23,12 @@ def evaluate(confluence, gate, now=None):
     close=confluence.get("m5_close_s")
     if type(close) is not int or not 0<=now.timestamp()-close<=420 or close!=(gate.get("diagnostics") or {}).get("latest_m5_close_s"):
         return reject("unsynchronized_setup")
-    if confluence.get("missing") or confluence.get("conflicts"):
+    missing=confluence.get("missing")
+    if not isinstance(missing,list) or not all(isinstance(x,str) for x in missing):
+        return reject("invalid_missing_data_metadata")
+    if "liquidation_heatmap" in missing:
+        out["warnings"].append("liquidation_heatmap_unavailable")
+    if any(x!="liquidation_heatmap" for x in missing) or confluence.get("conflicts"):
         return reject("incomplete_or_conflicting_evidence")
     direction=confluence.get("watch_direction")
     if direction not in ("long","short"):
