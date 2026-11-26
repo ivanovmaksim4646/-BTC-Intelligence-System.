@@ -61,6 +61,10 @@ jobs:
         if: steps.collect.outcome == 'success'
         run: python src/structure.py
 
+      - name: Build HTF H1 H4 D1 observational context
+        if: steps.collect.outcome == 'success'
+        run: python src/htf_context_v1.py
+
       - name: Evaluate BTC watchlist candidates (Sweep optional)
         if: steps.collect.outcome == 'success'
         run: python src/setup_candidates.py
