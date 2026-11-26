@@ -128,6 +128,10 @@ jobs:
         continue-on-error: true
         run: python src/bingx_poi_qm_v1.py
 
+      - name: Evaluate BTC Risk Engine v1 (paper-only, fail-closed)
+        if: always()
+        run: python src/risk_engine_v1.py
+
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
         shell: bash
