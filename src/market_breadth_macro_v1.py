@@ -1,6 +1,7 @@
 """Public market breadth and official macro observations, no inferred consensus."""
 import datetime as dt
 import json, math, csv, io, urllib.request, os
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 DATA=Path("data")
 def fetch(url,headers=None):
@@ -33,9 +34,20 @@ def main():
     key=os.getenv("COINGECKO_DEMO_API_KEY")
     try:out["breadth"]=breadth(json.loads(fetch("https://api.coingecko.com/api/v3/global",{"x-cg-demo-api-key":key} if key else {})),now)
     except Exception as exc:out["errors"]["breadth"]=type(exc).__name__
-    for name,series in {"cpi_index":"CPIAUCSL","unemployment_pct":"UNRATE","payrolls_thousands":"PAYEMS","effective_fed_funds_pct":"FEDFUNDS","ppi_index":"PPIACO"}.items():
-        try:out["macro"][name]=macro_series(fetch("https://fred.stlouisfed.org/graph/fredgraph.csv?id="+series),series,now)
-        except Exception as exc:out["errors"][name]=type(exc).__name__
+    series_map={"cpi_index":"CPIAUCSL","unemployment_pct":"UNRATE","payrolls_thousands":"PAYEMS","effective_fed_funds_pct":"FEDFUNDS","ppi_index":"PPIACO"}
+    def get(item):
+        name,series=item
+        for url in ("https://fred.stlouisfed.org/graph/fredgraph.csv?id="+series,):
+            try:
+                raw=fetch(url)
+                # Alternate mirrors must have the identical series identifier and dated observations.
+                return name,macro_series(raw,series,now),None
+            except Exception as exc:error=type(exc).__name__
+        return name,None,error
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        for name,value,error in pool.map(get,series_map.items()):
+            if value is not None:out["macro"][name]=value
+            else:out["errors"][name]=error
     out["macro_status"]="observations_only_no_release_calendar_or_consensus"
     DATA.mkdir(exist_ok=True);p=DATA/"BTC-market-breadth-macro-v1.json";t=p.with_suffix(".tmp");t.write_text(json.dumps(out,indent=2)+"\n");t.replace(p)
     print("Breadth and macro availability",bool(out["breadth"]),list(out["macro"]),out["errors"])
