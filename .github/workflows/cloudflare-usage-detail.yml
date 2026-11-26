@@ -75,5 +75,14 @@ jobs:
                   z["requests"]+=(item.get("sum") or {}).get("requests") or 0
                   z["errors"]+=(item.get("sum") or {}).get("errors") or 0
               print("CRON LAST TWO HOURS:",json.dumps(recentstats,sort_keys=True))
+          # Inspect only the public status of the completed short OKX canary.
+          try:
+              with urllib.request.urlopen("https://btc-okx-ws-canary.ivanovmaksim812.workers.dev/status",timeout=12) as res:
+                  sample=json.load(res)
+              print("OKX CANARY SUMMARY:",json.dumps({k:sample.get(k) for k in (
+                  "phase","trade_count","message_count","invalid_trade_count","subscribed",
+                  "completion_reason","complete_m5")},sort_keys=True))
+          except Exception as exc:
+              print("OKX CANARY STATUS UNAVAILABLE:",type(exc).__name__)
           print("API ANALYTICS WINDOW:",v["start"],v["end"])
           PY
