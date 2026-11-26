@@ -1,0 +1,19 @@
+name: OKX REST pagination probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/okx-rest-pagination-probe]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: python src/okx_rest_pagination_probe.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-rest-pagination-probe
+          path: data/BTC-okx-rest-pagination-probe.json
