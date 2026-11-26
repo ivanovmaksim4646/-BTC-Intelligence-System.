@@ -1,0 +1,22 @@
+name: BEA report integration
+on:
+  push:
+    branches: [feature/bea-report-integration]
+  pull_request:
+    paths:
+      - 'src/official_bea_calendar_v1.py'
+      - 'src/report_feed.py'
+      - 'tests/test_bea_report_integration.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m unittest discover -s tests -q
+      - run: |
+          python -m src.official_bea_calendar_v1
+          python src/report_feed.py
+          python -c "import json; d=json.load(open('data/BTC-report-feed.json')); assert d['economic_calendar']['status']=='official_schedule_only'; assert d['economic_calendar']['events']; assert d['trade_signal'] is None; print(d['economic_calendar'])"
