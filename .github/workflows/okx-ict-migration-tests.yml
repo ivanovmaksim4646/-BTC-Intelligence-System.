@@ -1,0 +1,30 @@
+name: OKX ICT candle migration validation
+on:
+  push:
+    branches:
+      - feature/okx-ict-candle-migration-v1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Complete BTC regression suite
+        run: python -m unittest discover -s tests -q
+      - name: Live OKX M5 W1 data proof
+        run: |
+          python src/okx_futures_candles.py
+          python src/okx_poi_qm_v1.py
+          python - <<'PY'
+          import json
+          s=json.load(open("data/BTC-okx-futures-candles.json"))
+          q=json.load(open("data/BTC-okx-poi-qm-v1.json"))
+          print("LIVE OKX:",s["status"],"TF:",{x:len(v["bars"]) for x,v in s["timeframes"].items()}, "errors:",s["errors"])
+          print("ICT:",len(q["observations"]),"IFVG:",{k:len(v) for k,v in q["ifvg"].items()},"reasons:",q["reasons"])
+          assert q["trade_signal"] is None
+          assert q["decision"] == "NO_TRADE"
+          assert q["source"] == "OKX BTC-USDT-SWAP"
+          PY
