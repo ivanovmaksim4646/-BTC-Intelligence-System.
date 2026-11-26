@@ -159,6 +159,10 @@ jobs:
         if: always()
         run: python src/rr_statistics_v1.py
 
+      - name: Reconstruct OKX POI QM retest entry and prior confirmed target (paper evidence gate)
+        if: always()
+        run: python src/okx_entry_evidence_gate_v1.py
+
       - name: Track verified OKX paper entries and update RR outcomes (no execution)
         if: always()
         run: python src/okx_outcome_tracker_v1.py
