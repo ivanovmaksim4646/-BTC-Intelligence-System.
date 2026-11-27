@@ -1,8 +1,8 @@
 {
-  "analysed_at_utc": "2026-11-27T17:57:57.272460Z",
+  "analysed_at_utc": "2026-11-27T18:03:40.083257Z",
   "classification": "observation_only",
   "data_age_seconds": 1,
-  "data_collected_at_utc": "2026-11-27T17:57:56.308727Z",
+  "data_collected_at_utc": "2026-11-27T18:03:39.130101Z",
   "fresh": true,
   "limitations": [
     "No M5/M15 price structure, BOS/Shift, POI or FVG verification in this dataset.",
@@ -10,21 +10,21 @@
     "Delta and change in CVD for one window are one confirmation, not two."
   ],
   "open_interest": {
-    "h1_change": 67.028,
-    "value": 2063.228,
+    "h1_change": -26.172,
+    "value": 2061.9958,
     "venue": "Kraken Futures"
   },
   "schema_version": "1.0",
   "timeframes": {
     "H1": {
       "aligned": true,
-      "complete": false,
-      "futures_delta": null,
-      "futures_pressure": null,
-      "observation": "unavailable",
-      "spot_delta": null,
-      "spot_pressure": null,
-      "window_end_utc": "2026-11-27T17:00:00Z"
+      "complete": true,
+      "futures_delta": -118.42,
+      "futures_pressure": -0.2907,
+      "observation": "spot_buy_futures_sell_divergence",
+      "spot_delta": 65.89572036,
+      "spot_pressure": 0.1742,
+      "window_end_utc": "2026-11-27T18:00:00Z"
     },
     "H4": {
       "aligned": true,
@@ -39,22 +39,22 @@
     "M15": {
       "aligned": true,
       "complete": true,
-      "futures_delta": -0.0525,
-      "futures_pressure": -0.0009,
-      "observation": "mixed_or_neutral",
-      "spot_delta": -11.88379259,
-      "spot_pressure": -0.4418,
-      "window_end_utc": "2026-11-27T17:45:00Z"
+      "futures_delta": -12.7254,
+      "futures_pressure": -0.1109,
+      "observation": "both_aggressive_sell",
+      "spot_delta": -5.53616476,
+      "spot_pressure": -0.1911,
+      "window_end_utc": "2026-11-27T18:00:00Z"
     },
     "M5": {
       "aligned": true,
       "complete": true,
-      "futures_delta": -13.1084,
-      "futures_pressure": -0.362,
-      "observation": "both_aggressive_sell",
-      "spot_delta": -1.33741747,
-      "spot_pressure": -0.1603,
-      "window_end_utc": "2026-11-27T17:55:00Z"
+      "futures_delta": 22.5174,
+      "futures_pressure": 0.479,
+      "observation": "both_aggressive_buy",
+      "spot_delta": 1.70497094,
+      "spot_pressure": 0.1662,
+      "window_end_utc": "2026-11-27T18:00:00Z"
     }
   },
   "trade_signal": null
