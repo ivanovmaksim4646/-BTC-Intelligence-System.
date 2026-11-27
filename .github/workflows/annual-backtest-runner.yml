@@ -1,0 +1,26 @@
+name: Annual BTC research runner
+on:
+  push:
+    branches: [research/annual-backtest-runner]
+    paths:
+      - 'src/annual_backtest_input.py'
+      - '.github/workflows/annual-backtest-runner.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -q
+      - run: python -m src.annual_backtest_input
+      - uses: actions/upload-artifact@v4
+        with:
+          name: annual-btc-research-input
+          path: research-output/
+          retention-days: 7
