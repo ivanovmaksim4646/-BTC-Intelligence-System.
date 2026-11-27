@@ -96,7 +96,7 @@ def run():
     def portfolio(items,key="actual"):
         balance=peak=1000.; busy=0; wins=losses=skipped=unresolved=0; rs=[]; dd=0
         for e in sorted(items,key=lambda e:(e["at"],e["tf"]!="15m",e["direction"])):
-            if e["at"]<busy:skipped+=1;continue
+            if e["at"]<=busy:skipped+=1;continue
             o=e["actual"] if key=="actual" else e["fixed"].get(key)
             if o is None:unresolved+=1;busy=START+243*86400 if e["sample"]=="in_sample" else END;continue
             busy=o["t"];r=o["r"];rs.append(r);balance*=1+.01*r;peak=max(peak,balance);dd=max(dd,1-balance/peak);wins+=r>0;losses+=r<0
