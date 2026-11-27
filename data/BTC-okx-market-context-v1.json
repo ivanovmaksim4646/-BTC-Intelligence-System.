@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T14:39:16.603099+00:00",
+  "generated_at_utc": "2026-11-27T14:46:37.185996+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "bearish",
-      "last_closed_candle_open_s": 1795789800,
-      "last_closed_candle_close_s": 1795790100,
-      "last_close": 60788.5,
+      "last_closed_candle_open_s": 1795790400,
+      "last_closed_candle_close_s": 1795790700,
+      "last_close": 60190.2,
       "confirmed_swing_highs": [
         {
           "t": 1795784100,
@@ -34,27 +34,16 @@
         }
       ],
       "swing_confirmation_delay_bars": 2,
-      "fresh_bos_or_choch": {
-        "kind": "bearish_bos_candidate",
-        "break_level": 61270.0,
-        "broken_swing_utc": "2026-11-27T13:20:00Z",
-        "confirmation": "closed_candle_below_confirmed_swing_low",
-        "previous_structure": "lower_highs_lower_lows",
-        "not_shift": true,
-        "source": "OKX BTC-USDT-SWAP",
-        "timeframe": "5m",
-        "event_close_s": 1795790100,
-        "classification": "algorithmic_closed_candle_structure_candidate_not_entry"
-      },
+      "fresh_bos_or_choch": null,
       "note": "HH/HL or LH/LL is descriptive; any fresh break is an algorithmic candidate, not an entry."
     },
     "15m": {
       "timeframe": "15m",
       "status": "observed",
       "structure": "bearish",
-      "last_closed_candle_open_s": 1795788900,
-      "last_closed_candle_close_s": 1795789800,
-      "last_close": 61392.6,
+      "last_closed_candle_open_s": 1795789800,
+      "last_closed_candle_close_s": 1795790700,
+      "last_close": 60190.2,
       "confirmed_swing_highs": [
         {
           "t": 1795779000,
@@ -76,7 +65,18 @@
         }
       ],
       "swing_confirmation_delay_bars": 2,
-      "fresh_bos_or_choch": null,
+      "fresh_bos_or_choch": {
+        "kind": "bearish_bos_candidate",
+        "break_level": 61270.0,
+        "broken_swing_utc": "2026-11-27T13:15:00Z",
+        "confirmation": "closed_candle_below_confirmed_swing_low",
+        "previous_structure": "lower_highs_lower_lows",
+        "not_shift": true,
+        "source": "OKX BTC-USDT-SWAP",
+        "timeframe": "15m",
+        "event_close_s": 1795790700,
+        "classification": "algorithmic_closed_candle_structure_candidate_not_entry"
+      },
       "note": "HH/HL or LH/LL is descriptive; any fresh break is an algorithmic candidate, not an entry."
     },
     "1h": {
@@ -145,36 +145,34 @@
   "htf_structure": "mixed",
   "ltf_structure": "bearish",
   "liquidity_context": {
-    "book_timestamp_ms": 1795790355353,
-    "resting_side": "bid_heavier",
-    "resting_imbalance": 0.15045,
+    "book_timestamp_ms": 1795790796254,
+    "resting_side": "ask_heavier",
+    "resting_imbalance": -0.305481,
     "open_interest_change": {
-      "delta_btc": -88.1407,
-      "delta_percent": -0.27557,
-      "oi_btc": 31896.85070000011,
-      "elapsed_seconds": 391.417,
+      "delta_btc": -121.8701,
+      "delta_percent": -0.38208,
+      "oi_btc": 31774.98060000011,
+      "elapsed_seconds": 441.078,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 3.56511500009e-05,
+      "rate_fraction": 3.68608361445e-05,
       "next_funding_time_ms": 1795824000000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 60299.3,
-      "index_price": 60327.3,
-      "premium_bps": -4.641348,
-      "mark_timestamp_ms": 1795790355769,
-      "index_timestamp_ms": 1795790355503,
+      "mark_price": 59882.8,
+      "index_price": 59940.2,
+      "premium_bps": -9.576211,
+      "mark_timestamp_ms": 1795790796555,
+      "index_timestamp_ms": 1795790796139,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": null,
     "not_executed_volume": true
   },
   "alignment": "descriptive_only",
-  "observational_divergences": [
-    "bearish_swing_vs_bid_heavier_resting_book"
-  ],
+  "observational_divergences": [],
   "ifvg_context": [
     {
       "tf": "1h",
