@@ -191,3 +191,5 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | Chart annotations v2 staged** | PR50, commit 4807b058e2e31c44f6c91250d3d3dd59a62663f9. Time-anchored FVG rectangles; historical IFVG/POI; aligned BOS/Shift and first sweep candidates, not entry signals. OB unavailable. CI, browser rendering and deployment pending. No trading logic changes.
 
 - **2026-11-27 | Futures recovery and report transfer staged** | PR51, 29fac43fd86cda5e15d266d4c03d505ac524e88b. Bounded SWAP gap backfill 45s/150 pages, same volume gates; compact 40 closed OHLC bars per timeframe and reconciled flow in report feed. CI and production pending. Scheduler delay not controlled by repository. No signal changes.
+
+- **2026-11-27 | PR51 CI and report task update** | Runs 45977470730, 45977470550, 45977459574 successful; 401 tests OK in integration log. Both existing report tasks updated successfully to exact_schedule (08:15, 13:45 Warsaw unchanged) and full JSON connector-first compact payload instructions. Actual scheduler latency, connector availability within scheduled runs and mobile delivery remain unverified. Production merge pending.
