@@ -14,3 +14,9 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m unittest discover -s tests -p test_okx_v5_context_rules.py -v
+      - run: python -m src.okx_structural_replay_v5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: okx-structural-replay-v5-partial
+          path: data/BTC-okx-structural-replay-v5.json
+          if-no-files-found: error
