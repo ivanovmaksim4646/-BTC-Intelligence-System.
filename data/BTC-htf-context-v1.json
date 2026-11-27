@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "htf_observation_only",
-  "generated_at_utc": "2026-11-27T15:59:12.364250+00:00",
+  "generated_at_utc": "2026-11-27T16:05:35.164109+00:00",
   "venue": "Kraken Spot XBTUSD",
   "futures_chart_validated": false,
   "trade_signal": null,
@@ -13,26 +13,22 @@
   "timeframes": {
     "H1": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-27T14:00:00+00:00",
-      "last_high": 61451.1,
-      "last_low": 59023.7,
-      "last_close": 59125.7,
+      "last_closed_candle_start_utc": "2026-11-27T15:00:00+00:00",
+      "last_high": 60196.3,
+      "last_low": 58728.7,
+      "last_close": 60057.7,
       "events": [
         {
-          "break_level": 60325.0,
-          "broken_swing_utc": "2026-11-26T23:00:00Z",
-          "confirmation": "closed_candle_below_confirmed_swing_low",
-          "kind": "bearish_shift_candidate",
-          "not_bos": true,
-          "previous_structure": "higher_highs_higher_lows"
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59023.7
         }
       ],
       "fvg": [
         {
-          "kind": "bullish_fvg",
-          "low": 58926.8,
-          "high": 59410.6,
-          "formed_at": 1795629600,
+          "kind": "bearish_fvg",
+          "low": 60196.3,
+          "high": 61231.2,
+          "formed_at": 1795791600,
           "mitigation_status": "unknown"
         }
       ],
@@ -40,43 +36,17 @@
     },
     "H4": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-27T08:00:00+00:00",
-      "last_high": 62139.1,
-      "last_low": 61353.3,
-      "last_close": 61577.2,
-      "events": [
-        {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 61925.1
-        }
-      ],
+      "last_closed_candle_start_utc": "2026-11-27T12:00:00+00:00",
+      "last_high": 61619.9,
+      "last_low": 58728.7,
+      "last_close": 60057.7,
+      "events": [],
       "fvg": [
-        {
-          "kind": "bearish_fvg",
-          "low": 67392.2,
-          "high": 67794.8,
-          "formed_at": 1794628800,
-          "mitigation_status": "unknown"
-        },
         {
           "kind": "bearish_fvg",
           "low": 66127.4,
           "high": 66908.8,
           "formed_at": 1794672000,
-          "mitigation_status": "unknown"
-        },
-        {
-          "kind": "bullish_fvg",
-          "low": 58839.3,
-          "high": 59719.8,
-          "formed_at": 1795636800,
-          "mitigation_status": "unknown"
-        },
-        {
-          "kind": "bullish_fvg",
-          "low": 60916.0,
-          "high": 61253.7,
-          "formed_at": 1795752000,
           "mitigation_status": "unknown"
         }
       ],
