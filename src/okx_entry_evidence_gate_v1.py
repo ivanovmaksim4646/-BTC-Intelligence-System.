@@ -221,6 +221,9 @@ def _evaluate(snapshot,observations,now,historical):
                     targets=confirmed_pivots(ht,step,direction,close)
                     targets=[p for p in targets if (p["level"]>entry if direction=="long"
                                                    else p["level"]<entry)]
+                    if historical:
+                        # Exclude liquidity already touched after the pivot candle.
+                        targets=[p for p in targets if not any((b["h"]>=p["level"] if direction=="long" else b["l"]<=p["level"]) for b in ht if b["t"]>p["pivot_at"])]
                     if not targets:continue
                     diag["target_matches"]+=1
                     # Choose NEAREST already-confirmed profit-side swing,
@@ -233,7 +236,7 @@ def _evaluate(snapshot,observations,now,historical):
                     risk=abs(entry-stop)+entry*COST_ESTIMATE_BPS/10000
                     reward=abs(tp-entry)-entry*COST_ESTIMATE_BPS/10000
                     net=reward/risk if risk>0 else -1
-                    if net<1:continue
+                    if net<(2 if historical else 1):continue
                     diag["net_rr_matches"]+=1
                     evidence={"htf":tf,"poi_formed":poi["formed"],
                          "poi_kind":poi["kind"],"poi_available_at":poi["available_at"],
