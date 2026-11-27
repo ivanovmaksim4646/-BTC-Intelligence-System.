@@ -1,6 +1,6 @@
 {
   "classification": "watchlist_only",
-  "evaluated_at_utc": "2026-11-27T14:54:25.837136Z",
+  "evaluated_at_utc": "2026-11-27T15:01:44.914837Z",
   "notes": [
     "Sweep is optional and cannot independently trigger a candidate.",
     "Candidate requires completed aligned Kraken Spot and Futures pressure and a close-confirmed structural break.",
@@ -10,21 +10,21 @@
   "schema_version": "1.0",
   "timeframes": {
     "H1": {
-      "reason": "no_confirmed_close_break",
-      "status": "no_structure_break"
-    },
-    "M15": {
-      "break_level": 61231.2,
+      "break_level": 60325.0,
       "direction": "short",
       "entry_signal": false,
-      "futures_pressure": -0.0912,
-      "futures_supports": false,
-      "reason": "structure_break_without_both_venue_pressure_confirmation",
-      "spot_pressure": -0.4993,
+      "futures_pressure": -0.1506,
+      "futures_supports": true,
+      "reason": "structure_and_both_venue_pressures_align",
+      "spot_pressure": -0.4465,
       "spot_supports": true,
-      "status": "unconfirmed",
-      "structure": "bearish_bos_candidate",
+      "status": "watch_candidate",
+      "structure": "bearish_shift_candidate",
       "sweep_bonus": false
+    },
+    "M15": {
+      "reason": "no_confirmed_close_break",
+      "status": "no_structure_break"
     },
     "M5": {
       "reason": "no_confirmed_close_break",
