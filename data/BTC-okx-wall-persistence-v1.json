@@ -1,31 +1,83 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T19:31:13.951422+00:00",
+  "generated_at_utc": "2026-11-27T19:36:11.403677+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "sampled_top3_resting_price_zone_persistence_only",
   "status": "sampled_comparison_available",
   "samples_considered": 12,
-  "sample_first_ms": 1795805042002,
-  "sample_last_ms": 1795807873002,
+  "sample_first_ms": 1795805322702,
+  "sample_last_ms": 1795808170457,
   "gaps_verified_continuous": false,
   "persistent_bid_zones": [],
   "persistent_ask_zones": [],
   "newly_visible_bid_zones": [
     {
-      "price": 59925.0,
-      "btc": 3.0169,
+      "price": 59967.6,
+      "btc": 10.4083,
+      "interpretation": "not_top3_at_prior_sample"
+    },
+    {
+      "price": 59961.0,
+      "btc": 4.8597,
+      "interpretation": "not_top3_at_prior_sample"
+    },
+    {
+      "price": 59960.3,
+      "btc": 1.2045,
       "interpretation": "not_top3_at_prior_sample"
     }
   ],
-  "newly_visible_ask_zones": [],
+  "newly_visible_ask_zones": [
+    {
+      "price": 59967.7,
+      "btc": 7.2127,
+      "interpretation": "not_top3_at_prior_sample"
+    },
+    {
+      "price": 59972.0,
+      "btc": 2.65,
+      "interpretation": "not_top3_at_prior_sample"
+    },
+    {
+      "price": 59971.7,
+      "btc": 1.9102,
+      "interpretation": "not_top3_at_prior_sample"
+    }
+  ],
   "no_longer_top3_bid_zones": [
     {
-      "price": 59920.8,
-      "btc_at_prior_sample": 0.7583,
+      "price": 59925.7,
+      "btc_at_prior_sample": 7.458,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    },
+    {
+      "price": 59925.0,
+      "btc_at_prior_sample": 3.0169,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    },
+    {
+      "price": 59919.0,
+      "btc_at_prior_sample": 2.3955,
       "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
     }
   ],
-  "no_longer_top3_ask_zones": [],
+  "no_longer_top3_ask_zones": [
+    {
+      "price": 59925.8,
+      "btc_at_prior_sample": 9.2837,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    },
+    {
+      "price": 59932.9,
+      "btc_at_prior_sample": 3.0534,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    },
+    {
+      "price": 59932.8,
+      "btc_at_prior_sample": 1.7921,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    }
+  ],
   "warnings": [
     "three_or_more_samples_do_not_verify_intraperiod_order_presence",
     "top3_absence_cannot_distinguish_cancel_fill_or_falling_below_top3"
