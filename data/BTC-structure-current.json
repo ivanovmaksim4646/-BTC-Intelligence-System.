@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T11:55:20.563187Z",
+  "collected_at_utc": "2026-11-27T12:00:28.609876Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -275,8 +275,12 @@
     "H1": {
       "events": [
         {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61670.8
+        },
+        {
           "kind": "sweep_low_reclaim_inside",
-          "reference_low": 61521.7
+          "reference_low": 61511.0
         }
       ],
       "fvg": [
@@ -521,17 +525,17 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 61592.1,
-      "last_high": 61670.8,
-      "last_low": 61511.0,
-      "latest_closed_utc": "2026-11-27T10:00:00Z",
+      "last_close": 61577.2,
+      "last_high": 61750.5,
+      "last_low": 61353.3,
+      "latest_closed_utc": "2026-11-27T11:00:00Z",
       "status": "ok"
     },
     "H4": {
       "events": [
         {
           "kind": "sweep_high_reclaim_inside",
-          "reference_high": 61773.1
+          "reference_high": 61925.1
         }
       ],
       "fvg": [
@@ -782,37 +786,26 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 61577.7,
-      "last_high": 61925.1,
-      "last_low": 61253.7,
-      "latest_closed_utc": "2026-11-27T04:00:00Z",
+      "last_close": 61577.2,
+      "last_high": 62139.1,
+      "last_low": 61353.3,
+      "latest_closed_utc": "2026-11-27T08:00:00Z",
       "status": "ok"
     },
     "M15": {
-      "events": [
-        {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 61650.1
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795745700,
           "high": 61098.0,
           "kind": "bullish_fvg",
           "low": 60663.6
-        },
-        {
-          "formed_at": 1795779000,
-          "high": 61597.2,
-          "kind": "bullish_fvg",
-          "low": 61592.1
         }
       ],
-      "last_close": 61599.3,
-      "last_high": 61750.5,
-      "last_low": 61597.2,
-      "latest_closed_utc": "2026-11-27T11:30:00Z",
+      "last_close": 61577.2,
+      "last_high": 61595.1,
+      "last_low": 61353.3,
+      "latest_closed_utc": "2026-11-27T11:45:00Z",
       "qm": [
         {
           "broken_level": 60666.1,
@@ -928,13 +921,7 @@
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "kind": "inside_bar",
-          "reference_high": 61595.1,
-          "reference_low": 61353.3
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795768200,
@@ -955,22 +942,11 @@
           "low": 61517.6
         }
       ],
-      "last_close": 61461.5,
-      "last_high": 61517.6,
-      "last_low": 61420.0,
-      "latest_closed_utc": "2026-11-27T11:50:00Z",
+      "last_close": 61577.2,
+      "last_high": 61594.9,
+      "last_low": 61456.9,
+      "latest_closed_utc": "2026-11-27T11:55:00Z",
       "qm": [
-        {
-          "broken_level": 60809.8,
-          "direction": "short",
-          "head_extreme": 60987.5,
-          "head_time": 1795671300,
-          "left_shoulder": 60958.9,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795673700
-        },
         {
           "broken_level": 60780.8,
           "direction": "short",
@@ -1069,6 +1045,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795767300
+        },
+        {
+          "broken_level": 61624.9,
+          "direction": "long",
+          "head_extreme": 61444.2,
+          "head_time": 1795777500,
+          "left_shoulder": 61514.5,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795779600
         }
       ],
       "status": "ok"
