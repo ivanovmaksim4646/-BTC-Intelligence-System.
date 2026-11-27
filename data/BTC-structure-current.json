@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T00:40:21.930391Z",
+  "collected_at_utc": "2026-11-27T00:45:19.987123Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -789,13 +789,7 @@
       "status": "ok"
     },
     "M15": {
-      "events": [
-        {
-          "kind": "inside_bar",
-          "reference_high": 60620.2,
-          "reference_low": 60393.5
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795730400,
@@ -810,10 +804,10 @@
           "low": 60585.7
         }
       ],
-      "last_close": 60467.7,
-      "last_high": 60580.3,
-      "last_low": 60424.0,
-      "latest_closed_utc": "2026-11-27T00:15:00Z",
+      "last_close": 60655.8,
+      "last_high": 60662.2,
+      "last_low": 60467.8,
+      "latest_closed_utc": "2026-11-27T00:30:00Z",
       "qm": [
         {
           "broken_level": 60666.1,
@@ -931,8 +925,20 @@
     "M5": {
       "events": [
         {
+          "break_level": 60620.2,
+          "broken_swing_utc": "2026-11-27T00:00:00Z",
+          "confirmation": "closed_candle_above_confirmed_swing_high",
+          "kind": "bullish_bos_candidate",
+          "not_shift": true,
+          "previous_structure": "higher_highs_higher_lows"
+        },
+        {
           "kind": "sweep_high_reclaim_inside",
-          "reference_high": 60616.2
+          "reference_high": 60657.0
+        },
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60584.2
         }
       ],
       "fvg": [
@@ -961,10 +967,10 @@
           "low": 60575.8
         }
       ],
-      "last_close": 60601.1,
-      "last_high": 60657.0,
-      "last_low": 60584.2,
-      "latest_closed_utc": "2026-11-27T00:35:00Z",
+      "last_close": 60655.8,
+      "last_high": 60662.2,
+      "last_low": 60582.8,
+      "latest_closed_utc": "2026-11-27T00:40:00Z",
       "qm": [
         {
           "broken_level": 60118.1,
