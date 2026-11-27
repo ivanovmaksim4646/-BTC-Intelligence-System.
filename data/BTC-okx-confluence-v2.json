@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-27T08:46:35.029750+00:00",
+  "generated_at_utc": "2026-11-27T08:51:26.820298+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -9,6 +9,7 @@
   "watch_direction": null,
   "support": [],
   "conflicts": [
+    "spot_futures_disagree_5m",
     "spot_futures_disagree_15m"
   ],
   "missing": [
@@ -20,36 +21,36 @@
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "22.03239884",
-        "volume_btc": "48.40531992",
-        "direction": "long",
+        "delta_btc": "-6.11596179",
+        "volume_btc": "13.05997435",
+        "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
       "futures": {
-        "delta_btc": "83.4472",
-        "volume_btc": "259.506",
+        "delta_btc": "58.7173",
+        "volume_btc": "212.4817",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "15m": {
       "spot": {
-        "delta_btc": "17.16656490",
-        "volume_btc": "98.29238404",
+        "delta_btc": "14.80088739",
+        "volume_btc": "86.57033787",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
       "futures": {
-        "delta_btc": "-83.1983",
-        "volume_btc": "1168.4745",
+        "delta_btc": "-6.0694",
+        "volume_btc": "875.5412",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "1h": {
       "spot": {
-        "delta_btc": "263.61210509",
-        "volume_btc": "745.84507751",
+        "delta_btc": "206.52915105",
+        "volume_btc": "666.51502749",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -57,8 +58,8 @@
     },
     "4h": {
       "spot": {
-        "delta_btc": "530.95741379",
-        "volume_btc": "2439.47364975",
+        "delta_btc": "525.48500071",
+        "volume_btc": "2441.00633977",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -74,34 +75,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 24.084,
-      "delta_percent": 0.07515,
-      "elapsed_seconds": 298.847,
-      "previous_timestamp_ms": 1795768878844,
-      "current_timestamp_ms": 1795769177691,
+      "delta_btc": 15.4988,
+      "delta_percent": 0.04833,
+      "elapsed_seconds": 292.137,
+      "previous_timestamp_ms": 1795769177691,
+      "current_timestamp_ms": 1795769469828,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 2.41579627802e-05,
-      "rate_percent": 0.0024158,
+      "rate_fraction": 2.33916516379e-05,
+      "rate_percent": 0.0023392,
       "next_funding_time_ms": 1795824000000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 61714.9,
-      "index_price": 61743.6,
-      "mark_timestamp_ms": 1795769178445,
-      "index_timestamp_ms": 1795769177972,
-      "mark_minus_index_usdt": -28.7,
-      "premium_bps": -4.648255,
+      "mark_price": 61736.1,
+      "index_price": 61765.6,
+      "mark_timestamp_ms": 1795769470665,
+      "index_timestamp_ms": 1795769469571,
+      "mark_minus_index_usdt": -29.5,
+      "premium_bps": -4.776121,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "bid_heavier",
-    "timestamp_ms": 1795769178153,
+    "resting_side": "ask_heavier",
+    "timestamp_ms": 1795769470303,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -168,7 +169,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795769100,
+  "m5_close_s": 1795769400,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
