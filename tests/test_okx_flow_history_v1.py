@@ -20,3 +20,10 @@ class FlowHistoryTests(unittest.TestCase):
         self.assertEqual(s["BTC-USDT-SWAP"]["segment_cvd_btc_reconciled"],"-1")
     def test_ignore_unverified(self):
         self.assertEqual(merge([],[dict(row(300000),volume_reconciled=False)],300000),[])
+
+    def test_futures_backfill_separate_and_excludes_current(self):
+        from src.okx_flow_history_v1 import backfill_target
+        end=1200000
+        rows=[row(900000),row(600000,"BTC-USDT-SWAP")]
+        self.assertEqual(backfill_target(rows,end,instrument="BTC-USDT-SWAP"),900000)
+        self.assertEqual(backfill_target(rows,end),600000)

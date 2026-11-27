@@ -2,7 +2,7 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal, feature/btc-report-delivery-audit-v1]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal, feature/btc-report-delivery-audit-v1, fix/futures-backfill-report-transfer]
     paths:
       - 'src/collector.py'
       - 'src/forward_paper_journal_v1.py'
@@ -13,6 +13,7 @@ on:
       - 'tests/test_okx_flow_history_v1.py'
       - 'src/report_feed.py'
       - 'tests/test_report_feed.py'
+      - 'tests/test_compact_chart.py'
       - 'tests/test_collector.py'
       - '.github/workflows/btc-intelligence.yml'
   schedule:

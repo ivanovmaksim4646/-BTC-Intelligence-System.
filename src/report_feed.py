@@ -180,6 +180,45 @@ def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None
     }
 
 
+def compact_chart(doc, context, now=None):
+    now = now or dt.datetime.now(dt.timezone.utc)
+    if not isinstance(doc, dict):
+        return {"status": "missing", "timeframes": {}}
+    stamp = timestamp(doc.get("collected_at_utc"))
+    if (doc.get("source") != "OKX BTC-USDT-SWAP" or doc.get("status") != "verified"
+            or not stamp or not 0 <= (now-stamp).total_seconds() <= MAX_AGE_SECONDS):
+        return {"status": "unverified_or_stale", "timeframes": {}}
+    import math
+    out = {}
+    for tf, seconds in (("5m",300),("15m",900),("1h",3600),("4h",14400),("1d",86400)):
+        item = (doc.get("timeframes") or {}).get(tf) or {}
+        bars = item.get("bars")
+        if item.get("status") != "ok" or not isinstance(bars,list) or len(bars)<3:
+            continue
+        selected = bars[-40:]
+        prev = 0
+        valid = True
+        for b in selected:
+            if not isinstance(b,dict) or any(type(b.get(k)) not in (int,float) or not math.isfinite(b[k]) for k in ("t","o","h","l","c")):
+                valid=False
+                break
+            if (type(b["t"]) is not int or b["t"]<=prev or b["t"]+seconds>stamp.timestamp()+5
+                    or b["l"]<=0 or b["l"]>min(b["o"],b["c"]) or b["h"]<max(b["o"],b["c"])):
+                valid=False
+                break
+            prev=b["t"]
+        if not valid:
+            continue
+        c = ((context or {}).get("timeframes") or {}).get(tf) or {}
+        cs = timestamp((context or {}).get("generated_at_utc"))
+        aligned = ((context or {}).get("source")==doc["source"] and cs is not None
+                   and 0 <= (now-cs).total_seconds() <= MAX_AGE_SECONDS
+                   and c.get("last_closed_candle_open_s")==selected[-1]["t"]
+                   and c.get("last_close")==selected[-1]["c"])
+        out[tf] = {"bars":selected,"structure":c if aligned else None}
+    return {"status":"verified_subset" if out else "unavailable","source":doc["source"],
+            "collected_at_utc":doc["collected_at_utc"],"timeframes":out}
+
 def main():
     report = build(
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
@@ -188,6 +227,10 @@ def main():
         bea=read("BTC-official-bea-calendar-v1.json"),
         bls_fed=read("BTC-official-bls-fed-calendar-v1.json")
     )
+    # Compact, independently timestamped report-reader payload. No signal changes.
+    report["chart_snapshot"] = compact_chart(read("BTC-okx-futures-candles.json"),
+                                             read("BTC-okx-market-context-v1.json"))
+    report["okx_reconciled_flow"] = read("BTC-okx-reconciled-flow-current.json")
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
     temp.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
