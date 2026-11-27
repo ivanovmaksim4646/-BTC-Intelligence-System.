@@ -1,28 +1,28 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-27T18:57:58.617675Z",
+  "checked_at_utc": "2026-11-27T19:02:19.441353Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
       "status": "ok",
-      "age_seconds": 244
+      "age_seconds": 245
     },
     "order_flow_analysis": {
       "status": "ok",
-      "age_seconds": 242
+      "age_seconds": 244
     },
     "structure_observation": {
       "status": "ok",
-      "age_seconds": 242
+      "age_seconds": 244
     },
     "watchlist_evaluation": {
       "status": "ok",
-      "age_seconds": 240
+      "age_seconds": 244
     },
     "github_workflow_trigger": {
       "status": "ok",
-      "age_seconds": 240,
-      "event": "push",
+      "age_seconds": 244,
+      "event": "schedule",
       "source": "github",
       "slot": ""
     },
@@ -32,22 +32,22 @@
     },
     "tradingview_intake": {
       "status": "event_history_present",
-      "events_saved": 129,
+      "events_saved": 130,
       "note": "No saved events is not proof there were no TradingView alerts",
-      "last_event_received_at_utc": "2026-11-27T18:25:09.300723+00:00"
+      "last_event_received_at_utc": "2026-11-27T18:55:14.354766+00:00"
     },
     "okx_spot": {
-      "status": "partial",
-      "age_seconds": 479,
-      "h4_buckets": 47,
+      "status": "volume_reconciled",
+      "age_seconds": 439,
+      "h4_buckets": 48,
       "h4_required": 48,
-      "backfill_error": "TimeoutError",
+      "backfill_error": null,
       "sequence_certified": false
     },
     "okx_swap": {
       "status": "partial",
-      "age_seconds": 479,
-      "h4_buckets": 37,
+      "age_seconds": 439,
+      "h4_buckets": 38,
       "h4_required": 48,
       "backfill_error": "TimeoutError",
       "sequence_certified": false
