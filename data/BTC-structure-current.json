@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T14:10:21.830769Z",
+  "collected_at_utc": "2026-11-27T14:15:23.116170Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -791,8 +791,8 @@
     "M15": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 61433.8
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 61345.6
         }
       ],
       "fvg": [
@@ -803,22 +803,11 @@
           "low": 60663.6
         }
       ],
-      "last_close": 61398.4,
-      "last_high": 61496.1,
-      "last_low": 61345.6,
-      "latest_closed_utc": "2026-11-27T13:45:00Z",
+      "last_close": 61423.1,
+      "last_high": 61451.1,
+      "last_low": 61321.0,
+      "latest_closed_utc": "2026-11-27T14:00:00Z",
       "qm": [
-        {
-          "broken_level": 60666.1,
-          "direction": "short",
-          "head_extreme": 61350.0,
-          "head_time": 1795393800,
-          "left_shoulder": 61018.5,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795401000
-        },
         {
           "broken_level": 61350.0,
           "direction": "long",
@@ -917,6 +906,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795728600
+        },
+        {
+          "broken_level": 61444.2,
+          "direction": "short",
+          "head_extreme": 61750.5,
+          "head_time": 1795779000,
+          "left_shoulder": 61670.8,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795785300
         }
       ],
       "status": "ok"
@@ -924,12 +924,8 @@
     "M5": {
       "events": [
         {
-          "kind": "sweep_high_reclaim_inside",
-          "reference_high": 61421.0
-        },
-        {
           "kind": "sweep_low_reclaim_inside",
-          "reference_low": 61353.2
+          "reference_low": 61347.8
         }
       ],
       "fvg": [
@@ -946,10 +942,10 @@
           "low": 61595.1
         }
       ],
-      "last_close": 61369.3,
-      "last_high": 61451.1,
-      "last_low": 61347.8,
-      "latest_closed_utc": "2026-11-27T14:05:00Z",
+      "last_close": 61423.1,
+      "last_high": 61442.6,
+      "last_low": 61321.0,
+      "latest_closed_utc": "2026-11-27T14:10:00Z",
       "qm": [
         {
           "broken_level": 60780.8,
