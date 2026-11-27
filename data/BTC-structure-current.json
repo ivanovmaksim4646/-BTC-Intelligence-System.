@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T06:55:22.841599Z",
+  "collected_at_utc": "2026-11-27T07:00:21.702514Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -273,7 +273,12 @@
       "status": "ok"
     },
     "H1": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61877.0
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795629600,
@@ -516,10 +521,10 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 61690.5,
-      "last_high": 61877.0,
-      "last_low": 61325.2,
-      "latest_closed_utc": "2026-11-27T05:00:00Z",
+      "last_close": 61628.1,
+      "last_high": 61925.1,
+      "last_low": 61560.8,
+      "latest_closed_utc": "2026-11-27T06:00:00Z",
       "status": "ok"
     },
     "H4": {
@@ -775,9 +780,8 @@
     "M15": {
       "events": [
         {
-          "kind": "inside_bar",
-          "reference_high": 61888.0,
-          "reference_low": 61560.8
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 61579.1
         }
       ],
       "fvg": [
@@ -794,10 +798,10 @@
           "low": 61442.9
         }
       ],
-      "last_close": 61607.4,
-      "last_high": 61732.2,
-      "last_low": 61579.1,
-      "latest_closed_utc": "2026-11-27T06:30:00Z",
+      "last_close": 61628.1,
+      "last_high": 61673.1,
+      "last_low": 61567.3,
+      "latest_closed_utc": "2026-11-27T06:45:00Z",
       "qm": [
         {
           "broken_level": 60666.1,
@@ -915,8 +919,8 @@
     "M5": {
       "events": [
         {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 61601.0
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61643.1
         }
       ],
       "fvg": [
@@ -957,10 +961,10 @@
           "low": 61655.8
         }
       ],
-      "last_close": 61643.1,
-      "last_high": 61643.1,
-      "last_low": 61567.3,
-      "latest_closed_utc": "2026-11-27T06:50:00Z",
+      "last_close": 61628.1,
+      "last_high": 61673.1,
+      "last_low": 61614.2,
+      "latest_closed_utc": "2026-11-27T06:55:00Z",
       "qm": [
         {
           "broken_level": 60118.1,
