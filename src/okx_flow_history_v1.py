@@ -88,6 +88,16 @@ def backfill_target(rows,end,max_age_buckets=48,instrument="BTC-USDT"):
             return t
     return None
 
+def rotating_backfill_target(rows,end,instrument,previous_target=None):
+    """Try another missing H4 bucket after a failed attempt, without starving recent gaps."""
+    confirmed={r["end_ms"] for r in rows if isinstance(r,dict)
+               and r.get("instrument")==instrument and r.get("volume_reconciled") is True}
+    gaps=[t for t in range(end-M5,end-48*M5,-M5) if t not in confirmed]
+    if not gaps:return None
+    if previous_target in gaps:
+        return gaps[(gaps.index(previous_target)+1)%len(gaps)]
+    return gaps[0]
+
 def spot_backfill_target(rows,end,max_age_buckets=48):
     return backfill_target(rows,end,max_age_buckets)
 
@@ -102,12 +112,23 @@ def main():
     if not isinstance(old,list):raise ValueError("invalid history")
     with ThreadPoolExecutor(max_workers=2) as pool:
         results=list(pool.map(lambda i:collect_one(i,end),INSTRUMENTS))
-    # One bounded Spot backfill per sync: no unbounded retries or fabricated
-    # historical CVD. Backfill reuses the exact same provenance gates.
-    target=spot_backfill_target(old+results,end)
-    backfill=collect_one("BTC-USDT",target,max_runtime_seconds=35,max_pages_override=100) if target is not None else None
-    swap_target=backfill_target(old+results,end,instrument="BTC-USDT-SWAP")
-    swap_backfill=collect_one("BTC-USDT-SWAP",swap_target,max_runtime_seconds=180,max_pages_override=500) if swap_target is not None else None
+    # Retry a different gap after a failed attempt. Run instruments in
+    # parallel within the existing per-instrument request pacing.
+    try:
+        previous=json.loads(CURRENT.read_text())
+    except (OSError,ValueError):
+        previous={}
+    def repair(inst,key,seconds,pages):
+        p=previous.get(key) or {}
+        prior=p.get("target_end_ms") if p.get("volume_reconciled") is False else None
+        target=rotating_backfill_target(old+results,end,inst,prior)
+        result=collect_one(inst,target,max_runtime_seconds=seconds,max_pages_override=pages) if target is not None else None
+        return target,result
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        spot=pool.submit(repair,"BTC-USDT","spot_backfill",60,180)
+        swap=pool.submit(repair,"BTC-USDT-SWAP","futures_backfill",180,500)
+        target,backfill=spot.result()
+        swap_target,swap_backfill=swap.result()
     rows=merge(old,results+[r for r in (backfill,swap_backfill) if r is not None],end)
     out={"classification":"volume_reconciled_rest_research_only","end_ms":end,"results":results,
          "spot_backfill":{"target_end_ms":target,
