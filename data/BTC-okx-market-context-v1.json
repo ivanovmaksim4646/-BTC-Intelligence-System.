@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T16:34:46.829382+00:00",
+  "generated_at_utc": "2026-11-27T16:42:12.818507+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "bearish",
-      "last_closed_candle_open_s": 1795796700,
-      "last_closed_candle_close_s": 1795797000,
-      "last_close": 60014.5,
+      "last_closed_candle_open_s": 1795797300,
+      "last_closed_candle_close_s": 1795797600,
+      "last_close": 60281.7,
       "confirmed_swing_highs": [
         {
           "t": 1795787400,
@@ -134,34 +134,36 @@
   "htf_structure": "mixed",
   "ltf_structure": "bearish",
   "liquidity_context": {
-    "book_timestamp_ms": 1795797286056,
-    "resting_side": "ask_heavier",
-    "resting_imbalance": -0.865647,
+    "book_timestamp_ms": 1795797731656,
+    "resting_side": "bid_heavier",
+    "resting_imbalance": 0.23249,
     "open_interest_change": {
-      "delta_btc": -172.2338,
-      "delta_percent": -0.53657,
-      "oi_btc": 31926.557900000145,
-      "elapsed_seconds": 259.664,
+      "delta_btc": 40.0582,
+      "delta_percent": 0.12547,
+      "oi_btc": 31966.616100000138,
+      "elapsed_seconds": 445.419,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": -5.6167214698e-06,
+      "rate_fraction": -6.7851780039e-06,
       "next_funding_time_ms": 1795852800000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 60405.7,
-      "index_price": 60444.0,
-      "premium_bps": -6.336444,
-      "mark_timestamp_ms": 1795797286319,
-      "index_timestamp_ms": 1795797285686,
+      "mark_price": 60289.0,
+      "index_price": 60321.2,
+      "premium_bps": -5.33809,
+      "mark_timestamp_ms": 1795797732057,
+      "index_timestamp_ms": 1795797731962,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": null,
     "not_executed_volume": true
   },
   "alignment": "descriptive_only",
-  "observational_divergences": [],
+  "observational_divergences": [
+    "bearish_swing_vs_bid_heavier_resting_book"
+  ],
   "ifvg_context": [
     {
       "tf": "1h",
