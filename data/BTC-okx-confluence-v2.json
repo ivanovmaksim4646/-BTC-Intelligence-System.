@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-27T17:09:40.582248+00:00",
+  "generated_at_utc": "2026-11-27T17:13:25.217910+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,22 +12,45 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
-    "reconciled_flow_5m",
-    "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
-      "spot": null,
-      "futures": null
+      "spot": {
+        "delta_btc": "-8.61471229",
+        "volume_btc": "36.64334433",
+        "direction": "short",
+        "quality": "volume_reconciled_not_sequence_certified"
+      },
+      "futures": {
+        "delta_btc": "-59.4624",
+        "volume_btc": "425.883",
+        "direction": "short",
+        "quality": "volume_reconciled_not_sequence_certified"
+      }
     },
     "15m": {
-      "spot": null,
-      "futures": null
+      "spot": {
+        "delta_btc": "-42.19090872",
+        "volume_btc": "134.78510530",
+        "direction": "short",
+        "quality": "volume_reconciled_not_sequence_certified"
+      },
+      "futures": {
+        "delta_btc": "-251.1250",
+        "volume_btc": "1489.7548",
+        "direction": "short",
+        "quality": "volume_reconciled_not_sequence_certified"
+      }
     },
     "1h": {
-      "spot": null,
+      "spot": {
+        "delta_btc": "37.11232904",
+        "volume_btc": "465.97213060",
+        "direction": "long",
+        "quality": "volume_reconciled_not_sequence_certified"
+      },
       "futures": null
     },
     "4h": {
@@ -44,34 +67,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 38.5835,
-      "delta_percent": 0.12135,
-      "elapsed_seconds": 360.842,
-      "previous_timestamp_ms": 1795799002281,
-      "current_timestamp_ms": 1795799363123,
+      "delta_btc": 30.9838,
+      "delta_percent": 0.09733,
+      "elapsed_seconds": 223.958,
+      "previous_timestamp_ms": 1795799363123,
+      "current_timestamp_ms": 1795799587081,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": -3.5044297317e-06,
-      "rate_percent": -0.0003504,
+      "rate_fraction": -2.6040620319e-06,
+      "rate_percent": -0.0002604,
       "next_funding_time_ms": 1795852800000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59926.3,
-      "index_price": 59954.2,
-      "mark_timestamp_ms": 1795799364024,
-      "index_timestamp_ms": 1795799363682,
-      "mark_minus_index_usdt": -27.9,
-      "premium_bps": -4.653552,
+      "mark_price": 59956.3,
+      "index_price": 59984.1,
+      "mark_timestamp_ms": 1795799587863,
+      "index_timestamp_ms": 1795799587307,
+      "mark_minus_index_usdt": -27.8,
+      "premium_bps": -4.634561,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "ask_heavier",
-    "timestamp_ms": 1795799363656,
+    "resting_side": "bid_heavier",
+    "timestamp_ms": 1795799587556,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -138,7 +161,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795799100,
+  "m5_close_s": 1795799400,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
