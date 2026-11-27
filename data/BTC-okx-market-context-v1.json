@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T17:51:30.822867+00:00",
+  "generated_at_utc": "2026-11-27T17:57:26.361723+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "mixed",
-      "last_closed_candle_open_s": 1795801500,
-      "last_closed_candle_close_s": 1795801800,
-      "last_close": 59600.8,
+      "last_closed_candle_open_s": 1795801800,
+      "last_closed_candle_close_s": 1795802100,
+      "last_close": 59727.1,
       "confirmed_swing_highs": [
         {
           "t": 1795793700,
@@ -134,30 +134,37 @@
   "htf_structure": "mixed",
   "ltf_structure": "mixed",
   "liquidity_context": {
-    "book_timestamp_ms": 1795801889800,
+    "book_timestamp_ms": 1795802245300,
     "resting_side": "ask_heavier",
-    "resting_imbalance": -0.795459,
+    "resting_imbalance": -0.249864,
     "open_interest_change": {
-      "delta_btc": 21.2626,
-      "delta_percent": 0.06649,
-      "oi_btc": 32002.28880000014,
-      "elapsed_seconds": 336.02,
+      "delta_btc": -37.0266,
+      "delta_percent": -0.1157,
+      "oi_btc": 31965.26220000014,
+      "elapsed_seconds": 355.514,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 7.8041679139e-06,
+      "rate_fraction": 1.01693548713e-05,
       "next_funding_time_ms": 1795852800000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 59675.0,
-      "index_price": 59696.7,
-      "premium_bps": -3.635042,
-      "mark_timestamp_ms": 1795801890188,
-      "index_timestamp_ms": 1795801889700,
+      "mark_price": 59736.7,
+      "index_price": 59759.4,
+      "premium_bps": -3.798566,
+      "mark_timestamp_ms": 1795802245698,
+      "index_timestamp_ms": 1795802245108,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
-    "wall_persistence": null,
+    "wall_persistence": {
+      "samples_considered": 12,
+      "bid_zones": 0,
+      "ask_zones": 0,
+      "bid_zone_prices": [],
+      "ask_zone_prices": [],
+      "intraperiod_persistence_verified": false
+    },
     "not_executed_volume": true
   },
   "alignment": "descriptive_only",
