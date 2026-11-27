@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T13:22:34.726144+00:00",
+  "generated_at_utc": "2026-11-27T13:28:23.152692+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "bullish",
-      "last_closed_candle_open_s": 1795785300,
-      "last_closed_candle_close_s": 1795785600,
-      "last_close": 61370.1,
+      "last_closed_candle_open_s": 1795785600,
+      "last_closed_candle_close_s": 1795785900,
+      "last_close": 61400.3,
       "confirmed_swing_highs": [
         {
           "t": 1795782900,
@@ -34,18 +34,7 @@
         }
       ],
       "swing_confirmation_delay_bars": 2,
-      "fresh_bos_or_choch": {
-        "kind": "bearish_shift_candidate",
-        "break_level": 61404.6,
-        "broken_swing_utc": "2026-11-27T12:50:00Z",
-        "confirmation": "closed_candle_below_confirmed_swing_low",
-        "previous_structure": "higher_highs_higher_lows",
-        "not_bos": true,
-        "source": "OKX BTC-USDT-SWAP",
-        "timeframe": "5m",
-        "event_close_s": 1795785600,
-        "classification": "algorithmic_closed_candle_structure_candidate_not_entry"
-      },
+      "fresh_bos_or_choch": null,
       "note": "HH/HL or LH/LL is descriptive; any fresh break is an algorithmic candidate, not an entry."
     },
     "15m": {
@@ -145,27 +134,27 @@
   "htf_structure": "mixed",
   "ltf_structure": "mixed",
   "liquidity_context": {
-    "book_timestamp_ms": 1795785753702,
+    "book_timestamp_ms": 1795786102002,
     "resting_side": "bid_heavier",
-    "resting_imbalance": 0.800468,
+    "resting_imbalance": 0.477683,
     "open_interest_change": {
-      "delta_btc": -219.4205,
-      "delta_percent": -0.67971,
-      "oi_btc": 32062.217000000102,
-      "elapsed_seconds": 339.721,
+      "delta_btc": 60.5452,
+      "delta_percent": 0.18884,
+      "oi_btc": 32122.762200000107,
+      "elapsed_seconds": 348.247,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 3.248918944e-06,
+      "rate_fraction": 5.9456211352e-06,
       "next_funding_time_ms": 1795824000000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 61459.0,
-      "index_price": 61482.3,
-      "premium_bps": -3.789709,
-      "mark_timestamp_ms": 1795785754076,
-      "index_timestamp_ms": 1795785753804,
+      "mark_price": 61417.0,
+      "index_price": 61440.7,
+      "premium_bps": -3.857378,
+      "mark_timestamp_ms": 1795786102407,
+      "index_timestamp_ms": 1795786101531,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": {
