@@ -197,3 +197,5 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | PR51 merged after verified CI** | ef5857bb699007e9e51e19323529f4fcf3dacc45. Futures bounded recovery and compact report payload in main. Production run and real rendering/delivery pending; no trading changes.
 
 - **2026-11-27 | PR50 merged after verified CI** | d39c1145c16b5b031fb67f974cf1328b7ff16bc7. Chart annotations v2 in main. Production run and real rendering/delivery pending; no trading changes.
+
+- **2026-11-27 | First integrated production verification** | Main BTC run 45982974034 and Pages run 45982994510 completed success. Report 10:34:17 UTC ready; chart_snapshot verified_subset includes five timeframes and okx_reconciled_flow present. Spot 48/48 H4, SWAP 47/48 H4; bounded SWAP historical backfill attempted and timed out, so recovery not confirmed and confluence remains research_partial. Next BTC run 45983346851 in progress. Autonomous observational reporting remains enabled; paper admission stays disabled, no execution, scheduled report consumption/delivery and updated browser rendering pending.
