@@ -1,0 +1,24 @@
+name: OKX WebSocket complete M5 smoke
+on:
+  push:
+    branches: [feature/okx-ws-smoke]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install websockets==15.0.1
+      - run: python -m unittest discover -s tests -v
+      - run: python -m src.okx_ws_smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: okx-websocket-research
+          path: data/BTC-okx-ws-smoke.json
