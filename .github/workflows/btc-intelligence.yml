@@ -142,6 +142,11 @@ jobs:
         continue-on-error: true
         run: python src/bingx_poi_qm_v1.py
 
+      - name: Freeze shared OKX M5 close
+        shell: bash
+        run: |
+          echo "BTC_SHARED_CLOSE_S=$(( $(date +%s) / 300 * 300 ))" >> "$GITHUB_ENV"
+
       - name: Collect and persist reconciled OKX order flow (bounded, nonblocking)
         if: always()
         continue-on-error: true

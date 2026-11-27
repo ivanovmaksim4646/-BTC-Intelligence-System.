@@ -1,5 +1,5 @@
 """Persistent reconciled M5 research history, independent of production signals."""
-import json,time
+import json,time,os
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
@@ -97,7 +97,9 @@ def write(path,obj):
     tmp.replace(path)
 def main():
     DATA.mkdir(exist_ok=True)
-    end=int(time.time()*1000)//M5*M5
+    now_ms=int(time.time()*1000)
+    end=int(os.environ['BTC_SHARED_CLOSE_S'])*1000 if os.environ.get('BTC_SHARED_CLOSE_S') else now_ms//M5*M5
+    if end%M5 or not 0<=now_ms-end<=420000:raise ValueError('invalid or stale shared close')
     old=json.loads(HISTORY.read_text()) if HISTORY.exists() else []
     if not isinstance(old,list):raise ValueError("invalid history")
     with ThreadPoolExecutor(max_workers=2) as pool:

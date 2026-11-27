@@ -1,0 +1,31 @@
+name: OKX shared close regression
+on:
+  push:
+    branches: [feature/okx-shared-close]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -v
+      - run: echo "BTC_SHARED_CLOSE_S=$(( $(date +%s) / 300 * 300 ))" >> "$GITHUB_ENV"
+      - run: python -m src.okx_flow_history_v1
+      - run: python -m src.okx_futures_candles
+      - run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          t=int(os.environ["BTC_SHARED_CLOSE_S"])
+          f=json.loads(Path("data/BTC-okx-reconciled-flow-current.json").read_text())
+          c=json.loads(Path("data/BTC-okx-futures-candles.json").read_text())
+          assert f["end_ms"]==t*1000
+          assert c["status"]=="verified",c["errors"]
+          assert c["timeframes"]["5m"]["bars"][-1]["t"]+300==t
+          print("SHARED CLOSE VERIFIED",t)
+          PY

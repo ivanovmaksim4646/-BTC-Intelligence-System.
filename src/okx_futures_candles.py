@@ -10,6 +10,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import math
+import os
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -85,16 +86,29 @@ def fetch(tf,opener=urlopen):
         raise ValueError("unverified OKX response")
     return payload["data"]
 
-def collect(now=None,getter=fetch):
+def collect(now=None,getter=fetch,target_close_s=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.utcoffset() is None:raise ValueError("timezone-aware now required")
     result={"schema_version":"1.0","source":SOURCE,"venue":"OKX",
             "instrument":INSTRUMENT,"collected_at_utc":now.isoformat(),
             "status":"partial","timeframes":{},"errors":{},
             "classification":"closed_futures_candles_research_only","trade_signal":None}
+    if target_close_s is not None and (type(target_close_s) is not int or target_close_s%300 or not 0<=now.timestamp()-target_close_s<=420):
+        raise ValueError("invalid or stale shared close")
+    result["target_close_s"]=target_close_s
     for tf in INTERVALS:
         try:
-            bars=parse_candles(getter(tf),tf,int(now.timestamp()*1000))
+            if target_close_s is None:
+                bars=parse_candles(getter(tf),tf,int(now.timestamp()*1000))
+            else:
+                step=INTERVALS[tf][1]
+                offset=345600 if tf=="1w" else 0
+                expected=(target_close_s-offset)//step*step+offset
+                raw=getter(tf)
+                # Preserve validation of all rows eligible at the shared cutoff.
+                selected=[r for r in raw if int(r[0])+step*1000<=expected*1000]
+                bars=parse_candles(selected,tf,expected*1000)
+                if bars[-1]["t"]+step!=expected:raise ValueError("shared close missing")
             result["timeframes"][tf]={"status":"ok","bars":bars}
         except (OSError,ValueError,TypeError,KeyError,OverflowError,TimeoutError) as exc:
             result["timeframes"][tf]={"status":"unavailable","bars":[]}
@@ -104,7 +118,7 @@ def collect(now=None,getter=fetch):
     return result
 
 def main():
-    out=collect()
+    out=collect(target_close_s=int(os.environ['BTC_SHARED_CLOSE_S']) if os.environ.get('BTC_SHARED_CLOSE_S') else None)
     OUT.parent.mkdir(parents=True,exist_ok=True)
     tmp=OUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out,ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf-8")
