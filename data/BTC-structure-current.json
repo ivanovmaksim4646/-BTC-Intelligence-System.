@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T16:23:43.346305Z",
+  "collected_at_utc": "2026-11-27T16:30:59.441598Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -756,8 +756,12 @@
     "M15": {
       "events": [
         {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60077.2
+        },
+        {
           "kind": "sweep_low_reclaim_inside",
-          "reference_low": 59897.2
+          "reference_low": 59869.9
         }
       ],
       "fvg": [
@@ -772,18 +776,12 @@
           "high": 59715.0,
           "kind": "bullish_fvg",
           "low": 59678.9
-        },
-        {
-          "formed_at": 1795794300,
-          "high": 59897.2,
-          "kind": "bullish_fvg",
-          "low": 59868.1
         }
       ],
-      "last_close": 59969.7,
-      "last_high": 60077.2,
-      "last_low": 59869.9,
-      "latest_closed_utc": "2026-11-27T16:00:00Z",
+      "last_close": 59992.7,
+      "last_high": 60109.3,
+      "last_low": 59772.0,
+      "latest_closed_utc": "2026-11-27T16:15:00Z",
       "qm": [
         {
           "broken_level": 61350.0,
@@ -899,7 +897,12 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60022.4
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795779900,
@@ -926,10 +929,10 @@
           "low": 59137.0
         }
       ],
-      "last_close": 59895.3,
-      "last_high": 60002.6,
-      "last_low": 59772.0,
-      "latest_closed_utc": "2026-11-27T16:15:00Z",
+      "last_close": 59992.7,
+      "last_high": 60109.3,
+      "last_low": 59966.3,
+      "latest_closed_utc": "2026-11-27T16:25:00Z",
       "qm": [
         {
           "broken_level": 60780.8,
