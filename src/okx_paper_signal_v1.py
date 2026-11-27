@@ -28,6 +28,24 @@ def evaluate(confluence, gate, now=None):
         return reject("invalid_missing_data_metadata")
     if "liquidation_heatmap" in missing:
         out["warnings"].append("liquidation_heatmap_unavailable")
+    # Separate advisory context from core evidence for an independently
+    # reconstructed WATCH. Existing paper admission stays fail-closed.
+    advisory={"macro","breadth","liquidation_heatmap","reconciled_flow_4h"}
+    out["context_diagnostics"]={
+        "advisory_missing":sorted(set(missing)&advisory),
+        "core_missing":sorted(set(missing)-advisory),
+        "conflicts":confluence.get("conflicts") or [],
+        "watch_candidates":[]}
+    diag=out["context_diagnostics"]
+    for p in gate.get("structural_research",[]):
+        if not isinstance(p,dict) or p.get("status")!="paper_candidate" or p.get("entry_close_utc")!=close:continue
+        d=p.get("direction")
+        e,s,t,c=(p.get(k) for k in ("entry","stop_loss","take_profit","cost_bps"))
+        if d not in ("long","short") or not all(type(x) in (int,float) and math.isfinite(x) and x>0 for x in (e,s,t,c)):continue
+        if not (s<e<t if d=="long" else t<e<s):continue
+        rr=(abs(t-e)-e*c/10000)/(abs(e-s)+e*c/10000)
+        if rr>=2 and not diag["core_missing"]:
+            diag["watch_candidates"].append({"direction":d,"entry":e,"stop_loss":s,"take_profit":t,"rr_net_estimate":rr,"classification":"WATCH_RESEARCH_NOT_PAPER_ADMISSION"})
     if any(x!="liquidation_heatmap" for x in missing) or confluence.get("conflicts"):
         return reject("incomplete_or_conflicting_evidence")
     direction=confluence.get("watch_direction")
