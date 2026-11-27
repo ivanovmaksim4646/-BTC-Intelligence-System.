@@ -1,21 +1,56 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T05:50:56.651107+00:00",
+  "generated_at_utc": "2026-11-27T05:52:37.721447+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "sampled_top3_resting_price_zone_persistence_only",
-  "status": "noncomparable_price_regime",
+  "status": "sampled_comparison_available",
   "samples_considered": 12,
-  "sample_first_ms": 1795755357650,
-  "sample_last_ms": 1795758656009,
+  "sample_first_ms": 1795755652650,
+  "sample_last_ms": 1795758756759,
   "gaps_verified_continuous": false,
   "persistent_bid_zones": [],
   "persistent_ask_zones": [],
-  "newly_visible_bid_zones": [],
-  "newly_visible_ask_zones": [],
-  "no_longer_top3_bid_zones": [],
-  "no_longer_top3_ask_zones": [],
+  "newly_visible_bid_zones": [
+    {
+      "price": 61712.1,
+      "btc": 16.9961,
+      "interpretation": "not_top3_at_prior_sample"
+    },
+    {
+      "price": 61711.2,
+      "btc": 1.5003,
+      "interpretation": "not_top3_at_prior_sample"
+    }
+  ],
+  "newly_visible_ask_zones": [
+    {
+      "price": 61718.9,
+      "btc": 0.6496,
+      "interpretation": "not_top3_at_prior_sample"
+    }
+  ],
+  "no_longer_top3_bid_zones": [
+    {
+      "price": 61704.0,
+      "btc_at_prior_sample": 2.8337,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    },
+    {
+      "price": 61704.9,
+      "btc_at_prior_sample": 2.0674,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    }
+  ],
+  "no_longer_top3_ask_zones": [
+    {
+      "price": 61709.3,
+      "btc_at_prior_sample": 3.1936,
+      "interpretation": "not_top3_now_not_proof_of_cancel_or_fill"
+    }
+  ],
   "warnings": [
-    "market_moved_over_50bps_from_anchor"
+    "three_or_more_samples_do_not_verify_intraperiod_order_presence",
+    "top3_absence_cannot_distinguish_cancel_fill_or_falling_below_top3"
   ],
   "complete_delta_btc": null,
   "complete_cvd_btc": null,
