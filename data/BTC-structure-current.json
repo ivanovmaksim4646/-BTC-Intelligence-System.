@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T07:40:19.552846Z",
+  "collected_at_utc": "2026-11-27T07:45:20.463140Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -778,31 +778,28 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "break_level": 61560.8,
+          "broken_swing_utc": "2026-11-27T06:15:00Z",
+          "confirmation": "closed_candle_below_confirmed_swing_low",
+          "kind": "bearish_shift_candidate",
+          "not_bos": true,
+          "previous_structure": "higher_highs_higher_lows"
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795745700,
           "high": 61098.0,
           "kind": "bullish_fvg",
           "low": 60663.6
-        },
-        {
-          "formed_at": 1795756500,
-          "high": 61530.3,
-          "kind": "bullish_fvg",
-          "low": 61442.9
-        },
-        {
-          "formed_at": 1795763700,
-          "high": 61693.4,
-          "kind": "bullish_fvg",
-          "low": 61673.1
         }
       ],
-      "last_close": 61750.3,
-      "last_high": 61820.1,
-      "last_low": 61693.4,
-      "latest_closed_utc": "2026-11-27T07:15:00Z",
+      "last_close": 61434.3,
+      "last_high": 61797.7,
+      "last_low": 61418.9,
+      "latest_closed_utc": "2026-11-27T07:30:00Z",
       "qm": [
         {
           "broken_level": 60666.1,
@@ -945,16 +942,16 @@
           "low": 61363.6
         },
         {
-          "formed_at": 1795756200,
-          "high": 61557.7,
-          "kind": "bullish_fvg",
-          "low": 61445.2
+          "formed_at": 1795765200,
+          "high": 61734.4,
+          "kind": "bearish_fvg",
+          "low": 61557.1
         }
       ],
-      "last_close": 61481.7,
-      "last_high": 61780.6,
-      "last_low": 61481.5,
-      "latest_closed_utc": "2026-11-27T07:35:00Z",
+      "last_close": 61434.3,
+      "last_high": 61557.1,
+      "last_low": 61418.9,
+      "latest_closed_utc": "2026-11-27T07:40:00Z",
       "qm": [
         {
           "broken_level": 60155.7,
