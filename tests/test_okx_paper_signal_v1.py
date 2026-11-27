@@ -29,3 +29,25 @@ class Tests(unittest.TestCase):
         self.assertIn("liquidation_heatmap_unavailable",r["warnings"])
         c["missing"].append("reconciled_flow_4h")
         self.assertEqual(evaluate(c,g,NOW)["decision"],"NO_TRADE")
+
+    def test_advisory_missing_and_conflict_exposes_watch_only(self):
+        c,g=fixture()
+        c["missing"]=["macro","reconciled_flow_4h"]
+        c["conflicts"]=["spot_futures_disagree_1h"]
+        c["watch_direction"]=None
+        r=evaluate(c,g,NOW)
+        self.assertEqual(r["decision"],"NO_TRADE")
+        self.assertIsNone(r["paper_signal"])
+        self.assertEqual(len(r["context_diagnostics"]["watch_candidates"]),1)
+        self.assertFalse(r["execution_enabled"])
+
+    def test_core_missing_blocks_watch(self):
+        c,g=fixture()
+        c["missing"]=["fresh_entry_gate","macro"]
+        self.assertEqual(evaluate(c,g,NOW)["context_diagnostics"]["watch_candidates"],[])
+
+    def test_watch_requires_net_rr_two(self):
+        c,g=fixture()
+        c["missing"]=["macro"]
+        g["structural_research"][0]["take_profit"]=102
+        self.assertEqual(evaluate(c,g,NOW)["context_diagnostics"]["watch_candidates"],[])
