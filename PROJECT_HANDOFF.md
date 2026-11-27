@@ -189,3 +189,5 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | Scheduled chart data integration configured** | Morning and pre-NY prompts extended with mandatory OKX closed OHLC/context/POI reads, freshness and alignment checks, actual candlestick rendering where supported and verified dashboard link fallback. TradingView widget viewing only; no fabricated screenshots or signal changes. Actual scheduled chart rendering and delivery pending.
 
 - **2026-11-27 | Chart annotations v2 staged** | PR50, commit 4807b058e2e31c44f6c91250d3d3dd59a62663f9. Time-anchored FVG rectangles; historical IFVG/POI; aligned BOS/Shift and first sweep candidates, not entry signals. OB unavailable. CI, browser rendering and deployment pending. No trading logic changes.
+
+- **2026-11-27 | Futures recovery and report transfer staged** | PR51, 29fac43fd86cda5e15d266d4c03d505ac524e88b. Bounded SWAP gap backfill 45s/150 pages, same volume gates; compact 40 closed OHLC bars per timeframe and reconciled flow in report feed. CI and production pending. Scheduler delay not controlled by repository. No signal changes.
