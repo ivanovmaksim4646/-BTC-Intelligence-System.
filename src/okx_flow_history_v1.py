@@ -107,7 +107,7 @@ def main():
     target=spot_backfill_target(old+results,end)
     backfill=collect_one("BTC-USDT",target,max_runtime_seconds=35,max_pages_override=100) if target is not None else None
     swap_target=backfill_target(old+results,end,instrument="BTC-USDT-SWAP")
-    swap_backfill=collect_one("BTC-USDT-SWAP",swap_target,max_runtime_seconds=45,max_pages_override=150) if swap_target is not None else None
+    swap_backfill=collect_one("BTC-USDT-SWAP",swap_target,max_runtime_seconds=180,max_pages_override=500) if swap_target is not None else None
     rows=merge(old,results+[r for r in (backfill,swap_backfill) if r is not None],end)
     out={"classification":"volume_reconciled_rest_research_only","end_ms":end,"results":results,
          "spot_backfill":{"target_end_ms":target,
