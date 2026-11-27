@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T05:25:21.311286Z",
+  "collected_at_utc": "2026-11-27T05:30:19.359942Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -779,19 +779,30 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61688.4
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795745700,
           "high": 61098.0,
           "kind": "bullish_fvg",
           "low": 60663.6
+        },
+        {
+          "formed_at": 1795756500,
+          "high": 61530.3,
+          "kind": "bullish_fvg",
+          "low": 61442.9
         }
       ],
-      "last_close": 61557.8,
-      "last_high": 61688.4,
-      "last_low": 61325.2,
-      "latest_closed_utc": "2026-11-27T05:00:00Z",
+      "last_close": 61672.5,
+      "last_high": 61717.9,
+      "last_low": 61530.3,
+      "latest_closed_utc": "2026-11-27T05:15:00Z",
       "qm": [
         {
           "broken_level": 60666.1,
@@ -907,7 +918,12 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61695.8
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795744800,
@@ -938,12 +954,18 @@
           "high": 61557.7,
           "kind": "bullish_fvg",
           "low": 61445.2
+        },
+        {
+          "formed_at": 1795757100,
+          "high": 61631.3,
+          "kind": "bullish_fvg",
+          "low": 61618.2
         }
       ],
-      "last_close": 61649.8,
-      "last_high": 61695.8,
-      "last_low": 61608.6,
-      "latest_closed_utc": "2026-11-27T05:20:00Z",
+      "last_close": 61672.5,
+      "last_high": 61717.9,
+      "last_low": 61631.3,
+      "latest_closed_utc": "2026-11-27T05:25:00Z",
       "qm": [
         {
           "broken_level": 60118.1,
