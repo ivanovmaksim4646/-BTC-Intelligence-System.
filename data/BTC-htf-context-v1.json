@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "htf_observation_only",
-  "generated_at_utc": "2026-11-26T23:55:20.106709+00:00",
+  "generated_at_utc": "2026-11-27T00:00:23.065648+00:00",
   "venue": "Kraken Spot XBTUSD",
   "futures_chart_validated": false,
   "trade_signal": null,
@@ -13,11 +13,16 @@
   "timeframes": {
     "H1": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-26T22:00:00+00:00",
-      "last_high": 60749.6,
-      "last_low": 60392.0,
-      "last_close": 60466.5,
-      "events": [],
+      "last_closed_candle_start_utc": "2026-11-26T23:00:00+00:00",
+      "last_high": 60513.3,
+      "last_low": 60325.0,
+      "last_close": 60499.2,
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 60392.0
+        }
+      ],
       "fvg": [
         {
           "kind": "bearish_fvg",
@@ -39,21 +44,27 @@
           "high": 59410.6,
           "formed_at": 1795629600,
           "mitigation_status": "unknown"
+        },
+        {
+          "kind": "bearish_fvg",
+          "low": 60513.3,
+          "high": 60682.4,
+          "formed_at": 1795734000,
+          "mitigation_status": "unknown"
         }
       ],
       "futures_chart_validated": false
     },
     "H4": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-26T16:00:00+00:00",
-      "last_high": 60781.8,
-      "last_low": 60269.1,
-      "last_close": 60638.5,
+      "last_closed_candle_start_utc": "2026-11-26T20:00:00+00:00",
+      "last_high": 60916.0,
+      "last_low": 60325.0,
+      "last_close": 60499.2,
       "events": [
         {
-          "kind": "inside_bar",
-          "reference_high": 60914.7,
-          "reference_low": 59850.0
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 60781.8
         }
       ],
       "fvg": [
@@ -83,16 +94,11 @@
     },
     "D1": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-25T00:00:00+00:00",
-      "last_high": 60478.6,
-      "last_low": 57210.7,
-      "last_close": 60368.6,
-      "events": [
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 59197.4
-        }
-      ],
+      "last_closed_candle_start_utc": "2026-11-26T00:00:00+00:00",
+      "last_high": 61533.1,
+      "last_low": 59850.0,
+      "last_close": 60499.2,
+      "events": [],
       "fvg": [
         {
           "kind": "bearish_fvg",
