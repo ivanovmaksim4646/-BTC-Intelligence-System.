@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T20:25:21.020718Z",
+  "collected_at_utc": "2026-11-27T20:30:20.916615Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -766,7 +766,13 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 59846.3,
+          "reference_low": 59650.5
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795790700,
@@ -779,12 +785,18 @@
           "high": 59900.0,
           "kind": "bearish_fvg",
           "low": 59846.3
+        },
+        {
+          "formed_at": 1795810500,
+          "high": 59815.2,
+          "kind": "bearish_fvg",
+          "low": 59744.8
         }
       ],
-      "last_close": 59717.5,
-      "last_high": 59846.3,
-      "last_low": 59650.5,
-      "latest_closed_utc": "2026-11-27T20:00:00Z",
+      "last_close": 59738.9,
+      "last_high": 59744.8,
+      "last_low": 59678.1,
+      "latest_closed_utc": "2026-11-27T20:15:00Z",
       "qm": [
         {
           "broken_level": 61480.4,
@@ -903,7 +915,11 @@
       "events": [
         {
           "kind": "sweep_high_reclaim_inside",
-          "reference_high": 59736.5
+          "reference_high": 59741.0
+        },
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59688.2
         }
       ],
       "fvg": [
@@ -968,22 +984,11 @@
           "low": 59736.5
         }
       ],
-      "last_close": 59705.5,
-      "last_high": 59741.0,
-      "last_low": 59688.2,
-      "latest_closed_utc": "2026-11-27T20:20:00Z",
+      "last_close": 59738.9,
+      "last_high": 59744.8,
+      "last_low": 59687.0,
+      "latest_closed_utc": "2026-11-27T20:25:00Z",
       "qm": [
-        {
-          "broken_level": 60843.0,
-          "direction": "long",
-          "head_extreme": 60516.7,
-          "head_time": 1795695600,
-          "left_shoulder": 60557.8,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795696800
-        },
         {
           "broken_level": 60737.8,
           "direction": "short",
@@ -1082,6 +1087,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795806000
+        },
+        {
+          "broken_level": 59779.3,
+          "direction": "short",
+          "head_extreme": 59992.7,
+          "head_time": 1795808400,
+          "left_shoulder": 59917.0,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795810200
         }
       ],
       "status": "ok"
