@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T20:40:19.188625Z",
+  "collected_at_utc": "2026-11-27T20:45:21.379045Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -768,9 +768,8 @@
     "M15": {
       "events": [
         {
-          "kind": "inside_bar",
-          "reference_high": 59846.3,
-          "reference_low": 59650.5
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59678.1
         }
       ],
       "fvg": [
@@ -793,10 +792,10 @@
           "low": 59744.8
         }
       ],
-      "last_close": 59738.9,
-      "last_high": 59744.8,
-      "last_low": 59678.1,
-      "latest_closed_utc": "2026-11-27T20:15:00Z",
+      "last_close": 59766.5,
+      "last_high": 59784.1,
+      "last_low": 59659.3,
+      "latest_closed_utc": "2026-11-27T20:30:00Z",
       "qm": [
         {
           "broken_level": 61480.4,
@@ -912,7 +911,12 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59662.9
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795790100,
@@ -961,24 +965,12 @@
           "high": 59815.2,
           "kind": "bearish_fvg",
           "low": 59813.5
-        },
-        {
-          "formed_at": 1795810200,
-          "high": 59778.4,
-          "kind": "bearish_fvg",
-          "low": 59775.4
-        },
-        {
-          "formed_at": 1795810500,
-          "high": 59764.3,
-          "kind": "bearish_fvg",
-          "low": 59736.5
         }
       ],
-      "last_close": 59678.8,
-      "last_high": 59743.3,
-      "last_low": 59662.9,
-      "latest_closed_utc": "2026-11-27T20:35:00Z",
+      "last_close": 59766.5,
+      "last_high": 59784.1,
+      "last_low": 59659.3,
+      "latest_closed_utc": "2026-11-27T20:40:00Z",
       "qm": [
         {
           "broken_level": 60737.8,
