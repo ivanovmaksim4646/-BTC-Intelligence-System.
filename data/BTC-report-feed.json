@@ -1,11 +1,11 @@
 {
   "basis": {
-    "mark_minus_index_usd": 4.97315755,
-    "percent": 0.0080613466,
-    "source_time_utc": "2026-11-27T05:45:21.241Z"
+    "mark_minus_index_usd": 0.90126932,
+    "percent": 0.0014613765,
+    "source_time_utc": "2026-11-27T05:49:56.693Z"
   },
-  "collected_at_utc": "2026-11-27T05:45:20.044517Z",
-  "collection_age_seconds_at_generation": 84,
+  "collected_at_utc": "2026-11-27T05:49:55.960895Z",
+  "collection_age_seconds_at_generation": 77,
   "economic_calendar": {
     "coverage": "Official schedule only; source-specific gaps possible; JOLTS and conflicting FOMC dates not guaranteed; consensus/actual/reaction unavailable",
     "events": [
@@ -145,9 +145,9 @@
     "absolute": 0.8338160662633538,
     "relative_hourly": 1.3593216666667e-05,
     "relative_percent_hourly": 0.0013593216666666998,
-    "source_time_utc": "2026-11-27T05:45:21.241Z"
+    "source_time_utc": "2026-11-27T05:49:56.693Z"
   },
-  "generated_at_utc": "2026-11-27T05:46:43.990870Z",
+  "generated_at_utc": "2026-11-27T05:51:12.632579Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -157,91 +157,93 @@
   ],
   "okx_confluence": {
     "data": {
-      "conflicts": [
-        "spot_futures_disagree_5m"
-      ],
+      "conflicts": [],
       "derivatives": {
         "funding": {
           "next_funding_time_ms": 1795795200000,
           "not_realized_funding": true,
-          "rate_fraction": 9.37606964718e-05,
-          "rate_percent": 0.0093761,
+          "rate_fraction": 9.32065055717e-05,
+          "rate_percent": 0.0093207,
           "status": "quoted_rate_snapshot"
         },
         "mark_index": {
-          "index_price": 61785.3,
-          "index_timestamp_ms": 1795758387096,
-          "mark_minus_index_usdt": -26.9,
-          "mark_price": 61758.4,
-          "mark_timestamp_ms": 1795758387270,
-          "premium_bps": -4.353786,
+          "index_price": 61737.9,
+          "index_timestamp_ms": 1795758655386,
+          "mark_minus_index_usdt": -29.2,
+          "mark_price": 61708.7,
+          "mark_timestamp_ms": 1795758656273,
+          "premium_bps": -4.729672,
           "status": "two_recent_public_snapshots",
           "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
         },
         "oi_change": {
-          "current_timestamp_ms": 1795758386593,
-          "delta_btc": 37.2229,
-          "delta_percent": 0.11449,
-          "elapsed_seconds": 270.131,
+          "current_timestamp_ms": 1795758655628,
+          "delta_btc": 41.5885,
+          "delta_percent": 0.12777,
+          "elapsed_seconds": 269.035,
           "limitation": "not_continuous_intraperiod_OI",
-          "previous_timestamp_ms": 1795758116462,
+          "previous_timestamp_ms": 1795758386593,
           "status": "two_verified_snapshots"
         }
       },
       "flow": {
         "15m": {
-          "futures": null,
-          "spot": {
-            "delta_btc": "23.56089700",
-            "direction": "long",
+          "futures": {
+            "delta_btc": "-139.6368",
+            "direction": "short",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "184.68363200"
+            "volume_btc": "1035.9848"
+          },
+          "spot": {
+            "delta_btc": "-35.94282215",
+            "direction": "short",
+            "quality": "volume_reconciled_not_sequence_certified",
+            "volume_btc": "123.60261335"
           }
         },
         "1h": {
           "futures": null,
           "spot": {
-            "delta_btc": "71.69049378",
+            "delta_btc": "49.21627755",
             "direction": "long",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "448.76255600"
+            "volume_btc": "492.62583741"
           }
         },
         "4h": {
           "futures": null,
           "spot": {
-            "delta_btc": "294.35589853",
+            "delta_btc": "272.40926524",
             "direction": "long",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "1836.39100393"
+            "volume_btc": "1887.64485138"
           }
         },
         "5m": {
           "futures": {
-            "delta_btc": "5.1437",
-            "direction": "long",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "240.0879"
-          },
-          "spot": {
-            "delta_btc": "-2.67577307",
+            "delta_btc": "-120.8553",
             "direction": "short",
             "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "28.60997351"
+            "volume_btc": "277.2589"
+          },
+          "spot": {
+            "delta_btc": "-23.11776494",
+            "direction": "short",
+            "quality": "volume_reconciled_not_sequence_certified",
+            "volume_btc": "55.39056574"
           }
         }
       },
-      "generated_at_utc": "2026-11-27T05:46:43.919207+00:00",
+      "generated_at_utc": "2026-11-27T05:51:12.577666+00:00",
       "liquidity": {
         "interpretation": "cancellable_resting_orders_not_directional_vote",
-        "resting_side": "balanced",
-        "timestamp_ms": 1795758387009
+        "resting_side": "bid_heavier",
+        "timestamp_ms": 1795758656009
       },
-      "m5_close_s": 1795758300,
+      "m5_close_s": 1795758600,
       "missing": [
         "macro",
         "liquidation_heatmap",
-        "reconciled_flow_15m",
         "reconciled_flow_1h",
         "reconciled_flow_4h"
       ],
@@ -266,9 +268,9 @@
       "M15": 0.6199,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-27T05:45:21.241Z",
+    "source_time_utc": "2026-11-27T05:49:56.693Z",
     "unit": "BTC-equivalent contracts",
-    "value": 1998.9542
+    "value": 1999.649
   },
   "order_flow": {
     "H1": {
@@ -323,9 +325,9 @@
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "workflow_dispatch",
-    "slot": "2026-11-27T05:45:00.000Z",
-    "source": "cloudflare"
+    "event": "schedule",
+    "slot": "",
+    "source": "github"
   },
   "schema_version": "1.1",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
