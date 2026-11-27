@@ -23,6 +23,34 @@ def merge(old,new,end):
                 raise ValueError("conflicting reconciled bucket")
         else:result[key]=r
     return [result[k] for k in sorted(result) if k[1]>end-7*86400000]
+def session_flow(index, end):
+    """Session-to-date aggregates for a fully observed window, by local market clock."""
+    from datetime import datetime, timedelta
+    from zoneinfo import ZoneInfo
+    out = {}
+    for label, zone, hour, minute, minutes in (
+        ("Asia_window", "Europe/Warsaw", 2, 0, 360),
+        ("London_window", "Europe/London", 8, 0, 120),
+        ("US_cash_open_window", "America/New_York", 9, 30, 180),
+    ):
+        last = datetime.fromtimestamp((end - 1) / 1000, ZoneInfo(zone))
+        start = last.replace(hour=hour, minute=minute, second=0, microsecond=0, fold=0)
+        if last < start:
+            start -= timedelta(days=1)
+        first = int(start.timestamp()) * 1000
+        stop = min(end, int((start + timedelta(minutes=minutes)).timestamp()) * 1000)
+        needed = range(first + M5, stop + 1, M5)
+        buckets = [index[t] for t in needed if t in index and index[t].get("volume_reconciled") is True]
+        full = len(buckets) == len(needed) and bool(buckets)
+        volume = sum((decimal(r["volume_btc_reconciled"]) for r in buckets), Decimal(0))
+        quote_ok = all(r.get("quote_volume_usdt") is not None for r in buckets)
+        quote = sum((decimal(r["quote_volume_usdt"]) for r in buckets), Decimal(0)) if quote_ok else None
+        out[label] = dict(start_ms=first, end_ms=stop, timezone=zone,
+                          required_m5=len(needed), reconciled_m5=len(buckets),
+                          session_delta_btc_reconciled=str(sum(decimal(r["delta_btc_reconciled"]) for r in buckets)) if full else None,
+                          vwap_usdt=str(quote / volume) if full and quote is not None and volume else None)
+    return out
+
 def summarize(rows,end):
     out={}
     for inst in INSTRUMENTS:
@@ -30,7 +58,7 @@ def summarize(rows,end):
         t=end;chain=[]
         while t in by_end:
             chain.append(by_end[t]);t-=M5
-        out[inst]={"rolling_windows":aggregate(rows,end,inst),"consecutive_m5":len(chain),
+        out[inst]={"rolling_windows":aggregate(rows,end,inst),"sessions":session_flow(by_end,end),"consecutive_m5":len(chain),
             "segment_start_ms":t if chain else None,
             "segment_cvd_btc_reconciled":str(sum((decimal(r["delta_btc_reconciled"]) for r in chain),Decimal(0))) if chain else None,
             "complete_cvd_btc":None,"classification":"volume_reconciled_not_sequence_certified"}

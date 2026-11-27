@@ -27,3 +27,13 @@ class ReconcileTests(unittest.TestCase):
     def test_conflict(self):
         r=reconcile(row(),[candle()])
         with self.assertRaises(ValueError):aggregate([r,dict(r,delta_btc_reconciled="2")],300000,"BTC-USDT")
+
+    def test_sides_and_session_gap(self):
+        from src.okx_flow_history_v1 import session_flow
+        from datetime import datetime, timezone
+        t=int(datetime(2026,11,27,14,35,tzinfo=timezone.utc).timestamp()*1000)
+        r=reconcile(row(t),[candle(t-300000)])
+        w=aggregate([r],t,"BTC-USDT")["5m"]
+        self.assertEqual((w["buy_volume_btc"],w["sell_volume_btc"]),("2","1"))
+        self.assertEqual(session_flow({t:r},t)["US_cash_open_window"]["session_delta_btc_reconciled"],"1")
+        self.assertIsNone(session_flow({t:r},t+300000)["US_cash_open_window"]["session_delta_btc_reconciled"])

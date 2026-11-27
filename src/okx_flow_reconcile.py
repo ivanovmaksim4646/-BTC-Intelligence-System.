@@ -37,6 +37,9 @@ def reconcile(report,candles,metadata=()):
             r["reconciliation_reason"]="contract_metadata_unavailable";return r
         multiplier=decimal(matches[0]["ctVal"])
         if multiplier<=0:raise ValueError("invalid multiplier")
+    quote = decimal(rows[0][7])
+    r.update(open_usdt=str(decimal(rows[0][1])), close_usdt=str(decimal(rows[0][4])),
+             quote_volume_usdt=str(quote) if quote > 0 or vol == 0 else None)
     r.update(volume_reconciled=True,reconciliation_reason="exact_native_candle_volume_match",
              delta_btc_reconciled=str((buy-sell)*multiplier),
              volume_btc_reconciled=str(vol*multiplier))
@@ -64,4 +67,16 @@ def aggregate(rows,end,inst):
           "cvd_change_btc_reconciled":str(sum((decimal(r["delta_btc_reconciled"]) for r in verified),Decimal(0))) if valid else None,
           "complete_delta_btc":None,"complete_cvd_btc":None,
           "coverage":"volume_reconciled_not_sequence_certified" if valid else "missing_or_unreconciled_m5"}
+        w = result[label]
+        w["buy_volume_btc"] = w["sell_volume_btc"] = None
+        w["price_delta_divergence_candidate"] = None
+        if valid:
+            v = decimal(w["volume_btc_reconciled"])
+            delta = decimal(w["delta_btc_reconciled"])
+            w["buy_volume_btc"] = str((v + delta) / 2)
+            w["sell_volume_btc"] = str((v - delta) / 2)
+            first, last = verified[0], verified[-1]
+            if first.get("open_usdt") and last.get("close_usdt"):
+                change = decimal(last["close_usdt"]) - decimal(first["open_usdt"])
+                w["price_delta_divergence_candidate"] = change * delta < 0
     return result
