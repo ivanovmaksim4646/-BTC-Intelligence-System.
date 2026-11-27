@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T07:25:19.070483Z",
+  "collected_at_utc": "2026-11-27T07:30:21.059691Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -778,12 +778,7 @@
       "status": "ok"
     },
     "M15": {
-      "events": [
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 61567.3
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795745700,
@@ -796,12 +791,18 @@
           "high": 61530.3,
           "kind": "bullish_fvg",
           "low": 61442.9
+        },
+        {
+          "formed_at": 1795763700,
+          "high": 61693.4,
+          "kind": "bullish_fvg",
+          "low": 61673.1
         }
       ],
-      "last_close": 61697.1,
-      "last_high": 61709.8,
-      "last_low": 61560.3,
-      "latest_closed_utc": "2026-11-27T07:00:00Z",
+      "last_close": 61750.3,
+      "last_high": 61820.1,
+      "last_low": 61693.4,
+      "latest_closed_utc": "2026-11-27T07:15:00Z",
       "qm": [
         {
           "broken_level": 60666.1,
@@ -919,9 +920,12 @@
     "M5": {
       "events": [
         {
-          "kind": "inside_bar",
-          "reference_high": 61792.8,
-          "reference_low": 61693.4
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61791.2
+        },
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 61721.0
         }
       ],
       "fvg": [
@@ -962,10 +966,10 @@
           "low": 61697.1
         }
       ],
-      "last_close": 61791.2,
-      "last_high": 61791.2,
-      "last_low": 61721.0,
-      "latest_closed_utc": "2026-11-27T07:20:00Z",
+      "last_close": 61750.3,
+      "last_high": 61820.1,
+      "last_low": 61718.9,
+      "latest_closed_utc": "2026-11-27T07:25:00Z",
       "qm": [
         {
           "broken_level": 60155.7,
