@@ -60,7 +60,8 @@ def stats(rows):
     pnl=sum(x["pnl_usd"] for x in closed)
     return {"initial_equity_usd":1000,"equity_usd":1000+pnl,"wins":len(wins),"losses":len(losses),"win_rate_pct":100*len(wins)/len(closed) if closed else None,"pnl_usd":pnl,"pnl_pct":pnl/10,"total_r":sum(x["r_multiple"] for x in closed),"open":sum(x["status"]=="open" for x in rows),"pending":sum(x["status"]=="pending" for x in rows),"censored":sum(x["status"].startswith("censored") for x in rows),"expired":sum(x["status"]=="expired" for x in rows)}
 def main():
-    # Explicitly disabled until full integration and forward activation.
+    # User-authorized prospective simulation only; preview quality gates remain mandatory.
+    enabled=True
     now=dt.datetime.now(dt.timezone.utc)
     journal=DATA/"BTC-forward-paper-journal-v1.json"
     rows=json.loads(journal.read_text()) if journal.exists() else []
@@ -69,8 +70,8 @@ def main():
     rows=[advance(x,bars,now) for x in rows]
     preview_path=DATA/"BTC-okx-paper-signal-v1.json"
     preview=json.loads(preview_path.read_text()) if preview_path.exists() else {}
-    candidate=admit(preview,rows,now,enabled=False)
+    candidate=admit(preview,rows,now,enabled=enabled)
     if candidate:rows.append(candidate)
-    for path,value in ((journal,rows),(DATA/"BTC-forward-paper-statistics-v1.json",{"generated_at_utc":now.isoformat(),"admission_enabled":False,**stats(rows)})):
+    for path,value in ((journal,rows),(DATA/"BTC-forward-paper-statistics-v1.json",{"generated_at_utc":now.isoformat(),"admission_enabled":enabled,**stats(rows)})):
         tmp=path.with_suffix(".tmp");tmp.write_text(json.dumps(value,indent=2)+"\n");tmp.replace(path)
 if __name__=="__main__":main()
