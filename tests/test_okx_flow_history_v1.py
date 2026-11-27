@@ -27,3 +27,20 @@ class FlowHistoryTests(unittest.TestCase):
         rows=[row(900000),row(600000,"BTC-USDT-SWAP")]
         self.assertEqual(backfill_target(rows,end,instrument="BTC-USDT-SWAP"),900000)
         self.assertEqual(backfill_target(rows,end),600000)
+
+    def test_rotate_failed_gap(self):
+        from src.okx_flow_history_v1 import rotating_backfill_target
+        end=15000000
+        rows=[row(end-600000)]
+        self.assertEqual(rotating_backfill_target(rows,end,"BTC-USDT",end-300000),end-900000)
+
+    def test_rotation_only_within_h4(self):
+        from src.okx_flow_history_v1 import rotating_backfill_target
+        end=15000000
+        rows=[row(end-i*300000) for i in range(1,48)]
+        self.assertIsNone(rotating_backfill_target(rows,end,"BTC-USDT"))
+
+    def test_rotation_instrument_isolation(self):
+        from src.okx_flow_history_v1 import rotating_backfill_target
+        end=15000000
+        self.assertEqual(rotating_backfill_target([row(end-300000)],end,"BTC-USDT-SWAP"),end-300000)
