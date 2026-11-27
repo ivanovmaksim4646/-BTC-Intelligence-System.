@@ -1,10 +1,10 @@
 {
   "basis": {
-    "mark_minus_index_usd": 1.75522813,
-    "percent": 0.0029022982,
-    "source_time_utc": "2026-11-27T00:15:20.704Z"
+    "mark_minus_index_usd": 2.02630797,
+    "percent": 0.0033493292,
+    "source_time_utc": "2026-11-27T00:18:59.287Z"
   },
-  "collected_at_utc": "2026-11-27T00:15:19.994955Z",
+  "collected_at_utc": "2026-11-27T00:18:58.699972Z",
   "collection_age_seconds_at_generation": 67,
   "economic_calendar": {
     "coverage": "Official schedule only; source-specific gaps possible; JOLTS and conflicting FOMC dates not guaranteed; consensus/actual/reaction unavailable",
@@ -145,9 +145,9 @@
     "absolute": 0.41345773141975,
     "relative_hourly": 6.834325e-06,
     "relative_percent_hourly": 0.0006834325,
-    "source_time_utc": "2026-11-27T00:15:20.704Z"
+    "source_time_utc": "2026-11-27T00:18:59.287Z"
   },
-  "generated_at_utc": "2026-11-27T00:16:26.816008Z",
+  "generated_at_utc": "2026-11-27T00:20:05.459279Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -162,27 +162,27 @@
         "funding": {
           "next_funding_time_ms": 1795795200000,
           "not_realized_funding": true,
-          "rate_fraction": 1.01377383688e-05,
-          "rate_percent": 0.0010138,
+          "rate_fraction": 1.17474717865e-05,
+          "rate_percent": 0.0011747,
           "status": "quoted_rate_snapshot"
         },
         "mark_index": {
-          "index_price": 60580.2,
-          "index_timestamp_ms": 1795738569107,
-          "mark_minus_index_usdt": -28.0,
-          "mark_price": 60552.2,
-          "mark_timestamp_ms": 1795738570227,
-          "premium_bps": -4.621972,
+          "index_price": 60604.6,
+          "index_timestamp_ms": 1795738788699,
+          "mark_minus_index_usdt": -24.5,
+          "mark_price": 60580.1,
+          "mark_timestamp_ms": 1795738788938,
+          "premium_bps": -4.042597,
           "status": "two_recent_public_snapshots",
           "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
         },
         "oi_change": {
-          "current_timestamp_ms": 1795738569348,
-          "delta_btc": 10.8497,
-          "delta_percent": 0.03407,
-          "elapsed_seconds": 311.385,
+          "current_timestamp_ms": 1795738788054,
+          "delta_btc": -10.3045,
+          "delta_percent": -0.03235,
+          "elapsed_seconds": 218.706,
           "limitation": "not_continuous_intraperiod_OI",
-          "previous_timestamp_ms": 1795738257963,
+          "previous_timestamp_ms": 1795738569348,
           "status": "two_verified_snapshots"
         }
       },
@@ -224,11 +224,11 @@
           }
         }
       },
-      "generated_at_utc": "2026-11-27T00:16:26.736218+00:00",
+      "generated_at_utc": "2026-11-27T00:20:05.373224+00:00",
       "liquidity": {
         "interpretation": "cancellable_resting_orders_not_directional_vote",
-        "resting_side": "bid_heavier",
-        "timestamp_ms": 1795738569854
+        "resting_side": "ask_heavier",
+        "timestamp_ms": 1795738788554
       },
       "m5_close_s": 1795738500,
       "missing": [
@@ -260,9 +260,9 @@
       "M15": -4.391,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-27T00:15:20.704Z",
+    "source_time_utc": "2026-11-27T00:18:59.287Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2108.6663
+    "value": 2108.5208
   },
   "order_flow": {
     "H1": {
@@ -317,9 +317,9 @@
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "workflow_dispatch",
-    "slot": "2026-11-27T00:15:00.000Z",
-    "source": "cloudflare"
+    "event": "schedule",
+    "slot": "",
+    "source": "github"
   },
   "schema_version": "1.1",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
