@@ -30,6 +30,8 @@ def run():
     closes={tf:[x["t"]+steps[tf] for x in b] for tf,b in frames.items()}
     m5=frames["5m"]
     rows=[]
+    rejected=defaultdict(int)
+    consumed=set()
     for tf in ("15m","5m"):
         step=steps[tf]; bars=frames[tf]
         for i in range(40,len(bars)):
@@ -56,7 +58,7 @@ def run():
                     for z in prior_poi_zones(h,steps[k],b["t"],d):
                         touch=[x for x in p[-12:] if x["t"]>=z["available_at"] and x["l"]<=z["high"] and x["h"]>=z["low"]]
                         if touch and not any((x["c"]<z["low"] if up else x["c"]>z["high"]) for x in window if x["t"]>=touch[0]["t"]):
-                            events.append(dict(direction=d,kind="POI",tf=k,known_at=touch[-1]["t"]+step,valid=True))
+                            events.append(dict(direction=d,kind="POI",tf=k,known_at=touch[-1]["t"]+step,valid=True,episode=(k,z["available_at"],z["low"],z["high"])))
                             tags.append(k+":"+z["kind"])
                     hi,lo=confirmed_pivots(h)
                     for pivot in (hi if up else lo):
@@ -68,7 +70,7 @@ def run():
                     if piv:
                         v=piv[-1]["price"]; x=p[j]
                         if (x["l"]<v<x["c"] if up else x["h"]>v>x["c"]):
-                            events.append(dict(direction=d,kind="internal_sweep",known_at=x["t"]+step,valid=True))
+                            events.append(dict(direction=d,kind="internal_sweep",known_at=x["t"]+step,valid=True,episode=(tf,piv[-1]["t"],v)))
                 shift=bool(s and s["kind"].startswith("bullish" if up else "bearish") and contextual_shift(d,b,p,s["break_level"],events))
                 models=[]
                 if shift:models.append("context_shift")
@@ -76,6 +78,16 @@ def run():
                 if qmatches and tags:models.append("MTF_POI_QM")
                 if dev==d and events:models.append("inside_deviation")
                 if not models or not levels:continue
+                # Require a fresh directional structural event, not a recurring old shift.
+                if shift and not (p[-1]["c"]<=s["break_level"]<b["c"] if up else p[-1]["c"]>=s["break_level"]>b["c"]):
+                    models.remove("context_shift")
+                if not models:
+                    rejected["stale_shift"]+=1;continue
+                # M5 is experimental; keep independent statistics, not combined entries.
+                # A previously traded context must not generate repeated candidates.
+                keys={(tf,d,e["episode"]) for e in events}
+                if not keys or keys & consumed:
+                    rejected["reused_context"]+=1;continue
                 entry=b["c"]; stop=(min(x["l"] for x in window[-12:])*.9997 if up else max(x["h"] for x in window[-12:])*1.0003)
                 cost=entry*.0014; risk=abs(entry-stop)+cost
                 target=min(levels,key=lambda v:abs(v-entry))
@@ -92,6 +104,7 @@ def run():
                         if sl or hit:return dict(r=-1 if sl else (abs(tp-entry)-cost)/risk,t=x["t"]+300)
                     return None
                 outcomes={str(r):outcome(entry+(1 if up else -1)*(r*risk+cost)) for r in (1,2,3) if r<=rr}
+                consumed.update(keys)
                 rows.append(dict(at=at,tf=tf,direction=d,models=models,poi=sorted(set(tags)),rr=rr,band=band,actual=outcome(target),fixed=outcomes,trend=trend_relation(d,trend(hframes["4h"])),flow=confluence(dict.fromkeys(("spot_cvd","futures_cvd","delta","oi","volume","book","funding","basis","liquidations")),at),sample="in_sample" if at<=split else "holdout"))
     def portfolio(items,key="actual"):
         balance=peak=1000.; busy=0; wins=losses=skipped=unresolved=0; rs=[]; dd=0
@@ -103,8 +116,8 @@ def run():
         return dict(trades=len(rs),wins=wins,losses=losses,win_rate=wins/len(rs) if rs else None,pnl=balance-1000,drawdown=dd,expectancy=sum(rs)/len(rs) if rs else None,skipped=skipped,unresolved=unresolved)
     groups=defaultdict(list)
     for e in rows:
-        for k in ["combined",e["tf"],e["band"],e["trend"],e["sample"]]+e["models"]+e["poi"]:groups[k].append(e)
-    out=dict(classification="partial_v5_exploratory_same_period",missing=["D1/W1/MN1 POI","external sweep and K-level","historical order flow","confirmed correction completion","session comparisons"],start=START,end=END,candidates=len(rows),groups={k:portfolio(v) for k,v in groups.items()},fixed={str(r):portfolio([e for e in rows if str(r) in e["fixed"]],str(r)) for r in (1,2,3)},entries=rows)
+        for k in (["combined",e["tf"],e["band"],e["trend"],e["sample"]]+e["models"]+e["poi"] if e["tf"]=="15m" else ["5m"]):groups[k].append(e)
+    out=dict(classification="partial_v5_1_context_dedup_same_period",rejected=dict(rejected),missing=["D1/W1/MN1 POI","external sweep and K-level","historical order flow","confirmed correction completion","session comparisons"],start=START,end=END,candidates=len(rows),groups={k:portfolio(v) for k,v in groups.items()},fixed={str(r):portfolio([e for e in rows if e["tf"]=="15m" and str(r) in e["fixed"]],str(r)) for r in (1,2,3)},entries=rows)
     Path("data/BTC-okx-structural-replay-v5.json").write_text(json.dumps(out,indent=2))
     print(json.dumps({k:v for k,v in out.items() if k!="entries"}),flush=True)
 if __name__=="__main__":run()
