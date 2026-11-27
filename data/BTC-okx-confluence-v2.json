@@ -1,18 +1,19 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-27T19:29:12.338484+00:00",
+  "generated_at_utc": "2026-11-27T19:31:29.617316+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
   "directional_probability": null,
   "watch_direction": null,
   "support": [],
-  "conflicts": [],
+  "conflicts": [
+    "spot_futures_disagree_5m"
+  ],
   "missing": [
     "macro",
     "liquidation_heatmap",
-    "reconciled_flow_5m",
     "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
@@ -20,17 +21,22 @@
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "-0.47141106",
-        "volume_btc": "3.67278384",
+        "delta_btc": "-0.44870721",
+        "volume_btc": "2.69319471",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": null
+      "futures": {
+        "delta_btc": "17.7351",
+        "volume_btc": "73.7621",
+        "direction": "long",
+        "quality": "volume_reconciled_not_sequence_certified"
+      }
     },
     "15m": {
       "spot": {
-        "delta_btc": "-13.73512489",
-        "volume_btc": "25.38606725",
+        "delta_btc": "-11.40287289",
+        "volume_btc": "21.94167057",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -38,8 +44,8 @@
     },
     "1h": {
       "spot": {
-        "delta_btc": "-32.06114759",
-        "volume_btc": "112.16275401",
+        "delta_btc": "-34.38755028",
+        "volume_btc": "109.72678254",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -47,8 +53,8 @@
     },
     "4h": {
       "spot": {
-        "delta_btc": "105.69859447",
-        "volume_btc": "1319.98678403",
+        "delta_btc": "95.60069773",
+        "volume_btc": "1260.20393003",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -64,34 +70,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": -9.8272,
-      "delta_percent": -0.03064,
-      "elapsed_seconds": 290.055,
-      "previous_timestamp_ms": 1795807444619,
-      "current_timestamp_ms": 1795807734674,
+      "delta_btc": 6.4914,
+      "delta_percent": 0.02024,
+      "elapsed_seconds": 137.855,
+      "previous_timestamp_ms": 1795807734674,
+      "current_timestamp_ms": 1795807872529,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 1.19857606014e-05,
-      "rate_percent": 0.0011986,
+      "rate_fraction": 1.24492427035e-05,
+      "rate_percent": 0.0012449,
       "next_funding_time_ms": 1795852800000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59928.7,
-      "index_price": 59957.8,
-      "mark_timestamp_ms": 1795807735582,
-      "index_timestamp_ms": 1795807734060,
-      "mark_minus_index_usdt": -29.1,
-      "premium_bps": -4.853414,
+      "mark_price": 59925.7,
+      "index_price": 59955.7,
+      "mark_timestamp_ms": 1795807873387,
+      "index_timestamp_ms": 1795807873109,
+      "mark_minus_index_usdt": -30.0,
+      "premium_bps": -5.003694,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "ask_heavier",
-    "timestamp_ms": 1795807735202,
+    "resting_side": "balanced",
+    "timestamp_ms": 1795807873002,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -158,7 +164,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795807500,
+  "m5_close_s": 1795807800,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
