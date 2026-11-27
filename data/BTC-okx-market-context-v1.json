@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T03:56:16.852113+00:00",
+  "generated_at_utc": "2026-11-27T04:01:08.597286+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "bullish",
-      "last_closed_candle_open_s": 1795751400,
-      "last_closed_candle_close_s": 1795751700,
-      "last_close": 61470.2,
+      "last_closed_candle_open_s": 1795751700,
+      "last_closed_candle_close_s": 1795752000,
+      "last_close": 61392.1,
       "confirmed_swing_highs": [
         {
           "t": 1795749000,
@@ -41,9 +41,9 @@
       "timeframe": "15m",
       "status": "observed",
       "structure": "bullish",
-      "last_closed_candle_open_s": 1795750200,
-      "last_closed_candle_close_s": 1795751100,
-      "last_close": 61437.4,
+      "last_closed_candle_open_s": 1795751100,
+      "last_closed_candle_close_s": 1795752000,
+      "last_close": 61392.1,
       "confirmed_swing_highs": [
         {
           "t": 1795742100,
@@ -72,9 +72,9 @@
       "timeframe": "1h",
       "status": "observed",
       "structure": "mixed",
-      "last_closed_candle_open_s": 1795744800,
-      "last_closed_candle_close_s": 1795748400,
-      "last_close": 61300.1,
+      "last_closed_candle_open_s": 1795748400,
+      "last_closed_candle_close_s": 1795752000,
+      "last_close": 61392.1,
       "confirmed_swing_highs": [
         {
           "t": 1795680000,
@@ -103,9 +103,9 @@
       "timeframe": "4h",
       "status": "observed",
       "structure": "mixed",
-      "last_closed_candle_open_s": 1795723200,
-      "last_closed_candle_close_s": 1795737600,
-      "last_close": 60549.9,
+      "last_closed_candle_open_s": 1795737600,
+      "last_closed_candle_close_s": 1795752000,
+      "last_close": 61392.1,
       "confirmed_swing_highs": [
         {
           "t": 1795435200,
@@ -134,27 +134,27 @@
   "htf_structure": "mixed",
   "ltf_structure": "bullish",
   "liquidity_context": {
-    "book_timestamp_ms": 1795751775801,
-    "resting_side": "ask_heavier",
-    "resting_imbalance": -0.442494,
+    "book_timestamp_ms": 1795752067501,
+    "resting_side": "bid_heavier",
+    "resting_imbalance": 0.157924,
     "open_interest_change": {
-      "delta_btc": -37.9802,
-      "delta_percent": -0.11809,
-      "oi_btc": 32123.199200000134,
-      "elapsed_seconds": 313.674,
+      "delta_btc": 15.5462,
+      "delta_percent": 0.0484,
+      "oi_btc": 32138.745400000138,
+      "elapsed_seconds": 291.804,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 9.74047200847e-05,
+      "rate_fraction": 9.77314141469e-05,
       "next_funding_time_ms": 1795795200000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 61417.0,
-      "index_price": 61447.0,
-      "premium_bps": -4.882256,
-      "mark_timestamp_ms": 1795751776161,
-      "index_timestamp_ms": 1795751775586,
+      "mark_price": 61402.3,
+      "index_price": 61428.5,
+      "premium_bps": -4.265121,
+      "mark_timestamp_ms": 1795752067891,
+      "index_timestamp_ms": 1795752067286,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": {
@@ -168,9 +168,7 @@
     "not_executed_volume": true
   },
   "alignment": "descriptive_only",
-  "observational_divergences": [
-    "bullish_swing_vs_ask_heavier_resting_book"
-  ],
+  "observational_divergences": [],
   "ifvg_context": [
     {
       "tf": "1h",
@@ -186,14 +184,6 @@
       "low": 60564.0,
       "high": 60731.3,
       "inverted_at": 1795744800,
-      "classification": "historical_ifvg_not_confirmed_live_poi"
-    },
-    {
-      "tf": "4h",
-      "direction": "short",
-      "low": 78690.8,
-      "high": 79903.1,
-      "inverted_at": 1793880000,
       "classification": "historical_ifvg_not_confirmed_live_poi"
     },
     {
@@ -258,6 +248,14 @@
       "low": 59661.0,
       "high": 60422.2,
       "inverted_at": 1795536000,
+      "classification": "historical_ifvg_not_confirmed_live_poi"
+    },
+    {
+      "tf": "4h",
+      "direction": "long",
+      "low": 60744.3,
+      "high": 61026.2,
+      "inverted_at": 1795737600,
       "classification": "historical_ifvg_not_confirmed_live_poi"
     },
     {
