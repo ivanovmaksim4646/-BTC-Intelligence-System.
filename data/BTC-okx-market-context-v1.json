@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-27T17:34:40.050952+00:00",
+  "generated_at_utc": "2026-11-27T17:40:12.080243+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -9,10 +9,10 @@
     "5m": {
       "timeframe": "5m",
       "status": "observed",
-      "structure": "bullish",
-      "last_closed_candle_open_s": 1795800300,
-      "last_closed_candle_close_s": 1795800600,
-      "last_close": 59652.7,
+      "structure": "mixed",
+      "last_closed_candle_open_s": 1795800900,
+      "last_closed_candle_close_s": 1795801200,
+      "last_close": 59573.4,
       "confirmed_swing_highs": [
         {
           "t": 1795793700,
@@ -25,12 +25,12 @@
       ],
       "confirmed_swing_lows": [
         {
-          "t": 1795796100,
-          "price": 59775.1
-        },
-        {
           "t": 1795798800,
           "price": 59840.9
+        },
+        {
+          "t": 1795800300,
+          "price": 59512.9
         }
       ],
       "swing_confirmation_delay_bars": 2,
@@ -143,38 +143,36 @@
     }
   },
   "htf_structure": "mixed",
-  "ltf_structure": "bullish",
+  "ltf_structure": "mixed",
   "liquidity_context": {
-    "book_timestamp_ms": 1795800878950,
-    "resting_side": "ask_heavier",
-    "resting_imbalance": -0.468055,
+    "book_timestamp_ms": 1795801211300,
+    "resting_side": "balanced",
+    "resting_imbalance": -0.061269,
     "open_interest_change": {
-      "delta_btc": 71.9314,
-      "delta_percent": 0.22581,
-      "oi_btc": 31927.300200000143,
-      "elapsed_seconds": 330.689,
+      "delta_btc": 23.0804,
+      "delta_percent": 0.07229,
+      "oi_btc": 31950.380600000142,
+      "elapsed_seconds": 332.51,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 2.2722402436e-06,
+      "rate_fraction": 3.2716166114e-06,
       "next_funding_time_ms": 1795852800000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 59713.4,
-      "index_price": 59736.8,
-      "premium_bps": -3.917183,
-      "mark_timestamp_ms": 1795800879313,
-      "index_timestamp_ms": 1795800878642,
+      "mark_price": 59569.0,
+      "index_price": 59594.6,
+      "premium_bps": -4.295691,
+      "mark_timestamp_ms": 1795801211564,
+      "index_timestamp_ms": 1795801211238,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": null,
     "not_executed_volume": true
   },
   "alignment": "descriptive_only",
-  "observational_divergences": [
-    "bullish_swing_vs_ask_heavier_resting_book"
-  ],
+  "observational_divergences": [],
   "ifvg_context": [
     {
       "tf": "1h",
