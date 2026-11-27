@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T00:18:59.747644Z",
+  "collected_at_utc": "2026-11-27T00:20:20.774268Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -928,20 +928,7 @@
       "status": "ok"
     },
     "M5": {
-      "events": [
-        {
-          "break_level": 60437.2,
-          "broken_swing_utc": "2026-11-26T23:30:00Z",
-          "confirmation": "closed_candle_above_confirmed_swing_high",
-          "kind": "bullish_shift_candidate",
-          "not_bos": true,
-          "previous_structure": "lower_highs_lower_lows"
-        },
-        {
-          "kind": "sweep_low_reclaim_inside",
-          "reference_low": 60432.1
-        }
-      ],
+      "events": [],
       "fvg": [
         {
           "formed_at": 1795730100,
@@ -962,22 +949,11 @@
           "low": 60607.2
         }
       ],
-      "last_close": 60464.5,
-      "last_high": 60505.4,
-      "last_low": 60393.5,
-      "latest_closed_utc": "2026-11-27T00:10:00Z",
+      "last_close": 60518.3,
+      "last_high": 60528.6,
+      "last_low": 60464.0,
+      "latest_closed_utc": "2026-11-27T00:15:00Z",
       "qm": [
-        {
-          "broken_level": 60049.0,
-          "direction": "long",
-          "head_extreme": 59719.8,
-          "head_time": 1795638600,
-          "left_shoulder": 59786.4,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795640400
-        },
         {
           "broken_level": 60118.1,
           "direction": "short",
@@ -1076,6 +1052,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795732500
+        },
+        {
+          "broken_level": 60437.2,
+          "direction": "long",
+          "head_extreme": 60325.0,
+          "head_time": 1795736100,
+          "left_shoulder": 60326.8,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795737600
         }
       ],
       "status": "ok"

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-27T00:19:00.612689Z",
+  "checked_at_utc": "2026-11-27T00:20:21.721448Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
@@ -22,13 +22,13 @@
     "github_workflow_trigger": {
       "status": "ok",
       "age_seconds": 0,
-      "event": "schedule",
-      "source": "github",
-      "slot": ""
+      "event": "workflow_dispatch",
+      "source": "cloudflare",
+      "slot": "2026-11-27T00:20:00.000Z"
     },
     "cloudflare_dispatch": {
-      "status": "last_dispatch_unverified",
-      "note": "A GitHub schedule event does not prove Cloudflare dispatch works"
+      "status": "last_dispatch_observed",
+      "note": "A recent Cloudflare-origin GitHub run was observed; this does not prove continuous uptime"
     },
     "tradingview_intake": {
       "status": "event_history_present",
@@ -37,7 +37,7 @@
       "last_event_received_at_utc": "2026-11-27T00:00:15.068321+00:00"
     }
   },
-  "fully_operational_confirmed": false,
+  "fully_operational_confirmed": true,
   "notes": [
     "GitHub workflow success does not guarantee five-minute scheduling.",
     "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
