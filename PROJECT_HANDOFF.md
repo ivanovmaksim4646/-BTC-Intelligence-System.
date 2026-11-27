@@ -203,3 +203,19 @@ At the **start** of every session working on BTC Intelligence System:
 - **2026-11-27 | Context replay results recovered for third backtest comparison** | Existing run 45847602609, 329 tests passed, artifact 15133975004. RR3 baseline 139 hypotheses WR 30.2158%, expectancy -0.812772R PF 0.429387; H1/H4 alignment 14 WR 35.7143%, expectancy -0.363808R PF 0.684927; recent sweep 96 WR 29.1667%, expectancy -0.913328R; combined alignment/sweep 9 WR 33.3333%, expectancy -0.503177R; D1 alignment 47 WR 27.6596%, expectancy -0.908851R. Same-period exploratory results, not new full-instrument backtest. Historical flow/orderbook/macro coverage not established; no admission change.
 
 - **2026-11-27 | Structural WATCH diagnostics staged** | Branch fix/paper-context-diagnostics-v1 separates advisory missing macro/breadth/heatmap/H4 flow from core missing evidence in WATCH diagnostics. Existing paper admission unchanged; conflicting evidence explicit. Three regression tests added, CI pending. No new strategy integration or push delivery proven.
+
+### 2026-11-27 | Annual BTCUSDT perpetual research — MTF POI/QM and OF
+
+Locally executed Binance USD-M replay, 2025-11-27 00:00 through 2026-11-27 00:00 UTC (exclusive). 105,120 consecutive closed M5 bars, 30 additional warm-up days, 39 Binance SHA-256 verified archives and 1,095 actual funding settlements. GitHub run 45842392803 was an OKX replay; its annual coverage validator was reused with Binance candles. These results use executable research definitions extending the WATCH rules from research/mtf-poi-two-models-v1. No Pine/TradingView Strategy Tester performance export. No changes to signals, admission, schedules or execution.
+
+| Variant | Trades | WR % | PF (USDT) | Avg R | Max M5 equity DD % | Net R | Long n / net R | Short n / net R |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| MTF POI + M15 QM/Shift | 34 | 14.71 | 0.702 | -0.251 | 19.16 | -8.54 | 17 / +3.82 | 17 / -12.36 |
+| OF M5 | 223 | 15.70 | 0.523 | -0.386 | 62.09 | -86.19 | 100 / -54.68 | 123 / -31.51 |
+| OF H1 + M5 | 15 | 40.00 | 1.573 | +0.359 | 7.84 | +5.39 | 12 / +4.90 | 3 / +0.49 |
+| OF H4 + M5 | 3 | 0.00 | 0.000 | -0.997 | 2.96 | -2.99 | 2 / -1.99 | 1 / -1.00 |
+| OF M5 + weakness | 26 | 11.54 | 0.327 | -0.595 | 14.50 | -15.46 | 10 / -10.02 | 16 / -5.44 |
+| OF H1 + M5 + weakness | 0 | — | — | — | 0 | 0 | 0 / 0 | 0 / 0 |
+| OF H4 + M5 + weakness | 0 | — | — | — | 0 | 0 | 0 / 0 |
+
+Each variant starts with 10,000 USDT, risk budget 1% of current equity including modeled stop costs, RR >= 2 net of modeled fills/commission at entry, 5 bp fee + 2 bp adverse slippage per side, funding settled while holding. Pre-existing unswept swing/day/session price targets are structural liquidity proxies; no historical resting-size evidence. Weakness = opposite taker delta at least 10% of retest M5 volume with directional close in favorable half. Confirmed 2/2 pivots, closed HTFs, later retest, next M5 open fill, same-bar ambiguity resolved stop first. Max DD marked at M5 closes. Independent 125-day prefix reproduced all 87 then-closed positions. Configuration counts overlap. Only H1+M5 base positive; 15 trades, same-period research, no independent profitability validation.
