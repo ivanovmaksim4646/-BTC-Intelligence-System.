@@ -13,7 +13,7 @@ def main():
     frames={tf:{"status":"ok","bars":loader.download(tf,START-300*step,END)} for tf,step in loader.STEPS.items()}
     h={"source":"OKX BTC-USDT-SWAP","status":"verified","start":START,"end":END,"days":365,"timeframes":frames}
     base=replay(h)
-    baseline_count=base["entry_count"]
+    candidate_count=base["entry_count"]
     base["entries"]=[e for e in base["entries"] if (abs(e["take_profit"]-e["entry"])-e["entry"]*e["total_cost_bps"]/10000)/(abs(e["entry"]-e["stop_loss"])+e["entry"]*e["total_cost_bps"]/10000)>=2]
     loader.STEPS["1d"]=86400
     # page wrapper uses original endpoint with explicit UTC daily interval.
@@ -33,6 +33,14 @@ def main():
             j=bisect_right(close_times[tf],e["entry_close_utc"])
             prefix[tf]=frames[tf]["bars"][max(0,j-299):j]
         e["context"]=context(e,prefix)
+        # Aggregate only fully closed M15 candles from causal M5 prefix.
+        m15=[]
+        for i in range(len(prefix["5m"])-2):
+            a,b,c=prefix["5m"][i:i+3]
+            if a["t"]%900==0 and c["t"]+300<=e["entry_close_utc"]:
+                m15.append({"t":a["t"],"o":a["o"],"h":max(a["h"],b["h"],c["h"]),"l":min(a["l"],b["l"],c["l"]),"c":c["c"]})
+        from src.okx_context_research_v3 import trend
+        e["context"]["m15_structure"]=trend(m15)
     # Use actual preconfirmed liquidity targets; normalize R to total stop risk.
     for e in base["entries"]:
         cost=e["entry"]*e["total_cost_bps"]/10000
@@ -71,9 +79,11 @@ def main():
                 "expectancy_net_r":sum(results)/len(results) if results else None,
                 "overlap_skipped":skipped,"unresolved":unresolved}
     stats={}
-    for name,rows in cohorts(base["entries"]).items():
+    groups=cohorts(base["entries"])
+    groups["m15_aligned"]=[e for e in base["entries"] if e["context"]["m15_structure"]==("bullish" if e["direction"]=="long" else "bearish")]
+    for name,rows in groups.items():
         stats[name]={"count":len(rows),"portfolio":portfolio(rows),"actual_target":aggregate(rows,rr_levels=(2.0,))["2.0"],"by_sample":{s:portfolio([e for e in rows if e["sample"]==s]) for s in ("in_sample","holdout")}}
-    out={"classification":"exploratory_same_period_not_independent_validation","baseline_count":baseline_count,"eligible_count":len(base["entries"]),"minimum_net_rr":2,"trade_quota":None,"start":START,"end":END,"cohorts":stats,"entries":base["entries"],"trade_signal":None}
+    out={"classification":"exploratory_same_period_not_independent_validation","candidate_count":candidate_count,"eligible_count":len(base["entries"]),"minimum_net_rr":2,"trade_quota":None,"start":START,"end":END,"cohorts":stats,"entries":base["entries"],"trade_signal":None}
     Path("data/BTC-okx-structural-replay-v4.json").write_text(json.dumps(out,indent=2))
     print("CONTEXT REPLAY",json.dumps({k:v for k,v in out.items() if k!="entries"}),flush=True)
 if __name__=="__main__":main()
