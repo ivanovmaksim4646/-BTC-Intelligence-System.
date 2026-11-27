@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>BTC Intelligence Charts</title>
-<style>body{font:16px system-ui;background:#101722;color:#e5e7eb;margin:20px auto;max-width:1180px;padding:0 12px}a{color:#8ac8ff}select,button{font:inherit;padding:8px;margin:6px;background:#202c3a;color:white;border:1px solid #637186;border-radius:5px}.chart{height:480px;border:1px solid #354454;margin:12px 0}#status{white-space:pre-wrap}small{color:#b4bfce}</style>
+<style>body{font:16px system-ui;background:#101722;color:#e5e7eb;margin:20px auto;max-width:1180px;padding:0 12px}a{color:#8ac8ff}select,button{font:inherit;padding:8px;margin:6px;background:#202c3a;color:white;border:1px solid #637186;border-radius:5px}.chart{position:relative;height:480px;border:1px solid #354454;margin:12px 0}#status{white-space:pre-wrap}small{color:#b4bfce}</style>
 <h1>BTC Intelligence — графіки</h1>
 <h2>TradingView — оригінальний графік</h2>
 <label>Інструмент <select id="symbol"><option>OKX:BTCUSDT.P</option><option>BINANCE:BTCUSDT.P</option><option>CRYPTOCAP:BTC.D</option><option>CRYPTOCAP:TOTAL</option><option>CRYPTOCAP:TOTAL2</option><option>CRYPTOCAP:TOTAL3</option></select></label>
@@ -10,6 +10,6 @@
 <h2>OKX Futures — незалежна розмітка</h2>
 <label>TF <select id="tf"><option>5m</option><option>15m</option><option>1h</option><option selected>4h</option><option>1d</option></select></label><button id="refresh">Оновити дані</button>
 <div id="status" role="status">Завантаження…</div><div id="own" class="chart"></div>
-<p><small>Рівні FVG — межі трисвічкових дисбалансів, не підтверджені POI; swing levels — підтверджені півоти. Не торговий сигнал. Історичні спостереження не є активними заявками. Вісь часу UTC.</small></p>
+<p><small>Прямокутники FVG — історичні трисвічкові дисбаланси; IFVG/POI hist. — історичні спостереження, не активні зони. BOS/Shift/Sweep — алгоритмічні кандидати лише за наявності доказів. OB не підтверджено. Swing levels — підтверджені півоти. Не торговий сигнал. Історичні спостереження не є активними заявками. Вісь часу UTC.</small></p>
 <p>Charts by <a href="https://www.tradingview.com/">TradingView</a> · Lightweight Charts™ · <a href="https://github.com/tradingview/lightweight-charts/blob/master/NOTICE">Attribution notice</a></p>
 <script src="https://unpkg.com/lightweight-charts@5.0.9/dist/lightweight-charts.standalone.production.js"></script><script type="module" src="./charts.mjs"></script></html>
