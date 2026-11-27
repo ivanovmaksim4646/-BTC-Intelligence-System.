@@ -119,11 +119,6 @@ jobs:
           print('BTC scheduler:', record['event'], record['source'], 'run', record['run_id'])
           PY
 
-      - name: Generate operational health snapshot
-        if: always()
-        run: python src/system_health.py
-
-
       - name: Connect IFVG POI QM Delta and OI confluence (research only)
         if: steps.collect.outcome == 'success'
         run: python src/setup_confluence_v1.py
@@ -247,6 +242,11 @@ jobs:
         if: always()
         continue-on-error: true
         run: python -m src.report_delivery_audit_v1
+
+      - name: Generate operational health snapshot
+        if: always()
+        run: python src/system_health.py
+
 
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')

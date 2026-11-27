@@ -96,12 +96,28 @@ def evaluate(data_dir=DATA, now=None):
     components["tradingview_intake"] = tv
     core = ("kraken_collection", "order_flow_analysis", "structure_observation",
             "watchlist_evaluation", "github_workflow_trigger")
+    flow = read_json(data_dir / "BTC-okx-reconciled-flow-current.json") or {}
+    end_ms = flow.get("end_ms")
+    age = now.timestamp() - end_ms / 1000 if type(end_ms) is int else None
+    for instrument, key in (("BTC-USDT", "okx_spot"), ("BTC-USDT-SWAP", "okx_swap")):
+        windows = flow.get("instruments", {}).get(instrument, {}).get("rolling_windows", {})
+        h4 = windows.get("4h", {})
+        coverage = h4.get("reconciled_m5")
+        status = "missing" if age is None else "stale" if not 0 <= age <= 600 else (
+            "volume_reconciled" if coverage == 48 and h4.get("delta_btc_reconciled") is not None else "partial")
+        repairs = flow.get("spot_backfill" if key == "okx_spot" else "futures_backfill") or {}
+        components[key] = {"status": status, "age_seconds": round(age) if age is not None else None,
+                           "h4_buckets": coverage, "h4_required": 48, "backfill_error": repairs.get("error"),
+                           "sequence_certified": False}
+    delivery = read_json(data_dir / "BTC-report-delivery-audit-v1.json") or {}
+    components["iphone_push"] = {"status": "confirmed" if delivery.get("push_notification_confirmed") is True else "unverified"}
     return {
         "schema_version": "1.0",
         "checked_at_utc": now.isoformat().replace("+00:00", "Z"),
         "classification": "operational_diagnostics_only",
         "components": components,
-        "fully_operational_confirmed": (
+        "fully_operational_confirmed": False,  # continuous uptime and end-to-end delivery not established
+        "core_snapshot_ok": (
             all(components[key]["status"] == "ok" for key in core)
             and components["cloudflare_dispatch"]["status"] == "last_dispatch_observed"
             and tv["status"] == "event_history_present"),

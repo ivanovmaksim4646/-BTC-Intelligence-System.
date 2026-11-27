@@ -48,7 +48,9 @@ class SystemHealthTests(unittest.TestCase):
             (root / "BTC-tradingview-events.jsonl").write_text(
                 json.dumps({"received_at_utc": "2026-11-26T09:59:00Z"}) + "\n", encoding="utf-8")
             report = evaluate(root, NOW)
-            self.assertTrue(report["fully_operational_confirmed"])
+            self.assertTrue(report["core_snapshot_ok"])
+            self.assertFalse(report["fully_operational_confirmed"])
+            self.assertEqual(report["components"]["okx_swap"]["status"], "missing")
 
     def test_stale_data_and_dispatch(self):
         with tempfile.TemporaryDirectory() as tmp:
