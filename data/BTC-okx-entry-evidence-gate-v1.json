@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-28T14:35:52.588836+00:00",
+  "generated_at_utc": "2026-11-28T14:36:40.384098+00:00",
   "classification": "independently_reconstructed_okx_paper_hypotheses",
   "source": "OKX BTC-USDT-SWAP",
   "decision": "NO_TRADE",
@@ -23,7 +23,8 @@
     "poi_not_invalidated": 0,
     "valid_stop": 0,
     "target_matches": 0,
-    "net_rr_matches": 0
+    "net_rr_matches": 0,
+    "m15_candidates": 0
   },
   "policy": {
     "risk_fraction_cap": 0.01,
@@ -34,6 +35,13 @@
     "requires_TV_OKX_observation": true,
     "requires_directional_bos_or_shift_after_qm_head": true,
     "execution": "not_executed"
+  },
+  "m15_structural_gate": {
+    "status": "observed",
+    "reasons": [
+      "no_recent_m15_qm_shift"
+    ],
+    "shifts": []
   },
   "new_paper_entries": 0,
   "structural_research_status": "shadow_only_not_signal_not_outcome_journal",
