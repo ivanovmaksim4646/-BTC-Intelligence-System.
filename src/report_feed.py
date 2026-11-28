@@ -111,6 +111,42 @@ def spot_persistence(history, now):
     return out
 
 
+def okx_visible_liquidity(doc, wall, now):
+    """Expose already collected levels, never infer liquidations or executions."""
+    import math
+    out = {"source":"OKX BTC-USDT-SWAP","status":"unavailable","liquidation_heatmap":None}
+    def fresh(d, classification):
+        if not isinstance(d,dict) or d.get("source")!=out["source"] or d.get("classification")!=classification:
+            return False
+        t=timestamp(d.get("generated_at_utc"))
+        return t is not None and 0 <= (now-t).total_seconds() <= MAX_AGE_SECONDS
+    if not fresh(doc,"public_rest_snapshot_research_only"):
+        return out
+    book=doc.get("book") or {}
+    t=book.get("timestamp_ms")
+    if book.get("status")!="snapshot_only" or type(t) is not int or not 0<=now.timestamp()*1000-t<=MAX_AGE_SECONDS*1000:
+        return out
+    def positive(v):
+        return type(v) in (int,float) and math.isfinite(v) and v>0
+    bid,ask=book.get("best_bid"),book.get("best_ask")
+    if not positive(bid) or not positive(ask) or bid>=ask:
+        return out
+    for side in ("bid","ask"):
+        rows=book.get(side+"_walls")
+        if not isinstance(rows,list) or not rows or len(rows)>3:
+            return out
+        if any(not isinstance(x,dict) or not positive(x.get("price")) or not positive(x.get("btc")) or
+               (x["price"]>bid if side=="bid" else x["price"]<ask) for x in rows):
+            return out
+        out[side+"_levels"]=[{"price_usdt":x["price"],"size_btc":x["btc"]} for x in rows]
+    out.update(status="snapshot_only",timestamp_ms=t,best_bid=bid,best_ask=ask,
+               depth_levels=book.get("depth_levels"),persistence=None,
+               limitation="Sampled top-three levels within fetched depth; not full market or liquidation map.")
+    if fresh(wall,"sampled_top3_resting_price_zone_persistence_only") and wall.get("sample_last_ms")==t and wall.get("status")=="sampled_comparison_available":
+        out["persistence"]={k:wall.get(k) for k in ("samples_considered","sample_first_ms","sample_last_ms","persistent_bid_zones","persistent_ask_zones","gaps_verified_continuous")}
+    return out
+
+
 def compact_book(current, now):
     book = current.get("order_book") or {}
     stamp = timestamp(book.get("snapshot_time_utc"))
@@ -320,6 +356,7 @@ def main():
                                              read("BTC-okx-market-context-v1.json"))
     report["okx_reconciled_flow"] = read("BTC-okx-reconciled-flow-current.json")
     report["okx_spot_persistence"] = spot_persistence(read("BTC-okx-reconciled-m5-history.json"), dt.datetime.now(dt.timezone.utc))
+    report["okx_visible_liquidity"] = okx_visible_liquidity(read("BTC-okx-liquidity-derivatives-v1.json"), read("BTC-okx-wall-persistence-v1.json"), dt.datetime.now(dt.timezone.utc))
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
     temp.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
