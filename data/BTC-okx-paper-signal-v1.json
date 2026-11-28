@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-28T14:28:01.922560+00:00",
+  "generated_at_utc": "2026-11-28T14:29:26.834506+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "paper_signal_preview_only",
   "decision": "NO_TRADE",
@@ -9,7 +9,8 @@
     "incomplete_or_conflicting_evidence"
   ],
   "warnings": [
-    "liquidation_heatmap_unavailable"
+    "liquidation_heatmap_unavailable",
+    "advisory_missing_macro"
   ],
   "context_diagnostics": {
     "advisory_missing": [
@@ -21,6 +22,24 @@
       "spot_futures_disagree_1h",
       "spot_futures_disagree_4h"
     ],
-    "watch_candidates": []
+    "watch_candidates": [],
+    "entry_gate_reasons": [
+      "no_full_chronological_poi_qm_retest_and_preconfirmed_target"
+    ],
+    "entry_gate_diagnostics": {
+      "latest_m5_close_s": 1795875900,
+      "matching_tv_events": 1,
+      "qm_patterns": 8,
+      "direction_matched_qm": 4,
+      "confirmed_qm": 4,
+      "first_retest_matches": 0,
+      "directional_break_matches": 0,
+      "eligible_poi_zones": 0,
+      "poi_touches": 0,
+      "poi_not_invalidated": 0,
+      "valid_stop": 0,
+      "target_matches": 0,
+      "net_rr_matches": 0
+    }
   }
 }
