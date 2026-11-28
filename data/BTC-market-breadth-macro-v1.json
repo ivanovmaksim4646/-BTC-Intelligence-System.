@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-28T08:18:56.216237+00:00",
+  "generated_at_utc": "2026-11-28T08:21:48.871967+00:00",
   "breadth": {
     "source": "CoinGecko global",
     "asof_utc": "2026-11-28T08:16:34+00:00",
@@ -11,8 +11,8 @@
   },
   "macro": {
     "cpi_index": {
-      "source": "FRED",
-      "series": "CPIAUCSL",
+      "source": "BLS",
+      "series": "CUSR0000SA0",
       "observation_date": "2026-10-01",
       "actual": 337.476,
       "previous": 336.298,
@@ -21,8 +21,8 @@
       "surprise": null
     },
     "unemployment_pct": {
-      "source": "FRED",
-      "series": "UNRATE",
+      "source": "BLS",
+      "series": "LNS14000000",
       "observation_date": "2026-10-01",
       "actual": 4.1,
       "previous": 4.2,
@@ -31,8 +31,8 @@
       "surprise": null
     },
     "payrolls_thousands": {
-      "source": "FRED",
-      "series": "PAYEMS",
+      "source": "BLS",
+      "series": "CES0000000001",
       "observation_date": "2026-10-01",
       "actual": 159293.0,
       "previous": 159128.0,
@@ -40,23 +40,23 @@
       "consensus_forecast": null,
       "surprise": null
     },
-    "effective_fed_funds_pct": {
-      "source": "FRED",
-      "series": "FEDFUNDS",
-      "observation_date": "2026-10-01",
-      "actual": 3.88,
-      "previous": 3.75,
-      "previous_date": "2026-09-01",
-      "consensus_forecast": null,
-      "surprise": null
-    },
     "ppi_index": {
-      "source": "FRED",
-      "series": "PPIACO",
+      "source": "BLS",
+      "series": "WPU00000000",
       "observation_date": "2026-10-01",
       "actual": 293.921,
       "previous": 294.473,
       "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "effective_fed_funds_pct": {
+      "source": "New York Fed",
+      "series": "EFFR_daily",
+      "observation_date": "2026-11-25",
+      "actual": 3.88,
+      "previous": 3.88,
+      "previous_date": "2026-11-24",
       "consensus_forecast": null,
       "surprise": null
     }
