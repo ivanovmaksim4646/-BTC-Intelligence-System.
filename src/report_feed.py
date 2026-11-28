@@ -388,13 +388,23 @@ def backup_market_context(now, fetch=None):
                                 "pressure":d/v if v>0 else None}
         return {"status":"observed" if windows else "unavailable","windows":windows,
                 "classification":"exchange_kline_taker_buy_base_volume_not_trade_sequence"}
-    def bybit(url):
+    def depth(url):
         raw=fetch(url)
-        if not isinstance(raw,dict) or raw.get("retCode")!=0:
+        if not isinstance(raw,dict):
             raise ValueError("exchange error")
-        b=raw["result"]
-        t=b.get("ts")
-        if b.get("s")!="BTCUSDT" or type(t) is not int or not 0<=dt.datetime.now(dt.timezone.utc).timestamp()*1000-t<=180000:
+        if "api.bitget.com/" in url:
+            if raw.get("code")!="00000":
+                raise ValueError("exchange error")
+            b=raw["data"]
+            t=int(b["ts"])
+        else:
+            if raw.get("retCode")!=0:
+                raise ValueError("exchange error")
+            b=raw["result"]
+            if b.get("s")!="BTCUSDT":
+                raise ValueError("wrong instrument")
+            t=b.get("ts")
+        if type(t) is not int or not 0<=dt.datetime.now(dt.timezone.utc).timestamp()*1000-t<=180000:
             raise ValueError("stale or wrong instrument")
         sides={}
         for key in ("b","a"):
@@ -415,10 +425,12 @@ def backup_market_context(now, fetch=None):
                 "depth_levels":{"bid":len(sides["b"]),"ask":len(sides["a"])},
                 "classification":"resting_orders_not_liquidations"}
     specs={
-        "Binance Spot BTCUSDT":(binance,"https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=50"),
+        "Binance Spot BTCUSDT":(binance,"https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=50"),
         "Binance USD-M BTCUSDT":(binance,"https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=5m&limit=50"),
-        "Bybit Spot BTCUSDT":(bybit,"https://api.bybit.com/v5/market/orderbook?category=spot&symbol=BTCUSDT&limit=50"),
-        "Bybit Linear BTCUSDT":(bybit,"https://api.bybit.com/v5/market/orderbook?category=linear&symbol=BTCUSDT&limit=50")
+        "Bybit Spot BTCUSDT":(depth,"https://api.bybit.com/v5/market/orderbook?category=spot&symbol=BTCUSDT&limit=50"),
+        "Bybit Linear BTCUSDT":(depth,"https://api.bybit.com/v5/market/orderbook?category=linear&symbol=BTCUSDT&limit=50")
+        ,"Bitget Spot BTCUSDT":(depth,"https://api.bitget.com/api/v3/market/orderbook?category=SPOT&symbol=BTCUSDT&limit=50")
+        ,"Bitget USDT Futures BTCUSDT":(depth,"https://api.bitget.com/api/v3/market/orderbook?category=USDT-FUTURES&symbol=BTCUSDT&limit=50")
     }
     def safe(spec):
         fn,url=spec
@@ -433,7 +445,7 @@ def backup_market_context(now, fetch=None):
                 result["failure_category"] = ("restricted_or_forbidden" if exc.code in (403,451) else
                     "rate_limit" if exc.code in (418,429) else "server_error" if exc.code >= 500 else "http_error")
             return result
-    with ThreadPoolExecutor(max_workers=4) as pool:
+    with ThreadPoolExecutor(max_workers=6) as pool:
         result=dict(zip(specs,pool.map(safe,specs.values())))
     return {"generated_at_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
             "sources":result,"trade_signal":None,"liquidation_heatmap":None,
