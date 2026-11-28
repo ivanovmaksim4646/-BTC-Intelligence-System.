@@ -24,13 +24,13 @@ def fta_ready(s,frames,bar,now):
         return False
     return True
 
-def backtest(data, funding, expected_count=365*288, *, models=None, start=None, end=None, fee=FEE, slip=SLIP):
+def backtest(data, funding, expected_count=365*288, *, models=None, start=None, end=None, fee=FEE, slip=SLIP, policy='structural'):
  start=stamp_start if start is None else start
  end=stamp_end if end is None else end
  frames={step:Frame(step) for step in FRAMES}; liq=Liquidity()
  names=MODELS if models is None else models
  if not names or set(names)-set(MODELS) or len(names)!=len(set(names)):raise ValueError('invalid models')
- books={n:ExecutionBook(n,fee,slip) for n in names};touches={1:deque(),-1:deque()}
+ books={n:ExecutionBook(n,fee,slip,policy) for n in names};touches={1:deque(),-1:deque()}
  count=0
  for b in data:
   now=b.t+300;eligible=start<=b.t<end
