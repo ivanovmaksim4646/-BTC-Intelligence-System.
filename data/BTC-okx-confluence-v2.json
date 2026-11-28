@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-28T04:21:11.766709+00:00",
+  "generated_at_utc": "2026-11-28T04:26:08.758032+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,42 +12,34 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
+    "reconciled_flow_5m",
+    "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "4.00693955",
-        "volume_btc": "5.23656171",
+        "delta_btc": "2.04291427",
+        "volume_btc": "3.49334863",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": {
-        "delta_btc": "9.1859",
-        "volume_btc": "47.9645",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "15m": {
       "spot": {
-        "delta_btc": "22.12205612",
-        "volume_btc": "36.75081956",
+        "delta_btc": "14.86189646",
+        "volume_btc": "21.46163398",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": {
-        "delta_btc": "8.0370",
-        "volume_btc": "151.3154",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "1h": {
       "spot": {
-        "delta_btc": "26.12119544",
-        "volume_btc": "75.68419622",
+        "delta_btc": "28.79402983",
+        "volume_btc": "75.59162783",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -55,8 +47,8 @@
     },
     "4h": {
       "spot": {
-        "delta_btc": "28.52254534",
-        "volume_btc": "305.92691576",
+        "delta_btc": "32.31957308",
+        "volume_btc": "303.75431732",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -72,34 +64,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": -3.364,
-      "delta_percent": -0.01046,
-      "elapsed_seconds": 296.008,
-      "previous_timestamp_ms": 1795839358780,
-      "current_timestamp_ms": 1795839654788,
+      "delta_btc": 8.5214,
+      "delta_percent": 0.0265,
+      "elapsed_seconds": 296.38,
+      "previous_timestamp_ms": 1795839654788,
+      "current_timestamp_ms": 1795839951168,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 6.74318227468e-05,
-      "rate_percent": 0.0067432,
+      "rate_fraction": 6.64867812117e-05,
+      "rate_percent": 0.0066487,
       "next_funding_time_ms": 1795881600000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 60037.8,
-      "index_price": 60069.6,
-      "mark_timestamp_ms": 1795839655410,
-      "index_timestamp_ms": 1795839655107,
-      "mark_minus_index_usdt": -31.8,
-      "premium_bps": -5.293859,
+      "mark_price": 59999.6,
+      "index_price": 60031.8,
+      "mark_timestamp_ms": 1795839951906,
+      "index_timestamp_ms": 1795839951100,
+      "mark_minus_index_usdt": -32.2,
+      "premium_bps": -5.363824,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "ask_heavier",
-    "timestamp_ms": 1795839655151,
+    "resting_side": "balanced",
+    "timestamp_ms": 1795839951601,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -166,7 +158,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795839600,
+  "m5_close_s": 1795839900,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
