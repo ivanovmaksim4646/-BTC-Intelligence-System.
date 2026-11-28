@@ -90,7 +90,7 @@ def prior_poi_zones(bars,step,head,direction):
         for b in prior if b["t"]>=p["available_at"])]
 
 
-def structural_plan(frames, direction, entry, head_price, poi, close):
+def structural_plan(frames, direction, entry, head_price, poi, close, *, separate_fta=False):
     """Closed H1/H4 FVG/IFVG and unswept pivot proxy; no inferred OBs."""
     long=direction=="long"
     zones=[]
@@ -119,7 +119,7 @@ def structural_plan(frames, direction, entry, head_price, poi, close):
     # Retain the selected, close-valid setup POI even if already touched.
     # Adverse structure beyond it is not automatically inferred from distant pivots.
     anchor=min(head_price,poi["low"]) if long else max(head_price,poi["high"])
-    result=plan(direction,entry,anchor,zones,sorted(levels),cost_bps=COST_ESTIMATE_BPS)
+    result=plan(direction,entry,anchor,zones,sorted(levels),cost_bps=COST_ESTIMATE_BPS,separate_fta=separate_fta)
     result["evidence_scope"]="H1_H4_FVG_IFVG_and_unswept_swings_only_OB_unverified"
     return result
 
