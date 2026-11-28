@@ -1,6 +1,7 @@
 """Shared research execution for first-edge limits; frozen baseline untouched."""
 from dataclasses import dataclass
 import math
+from datetime import datetime
 from research.baseline import replay as b
 from research.runner.confirmed_filters import limit_edge, tighten_stop, protection_trigger
 
@@ -112,9 +113,23 @@ class ExecutionBook(b.Book):
             d,distance,True,events.get(step),step,step in events)),None)
         if not shift:return
         old=p["stop"]
-        new=tighten_stop(d,old,p["entry"],bar.c)
+        candidates=[]
+        entry_time=datetime.fromisoformat(p["entry_utc"]).timestamp()
+        for anchor_tf in (3600,900):
+            frame=frames[anchor_tf]
+            pivot=frame.last.get(-d)
+            if not pivot or pivot.t<entry_time:continue
+            if any(q.kind=="FVG" and q.side==d and q.born<=now
+                   and d*((q.lo if d==1 else q.hi)-pivot.px)>0
+                   and d*(bar.c-(q.hi if d==1 else q.lo))>=0
+                   for q in frame.zones):
+                proposed=pivot.px-d*.1
+                if tighten_stop(d,old,proposed,bar.c)!=old:
+                    candidates.append((proposed,anchor_tf))
+        proposed,anchor_tf=max(candidates,key=lambda x:d*x[0]) if candidates else (p["entry"],None)
+        new=tighten_stop(d,old,proposed,bar.c)
         if new!=old:
             p["stop"]=new
-            p.setdefault("management",[]).append(dict(time=b.utc(now),reason="FTA_BE",
+            p.setdefault("management",[]).append(dict(time=b.utc(now),reason="FTA_structural" if anchor_tf else "FTA_BE",anchor_tf=anchor_tf,
                 tf=tf,shift_tf=shift,old_stop=old,new_stop=new))
         self.fta=None
