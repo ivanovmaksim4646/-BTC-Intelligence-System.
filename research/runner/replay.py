@@ -4,12 +4,13 @@ import csv
 import json
 import math
 from collections import Counter, defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from pathlib import Path
 
 from research.baseline import replay
 from research.baseline.dataset import START, END, stamp
 from research.runner.charts import render
+from research.runner.validation import SPEC, assess
 from research.runner.inputs import BASE, FUNDING_SHA, verified_bars, verified_funding
 
 CONFIG = Path(__file__).with_name("config.json")
@@ -101,6 +102,8 @@ def run(cfg, cache, out):
     write_csv(out/"trades.csv",fields,trades)
     write_csv(out/"rejections.csv",["model","time_utc","reason","setup_utc","d"],rejected)
     write_csv(out/"equity.csv",["model","exit_utc","equity","R"],trades)
+    validation=assess(bars,funding,stamp(start),stamp(end),models,costs,trades,json.loads(SPEC.read_text()))
+    (out/"validation.json").write_text(json.dumps(validation,indent=2,allow_nan=False)+"\n")
     render(out/"entries.html",bars,trades)
     return summary
 

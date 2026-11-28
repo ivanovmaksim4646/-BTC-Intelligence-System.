@@ -1,8 +1,5 @@
-import copy
-import csv
 import io
 import json
-import tempfile
 import unittest
 import zipfile
 from datetime import date
@@ -57,3 +54,22 @@ class ResearchRunnerTests(unittest.TestCase):
         book.execute(replay.Bar(300,100,140,88,120,1,.5),900,{})
         self.assertEqual([r["outcome"] for r in book.rows],["SL"])
         self.assertGreaterEqual(book.rows[0]["planned_RR"],2)
+
+class ValidationTests(unittest.TestCase):
+    def test_folds_are_disjoint_and_chronological(self):
+        from research.runner.validation import bounds, DAY
+        self.assertEqual(bounds(0,4*DAY,2,1),[(0,2*DAY,3*DAY),(DAY,3*DAY,4*DAY)])
+        for lengths in [(0,1),(4,1)]:
+            with self.assertRaises(ValueError):
+                bounds(0,4*DAY,*lengths)
+
+    def test_reviewed_examples_distinguish_missing_wrong_side_and_skip(self):
+        from research.runner.validation import approved_examples
+        ex=dict(id="synthetic-test",model="QM_M15",entry_utc="1970-01-01T00:05:00+00:00",
+                direction="LONG",expected="entry",provenance="unit test")
+        row=dict(model=ex["model"],entry_utc=ex["entry_utc"],d=1)
+        compare=lambda example:approved_examples([example],[row],["QM_M15"],0,900)[0]["status"]
+        self.assertEqual(compare(ex),"match")
+        self.assertEqual(compare(dict(ex,direction="SHORT")),"mismatch")
+        self.assertEqual(compare(dict(ex,direction="SHORT",expected="skip")),"match")
+        self.assertEqual(compare(dict(ex,entry_utc="1970-01-02T00:05:00+00:00")),"outside_config")

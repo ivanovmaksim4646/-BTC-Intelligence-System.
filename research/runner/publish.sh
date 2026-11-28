@@ -11,7 +11,7 @@ git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 git worktree add --detach "$dest" "$revision"
 for attempt in 1 2 3; do
-    git fetch --no-tags origin "refs/heads/$branch"
+    git fetch --depth=1 --filter=blob:none --no-tags origin "refs/heads/$branch"
     head=$(git rev-parse FETCH_HEAD)
     git -C "$dest" checkout --detach --force "$head"
     dir="$dest/research/results/$revision"
