@@ -12,8 +12,14 @@ class Tests(unittest.TestCase):
         r=evaluate(*fixture(),now=NOW)
         self.assertEqual(r["decision"],"LONG")
         self.assertFalse(r["execution_enabled"])
-    def test_missing(self):
-        c,g=fixture();c["missing"]=["macro"]
+    def test_advisory_missing_does_not_veto_verified_candidate(self):
+        c,g=fixture();c["missing"]=["macro","breadth","reconciled_flow_4h"]
+        r=evaluate(c,g,NOW)
+        self.assertEqual(r["decision"],"LONG")
+        self.assertIn("advisory_missing_macro",r["warnings"])
+        self.assertFalse(r["execution_enabled"])
+    def test_core_missing_still_blocks_paper(self):
+        c,g=fixture();c["missing"]=["macro","reconciled_flow_15m"]
         self.assertIsNone(evaluate(c,g,NOW)["paper_signal"])
     def test_low_rr(self):
         c,g=fixture();g["structural_research"][0]["take_profit"]=102
@@ -28,7 +34,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r["decision"],"LONG")
         self.assertIn("liquidation_heatmap_unavailable",r["warnings"])
         c["missing"].append("reconciled_flow_4h")
-        self.assertEqual(evaluate(c,g,NOW)["decision"],"NO_TRADE")
+        self.assertEqual(evaluate(c,g,NOW)["decision"],"LONG")
 
     def test_advisory_missing_and_conflict_exposes_watch_only(self):
         c,g=fixture()
@@ -51,3 +57,11 @@ class Tests(unittest.TestCase):
         c["missing"]=["macro"]
         g["structural_research"][0]["take_profit"]=102
         self.assertEqual(evaluate(c,g,NOW)["context_diagnostics"]["watch_candidates"],[])
+
+    def test_gate_diagnostics_propagated_without_admission(self):
+        c,g=fixture();g["structural_research"]=[]
+        g["reasons"]=["no_same_bar_independently_corroborated_okx_tv_alert"]
+        c["missing"]=["macro"]
+        r=evaluate(c,g,NOW)
+        self.assertIsNone(r["paper_signal"])
+        self.assertEqual(r["context_diagnostics"]["entry_gate_reasons"],g["reasons"])
