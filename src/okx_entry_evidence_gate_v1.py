@@ -320,7 +320,10 @@ def main():
     now=dt.datetime.now(dt.timezone.utc)
     report=evaluate(snapshot,obs,now)
     # Independent M15 route; M5 remains legacy and retest execution context.
-    from src.okx_m15_structural_gate import evaluate as evaluate_m15
+    try:
+        from src.okx_m15_structural_gate import evaluate as evaluate_m15
+    except ModuleNotFoundError:
+        from okx_m15_structural_gate import evaluate as evaluate_m15
     m15=evaluate_m15(snapshot,now)
     report["m15_structural_gate"]={k:v for k,v in m15.items() if k!="structural_research"}
     report["structural_research"].extend(m15["structural_research"])
