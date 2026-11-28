@@ -77,11 +77,18 @@ class AdvisoryTests(unittest.TestCase):
 
     def test_smart_sim_sides(self):
         from src.advisory_liquidations_v1 import smart_sim
-        raw=dict(ok=True,estimated=True,symbol="BTC",current_price=100,target_price=95,move_pct=-5,clusters=[dict(price=98,side="long",notional_usd=500)])
-        self.assertEqual(smart_sim(raw,-5)["clusters"][0]["side"],"LONG")
-        raw["clusters"][0]["side"]="short"
-        with self.assertRaises(ValueError):smart_sim(raw,-5)
+        raw=dict(ok=True,estimated=True,symbol="BTC",ts=int(self.now.timestamp()),study_age_s=20,current_price=100,target_price=95,move_pct=-5,clusters=[dict(price=98,side="long",notional_usd=500),dict(price=80,side="long",notional_usd=99),dict(price=105,side="short",notional_usd=100)])
+        self.assertEqual(smart_sim(raw,-5,self.now)["clusters"][0]["side"],"LONG")
+        self.assertEqual(smart_sim(raw,-5,self.now)["total_estimated_crossed_usd"],500)
+        raw["clusters"][0]["side"]="bad"
+        with self.assertRaises(ValueError):smart_sim(raw,-5,self.now)
     def test_smart_empty(self):
         from src.advisory_liquidations_v1 import smart_sim,smart_realized
         self.assertEqual(smart_sim(dict(ok=True,estimated=True,symbol="BTC",empty=True),5)["status"],"unavailable")
-        self.assertEqual(smart_realized(dict(symbol="BTC",window_minutes=240,clusters=[]))["status"],"empty_unverified")
+        self.assertEqual(smart_realized(dict(symbol="BTC",window_minutes=240,clusters=[],generated_at=int(self.now.timestamp())),self.now)["status"],"empty_unverified")
+
+    def test_swole_freshness(self):
+        from src.advisory_liquidations_v1 import swole
+        d=dict(coin="BTC",price=59000,as_of=int(self.now.timestamp()*1000),estimated=True,has_data=True,model_version="v1",levels={"long":[],"short":[]},totals=[dict(pct=.05,long_usd=1,short_usd=2)])
+        self.assertEqual(swole(d,"levels",self.now)["status"],"provider_estimate")
+        self.assertEqual(swole(d,"levels",self.now+dt.timedelta(hours=1))["status"],"stale_or_unverified")

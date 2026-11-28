@@ -90,8 +90,13 @@ def main():
        "liquidation_observations":liquidation_map(feed.get("bitget_liquidations") or {},now),
        "forecast_source":FORECAST_URL,"forecasts":[],"forecast_status":"unavailable","reactions":[]}
     try:
-        out["forecasts"]=forecast_matches(json.loads(fetch(FORECAST_URL)),events,now)
-        out["forecast_status"]="matched_upcoming_events" if out["forecasts"] else "no_matching_upcoming_events"
+        raw=json.loads(fetch(FORECAST_URL))
+        if not isinstance(raw,list):raise ValueError("unexpected weekly feed")
+        out["forecasts"]=forecast_matches(raw,events,now)
+        stamps=[t for row in raw if (t:=timestamp(row.get("date")))]
+        out["forecast_feed_range_utc"]=[min(stamps).isoformat(),max(stamps).isoformat()] if stamps else None
+        upcoming=[t for e in events if (t:=timestamp(e.get("release_at_utc"))) and t>now]
+        out["forecast_status"]="matched_upcoming_events" if out["forecasts"] else ("official_events_beyond_weekly_feed" if stamps and upcoming and min(upcoming)>max(stamps) else "no_matching_upcoming_events")
     except Exception as e:out["forecast_error"]=type(e).__name__
     candles=read("BTC-okx-futures-candles.json")
     # Use official calendar records, not only the future-filtered report feed.
