@@ -20,9 +20,10 @@ def breadth(doc,now):
     if not 0<b["btc_d_pct"]<100 or not b["total_usd"]>b["total_ex_btc_usd"]>b["total_ex_btc_eth_usd"]:return {"status":"invalid"}
     return {"status":"observed",**b}
 def volatility(raw,now):
-    rows=raw.get("result") or []
+    result=raw.get("result") or []
+    rows=result.get("data",[]) if isinstance(result,dict) else result
     if not rows:return {"status":"unavailable"}
-    row=rows[-1]
+    row=max(rows,key=lambda x:x[0])
     t,v=row[0],row[4]
     if not positive(t) or not positive(v) or not 0<=now.timestamp()*1000-t<=7200000:return {"status":"stale_or_invalid"}
     return {"status":"observed","source":"Deribit DVOL BTC","timestamp_ms":t,"annualized_implied_volatility_pct":v,
