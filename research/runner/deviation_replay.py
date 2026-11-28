@@ -1,14 +1,14 @@
 """Daily inside-bar deviation research: closed bars, context, M15 shift, range target.
-Conservative market variant only; limit/FTA variants not yet wired.
+Market entry with confirmed FTA protection; limit and general range not yet wired.
 """
 from research.baseline import replay as b
-from research.runner.confirmed_filters import deviation_confirmed, entry_allowed, protection_trigger
+from research.runner.confirmed_filters import deviation_confirmed, entry_allowed, protection_trigger, tighten_stop
 
 MODEL="IB_M15_market"
 def run(data,funding,expected_count,*,start,end,fee,slip):
     frames={tf:b.Frame(tf) for tf in b.FRAMES}
     book=b.Book(MODEL,fee,slip)
-    daily=None; bounds=None; excursion={}; count=0
+    daily=None; bounds=None; excursion={}; count=0; fta_touch=None; tracked_entry=None
     for bar in data:
         now=bar.t+300
         eligible=start<=bar.t<end
@@ -38,20 +38,39 @@ def run(data,funding,expected_count,*,start,end,fee,slip):
                 elif bounds and (closed.c<bounds[0] or closed.c>bounds[1]):
                     bounds=None;excursion={}
                 daily=closed
-        if not eligible or not bounds: continue
-        lo,hi=bounds
-        # FTA management only after confirmed opposing shift; no raw touch protection.
+        if not eligible: continue
+        # Remember opposing zones touched after entry, even if range expires.
+        # Only a subsequent closed opposing shift can tighten the stop.
         if book.pos:
             p=book.pos; d=p['d']
-            for tf in (900,3600,14400):
-                if events.get(900)!=-d: continue
-                z=next((z for z in frames[tf].zones if z.side==-d and b.overlap(bar,z)),None)
-                if z and protection_trigger(d,1,True,-d,900,True):
-                    be=p['entry']
-                    if d*(be-p['stop'])>0 and d*(bar.c-be)>0:
-                        p['stop']=be
-                        p.setdefault('management',[]).append({'time':b.utc(now),'reason':'FTA_M15_BE','tf':tf})
-                    break
+            p.setdefault('initial_stop',p['stop'])
+            risk=abs(p['entry']-p['initial_stop'])
+            active=[(tf,z) for tf in (14400,3600,900) for z in frames[tf].zones
+                    if z.side==-d and z.born<=bar.t]
+            if tracked_entry!=p['entry_utc']:
+                tracked_entry=p['entry_utc']; fta_touch=None
+            if fta_touch and fta_touch not in active:
+                fta_touch=None
+            hit=next(((tf,z) for tf,z in active if b.overlap(bar,z)),None)
+            if hit:
+                fta_touch=hit
+            hit=fta_touch
+            if hit and risk>0:
+                tf,z=hit
+                edge=z.lo if d==1 else z.hi
+                distance=max(0,d*(edge-p['entry'])/risk)
+                shift_tf=next((step for step in (900,300)
+                    if protection_trigger(d,distance,True,events.get(step),step,step in events)),None)
+                if shift_tf:
+                    old=p['stop']
+                    new=tighten_stop(d,old,p['entry'],bar.c)
+                    if new!=old:
+                        p['stop']=new
+                        p.setdefault('management',[]).append({'time':b.utc(now),'reason':'FTA_BE','tf':tf,
+                            'shift_tf':shift_tf,'distance_r':distance,'old_stop':old,'new_stop':new})
+                    fta_touch=None
+        if not bounds: continue
+        lo,hi=bounds
         if not book.idle() or 900 not in events: continue
         d=events[900]; e=excursion.get(d)
         if not e or not e[1]: continue
