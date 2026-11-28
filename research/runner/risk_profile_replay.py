@@ -24,6 +24,8 @@ MODELS=("QM_M15",)+tuple(f"OF_{tf}_{variant}" for tf in ("M5","M15","H1","H4") f
 TTL=900
 MAX_AGE=10800
 ALLOWED_POI={"OB","FVG","IFVG","Rejection"}
+MAJOR_TARGETS={"PDH","PDL","PMH","PML","swing 240m","swing 1440m"}
+TARGET_POLICY="major_external"
 
 def hit(direction,bar,level):
     return bar.h>=level if direction==1 else bar.l<=level
@@ -76,16 +78,18 @@ class Levels:
         if p and tf>=900:
             self.add(p.side,p.px,"swing "+str(tf//60)+"m",tf>=3600)
 
-def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=None,first_tests=None,fixed_target=None):
+def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=None,first_tests=None,fixed_target=None,target_policy="nearest_external"):
     """External target is chosen by structure BEFORE RR, not by desired R."""
     pivot=frames[900].last.get(d)
     boundary=pivot.px if pivot and d*(pivot.px-entry)>0 else entry
     profits=[(px,label,ext) for side,px,label,ext in levels.live if side==d and d*(px-entry)>0]
     external=[(px,label) for px,label,ext in profits if ext and d*(px-boundary)>=0]
     external.sort(key=lambda v:(abs(v[0]-entry),v[1]))
+    if target_policy not in ("nearest_external","major_external"):raise ValueError("unknown target policy")
+    eligible_targets=[v for v in external if v[1] in MAJOR_TARGETS] if target_policy=="major_external" else external
     if fixed_target is None:
-        if not external:return None,"no_external_liquidity"
-        tp,target_kind=external[0]
+        if not eligible_targets:return None,"no_unswept_major_liquidity" if target_policy=="major_external" else "no_external_liquidity"
+        tp,target_kind=eligible_targets[0]
     else:
         tp,target_kind=fixed_target
         if d*(tp-entry)<=0:return None,"invalid_range_target"
@@ -121,7 +125,9 @@ def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=
     result=dict(target=tp,target_kind=target_kind,fta=fta,fta_kind=fta_kind,fta_zone=fta_zone,
                 external_boundary=boundary,overlap_zones=overlaps,shift_inside_zones=shift_inside,
                 previously_tested_ignored_count=len(tested_ignored),
-                target_ladder=[{"price":p,"kind":k} for p,k in external[:12]])
+                target_ladder=[{"price":p,"kind":k} for p,k in external[:12]],
+                major_target_ladder=[{"price":p,"kind":k} for p,k in external if k in MAJOR_TARGETS][:12],
+                target_policy="fixed_IB_boundary" if fixed_target else target_policy)
     if shift_inside:return result,"shift_inside_active_fta"
     if overlaps:return result,"limit_inside_active_opposing_zone"
     return result,None
@@ -256,14 +262,16 @@ class Account:
             p=self.pos;out=x.c*(1-p["d"]*self.slip)
             mark+=p["funding"]+p["qty"]*(p["d"]*(out-p["entry"])-self.fee*(out+p["entry"]))
         self.peak=max(self.peak,mark);self.dd=max(self.dd,1-mark/self.peak)
-    def place_ready(self,frames,levels,filled,x,now,first_tests=None):
+    def place_ready(self,frames,levels,filled,x,now,first_tests=None,target_policy="nearest_external"):
         if self.ready is None:return
         s=self.ready;self.ready=None
         d=s["d"]
         zone=s.get("zone")
         if zone is not None and (zone not in frames[s["poi_tf"]].zones or zone in filled):
             self.reject("poi_invalidated_on_retest");return
-        targets,reason=structural_targets(d,s["entry_limit"],frames,levels,filled,first_tests=first_tests)
+        targets,reason=structural_targets(d,s["entry_limit"],frames,levels,filled,first_tests=first_tests,
+            fixed_target=(s["target"],s["target_kind"]) if target_policy=="major_external" else None,
+            target_policy=target_policy)
         if self.current_audit is not None:self.current_audit["retest_targets"]=targets
         if reason:self.reject("retest_"+reason);return
         # The TP is frozen at the original decision. Never extend it to
@@ -373,7 +381,7 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
         if not eligible:continue
         for a in accounts:
             a.after_close(x,now,shifts.get(300))
-            a.place_ready(frames,levels,filled,x,now,first_tests)
+            a.place_ready(frames,levels,filled,x,now,first_tests,target_policy=TARGET_POLICY)
         if now>=end:continue
         ideas={}
         if qm:
@@ -415,7 +423,7 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
                         shift_price=frames[900].shift_close,shift_time=now,setup_utc=b.utc(now))
                     excursion.pop(d,None)
         for model,idea in ideas.items():
-            targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled,first_tests=first_tests,fixed_target=idea.get("fixed_target"))
+            targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled,first_tests=first_tests,fixed_target=idea.get("fixed_target"),target_policy=TARGET_POLICY)
             event_tf=300 if model.startswith("OF_") else 900
             event_key=(event_tf,idea["shift_time"],idea["d"])
             if targets is not None:
@@ -481,6 +489,29 @@ def self_test():
     result,err=structural_targets(-1,100,f,lv,set(),97,300,first_tests={(3600,z):100})
     assert err is None and result["fta"]==94
 
+    # Major TP is predeclared, never selected according to desired RR.
+    f={tf:SimpleNamespace(last={},zones=[]) for tf in b.FRAMES}
+    lv=Levels()
+    lv.add(1,101,"swing 15m",False);lv.add(1,102,"London high",True)
+    lv.add(1,103,"swing 60m",True);lv.add(1,104,"PDH",True);lv.add(1,110,"swing 240m",True)
+    result,err=structural_targets(1,100,f,lv,set(),target_policy="major_external")
+    assert err is None and result["target"]==104 and result["fta"]==101
+    lv.live.remove((1,104,"PDH",True))
+    result,err=structural_targets(1,100,f,lv,set(),target_policy="major_external")
+    assert err is None and result["target"]==110 and result["fta"]==101
+    lv.live.remove((1,110,"swing 240m",True))
+    result,err=structural_targets(1,100,f,lv,set(),target_policy="major_external")
+    assert result is None and err=="no_unswept_major_liquidity"
+    result,err=structural_targets(1,100,f,lv,set(),fixed_target=(105,"opposite_IB_boundary"),target_policy="major_external")
+    assert err is None and result["target"]==105 and result["fta"]==101
+    lv.add(-1,98,"Asia low",True);lv.add(-1,96,"PML",True);lv.add(-1,90,"swing 1440m",True)
+    z=b.Zone("OB",1,98.5,99.5,0);f[3600].zones=[z]
+    result,err=structural_targets(-1,100,f,lv,set(),target_policy="major_external")
+    assert err is None and result["target"]==96 and result["fta"]==99.5
+    result,err=structural_targets(-1,100,f,lv,set(),first_tests={(3600,z):300},target_policy="major_external")
+    assert err is None and result["target"]==96 and result["fta"]==98
+
+
 def main():
     self_test()
     configured=json.loads(Path(__file__).with_name("config.json").read_text())["models"]
@@ -513,7 +544,7 @@ def main():
         for x in rejected:
             idea=x["idea"];d=idea["d"];e=idea["entry_limit"];s=x["initial_sl"]
             if idea.get("fixed_target"):continue
-            major=next((v for v in x["targets"]["target_ladder"] if v["kind"] in ("PDH","PDL","PMH","PML","swing 240m","swing 1440m")),None)
+            major=next((v for v in x["targets"]["major_target_ladder"] if v["kind"] in MAJOR_TARGETS),None)
             if major:
                 en=e*(1+d*a.slip);st=s*(1-d*a.slip);tp=major["price"]*(1-d*a.slip)
                 loss=d*(en-st)+a.fee*(en+st);gain=d*(tp-en)-a.fee*(en+tp)
@@ -523,7 +554,7 @@ def main():
         tp_diagnostics[a.name]={"rr_rejections":len(rejected),"gross_ge_2_net_below_2":sum(x.get("gross_rr",0)>=2 for x in rejected),
                                 "first_major_liquidity_net_ge_2_diagnostic_only":eligible_htf,
                                 "target_types":dict(counts),"examples":rejected[:2]}
-    report={"tp_diagnostics":tp_diagnostics,"classification":"historical_research_only","instrument":"Binance USD-M BTCUSDT",
+    report={"target_policy":TARGET_POLICY,"tp_diagnostics":tp_diagnostics,"classification":"historical_research_only","instrument":"Binance USD-M BTCUSDT",
             "period_utc":[b.utc(start),b.utc(end)],"evaluation_m5":(end-start)//300,
             "warmup_days":30,"archive_sha256":pins,"funding_settlements":len(funding),
             "initial_usd":1000,"risk_fraction":.01,"leverage_cap":5,"min_net_rr":2,
@@ -532,7 +563,7 @@ def main():
             "train":train_stats,"holdout":holdout_stats,"selected":selected,
             "stress_fee7_slip3":{a.name:a.report() for a in stress},
             "limitations":["OHLC-derived structural proxies; not live OKX replay or full CVD",
-                           "nearest external target beyond confirmed M15 pivot; no RR-based target skipping",
+                           "nearest unswept H4/D1 swing or PDH/PDL/PMH/PML beyond confirmed M15 pivot; no fallback to lower timeframe or RR-based target skipping",
                            "session windows Asia 02-08 Warsaw, London 08-10 London, NY 08-11 New York",
                            "limit after closed M5 retest, 15m expiry; conservative ambiguous fill handling",
                            "BE nominal entry after FTA or confirmed favorable M5 shift, costs included",
@@ -541,6 +572,16 @@ def main():
                            "FTA recomputed at retest before placement; frozen TP and SL; post-placement FTA touch cancels pending, post-fill touch moves BE",
                            "fresh FTA only: first M5 wick overlap after confirmed creation retires zone from future FTA selection; first contact at shift retains veto, event-time snapshot prevents QM hindsight; entry POI unchanged",
                            "all ten original research variants; OF weak uses Binance taker delta proxy; IB market next open with opposite range boundary and RR recheck; no Sweep model in this configured suite"]}
+    # Compare against inherited v5 only if its run identifier is exact.
+    prior=Path("research/risk-results/summary.json")
+    pointer=Path("research/risk-results/latest.json")
+    if prior.exists() and pointer.exists() and json.loads(pointer.read_text()).get("run_id")=="46163828214":
+        old=json.loads(prior.read_text())
+        report["comparison_v5"]={k:{"trades_before":old["full"][k]["trades"],"trades_after":v["trades"],
+                                    "pnl_usd_before":old["full"][k]["pnl_usd"],"pnl_usd_after":v["pnl_usd"],
+                                    "rr_rejections_before":old["full"][k]["rejections"].get("net_rr_below_two",0),
+                                    "rr_rejections_after":v["rejections"].get("net_rr_below_two",0)}
+                                 for k,v in report["full"].items()}
     out=Path("risk-profile-output");out.mkdir(exist_ok=True)
     (out/"summary.json").write_text(json.dumps(report,indent=2,allow_nan=False)+"\n")
     (out/"trades.json").write_text(json.dumps({a.name:a.rows for a in full},indent=2,allow_nan=False)+"\n")
