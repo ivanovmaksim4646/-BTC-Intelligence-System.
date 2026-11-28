@@ -1,6 +1,6 @@
 """Research-only SL/TP comparison on the pinned Binance USD-M archive.
 
-Reuses baseline Frame/POI/QM and verified input reader. Three independent
+Reuses baseline Frame/POI/QM and verified input reader. Ten configured independent
 accounts with one fixed buffer and auditable structural decisions. This is a new research proxy, not the live OKX signal algorithm.
 No order submission, no changes to main, no historical CVD/orderbook claims.
 """
@@ -20,7 +20,7 @@ LONDON=ZoneInfo("Europe/London")
 NY=ZoneInfo("America/New_York")
 DAY=86400
 BUFFERS=(3,)  # Existing production buffer; not optimized.
-MODELS=("QM_HEAD","OF_ZONE","SWEEP_EXTREME")
+MODELS=("QM_M15",)+tuple(f"OF_{tf}_{variant}" for tf in ("M5","M15","H1","H4") for variant in ("base","weak"))+("IB_M15_market",)
 TTL=900
 MAX_AGE=10800
 ALLOWED_POI={"OB","FVG","IFVG","Rejection"}
@@ -76,14 +76,19 @@ class Levels:
         if p and tf>=900:
             self.add(p.side,p.px,"swing "+str(tf//60)+"m",tf>=3600)
 
-def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=None,first_tests=None):
+def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=None,first_tests=None,fixed_target=None):
     """External target is chosen by structure BEFORE RR, not by desired R."""
     pivot=frames[900].last.get(d)
     boundary=pivot.px if pivot and d*(pivot.px-entry)>0 else entry
     profits=[(px,label,ext) for side,px,label,ext in levels.live if side==d and d*(px-entry)>0]
     external=[(px,label) for px,label,ext in profits if ext and d*(px-boundary)>=0]
-    if not external:return None,"no_external_liquidity"
-    tp,target_kind=min(external,key=lambda v:(abs(v[0]-entry),v[1]))
+    external.sort(key=lambda v:(abs(v[0]-entry),v[1]))
+    if fixed_target is None:
+        if not external:return None,"no_external_liquidity"
+        tp,target_kind=external[0]
+    else:
+        tp,target_kind=fixed_target
+        if d*(tp-entry)<=0:return None,"invalid_range_target"
     fta_candidates=[(px,label,None) for px,label,_ in profits if d*(tp-px)>=0]
     fta_candidates.append((tp,target_kind,None))
     overlaps=[]
@@ -115,7 +120,8 @@ def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=
     fta,fta_kind,fta_zone=min(fta_candidates,key=lambda v:(abs(v[0]-entry),v[1]))
     result=dict(target=tp,target_kind=target_kind,fta=fta,fta_kind=fta_kind,fta_zone=fta_zone,
                 external_boundary=boundary,overlap_zones=overlaps,shift_inside_zones=shift_inside,
-                previously_tested_ignored_count=len(tested_ignored))
+                previously_tested_ignored_count=len(tested_ignored),
+                target_ladder=[{"price":p,"kind":k} for p,k in external[:12]])
     if shift_inside:return result,"shift_inside_active_fta"
     if overlaps:return result,"limit_inside_active_opposing_zone"
     return result,None
@@ -158,9 +164,16 @@ class Account:
         loss=d*(entry-stop)+self.fee*(entry+stop)
         gain=d*(target-entry)-self.fee*(entry+target)
         self.current_audit["net_rr"]=gain/loss if loss>0 else None
+        self.current_audit["gross_rr"]=d*(targets["target"]-e)/abs(e-s)
+        self.current_audit["stop_distance_pct"]=100*abs(e-s)/e
+        self.current_audit["target_distance_pct"]=100*abs(targets["target"]-e)/e
         if loss<=0 or gain<2*loss:self.reject("net_rr_below_two");return
         self.setup={**idea,**targets,"stop":s,"born":now,"loss_per_btc":loss,"planned_rr":gain/loss}
         self.current_audit["events"].append("setup_accepted")
+        if self.model=="IB_M15_market":
+            self.pending={**self.setup,"market_next_open":True,"expires":now+300}
+            self.setup=None
+            self.current_audit["events"].append("market_order_scheduled")
     def close(self,x,raw,outcome):
         p=self.pos;d=p["d"]
         price=raw*(1-d*self.slip)
@@ -176,11 +189,28 @@ class Account:
             self.pos["funding"]-=self.pos["d"]*self.pos["qty"]*rate*mark
         if self.pending:
             p=self.pending;d=p["d"];e=p["entry_limit"]
+            if p.get("market_next_open"):
+                raw=x.o;entry=raw*(1+d*self.slip)
+                stop=p["stop"]*(1-d*self.slip);target=p["target"]*(1-d*self.slip)
+                loss=d*(entry-stop)+self.fee*(entry+stop)
+                gain=d*(target-entry)-self.fee*(entry+target)
+                if d*(raw-p["stop"])<=0 or d*(p["fta"]-raw)<=0 or loss<=0 or gain<2*loss:
+                    self.reject("market_open_invalid_or_rr_below_two")
+                else:
+                    qty=math.floor(min(self.equity*.01/loss,self.equity*5/entry)*1000)/1000
+                    if qty>0:
+                        self.pos={**p,"entry_limit":raw,"model":self.name,"entry":entry,"entry_utc":b.utc(x.t),
+                                  "fill_t":x.t,"qty":qty,"risk":qty*loss,"funding":0.,"active_stop":p["stop"],
+                                  "be_trigger":None,"planned_rr":gain/loss}
+                        self.current_audit["events"].append("market_filled")
+                    else:self.reject("quantity_below_step")
+                self.pending=None
             touch=x.l<=e<=x.h
             fta=hit(d,x,p["fta"]);stop=stop_hit(d,x,p["stop"])
             zone=p.get("zone")
             valid=zone is None or (zone in frames[p["poi_tf"]].zones and zone not in filled)
-            if not valid:
+            if p.get("market_next_open"):pass
+            elif not valid:
                 self.reject("pending_poi_invalidated");self.pending=None
             elif x.t>=p["expires"]:
                 self.reject("expired_limit");self.pending=None
@@ -216,7 +246,10 @@ class Account:
             elif now>s["born"] and x.l<=s["hi"] and x.h>=s["lo"] and d*(x.c-(s["lo"]+s["hi"])/2)>0 and d*(x.c-x.o)>0:
                 # Delay placement until all current closed frames update.
                 # FTA may have been invalidated during the setup phase.
-                self.ready={**s,"expires":now+TTL,"retest_close_utc":b.utc(now)}
+                delta=2*x.buy-x.v
+                if self.model.endswith("_weak") and not (x.v>0 and d*delta/x.v<=-.10 and d*(x.c-(x.h+x.l)/2)>0):
+                    self.reject("weakness_filter")
+                else:self.ready={**s,"expires":now+TTL,"retest_close_utc":b.utc(now)}
                 self.setup=None
         mark=self.equity
         if self.pos:
@@ -272,7 +305,7 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
     levels=Levels();filled=set();first_tests={};shift_fresh={}
     touches={1:deque(),-1:deque()}
     accounts=[Account(m,k,fee,slip) for m in MODELS for k in BUFFERS]
-    count=0
+    count=0;daily=None;bounds=None;excursion={}
     for x in bars:
         now=x.t+300;eligible=start<=x.t<end
         if eligible:count+=1
@@ -296,6 +329,18 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
                         choice=(x.t,tf,z);break
                 if choice:break
             if choice:q.append(choice)
+        if bounds:
+            lo,hi=bounds
+            for d in (1,-1):
+                extreme=x.l if d==1 else x.h
+                if (extreme<lo if d==1 else extreme>hi):
+                    prior=excursion.get(d)
+                    if prior is None or d*(extreme-prior[0])<0:
+                        excursion[d]=(extreme,prior[1] if prior else None)
+                if d in excursion:
+                    hit_zone=next(((tf,z) for tf in (86400,14400,3600) for z in reversed(frames[tf].zones)
+                                  if z.kind in ALLOWED_POI and z not in filled and z.side==d and b.overlap(x,z) and d*(x.c-x.o)>0),None)
+                    if hit_zone:excursion[d]=(excursion[d][0],hit_zone)
         shifts={};qm=None
         for tf in b.FRAMES:
             f=frames[tf];bar=f.feed(x)
@@ -303,6 +348,10 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
             pivot,event,pattern=f.close(bar,now)
             if event:shifts[tf]=event
             if tf==900:qm=pattern
+            if tf==86400:
+                if daily and bar.h<daily.h and bar.l>daily.l:bounds=(bar.l,bar.h);excursion={}
+                elif bounds and (bar.c<bounds[0] or bar.c>bounds[1]):bounds=None;excursion={}
+                daily=bar
             levels.pivot(pivot,tf)
         filled.intersection_update(z for f in frames.values() for z in f.zones)
         live_keys={(tf,z) for tf,f in frames.items() if tf>=900 for z in f.zones}
@@ -332,32 +381,42 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
             hit_zone=next((v for v in reversed(touches[d]) if v[0]+300<=ht and v[2] in frames[v[1]].zones and v[2] not in filled),None)
             if hit_zone:
                 _,tf,z=hit_zone
-                ideas["QM_HEAD"]=dict(d=d,anchor=head,anchor_kind="confirmed_M15_QM_head",anchor_at=b.utc(ht),entry_limit=shoulder,lo=shoulder,hi=shoulder,zone=z,poi_tf=tf,poi=z.kind,poi_touch_utc=b.utc(hit_zone[0]),shift_utc=b.utc(frames[900].shift_time),shift_price=frames[900].shift_close,shift_time=frames[900].shift_time,setup_utc=b.utc(now))
+                ideas["QM_M15"]=dict(d=d,anchor=head,anchor_kind="confirmed_M15_QM_head",anchor_at=b.utc(ht),entry_limit=shoulder,lo=shoulder,hi=shoulder,zone=z,poi_tf=tf,poi=z.kind,poi_touch_utc=b.utc(hit_zone[0]),shift_utc=b.utc(frames[900].shift_time),shift_price=frames[900].shift_close,shift_time=frames[900].shift_time,setup_utc=b.utc(now))
         d=shifts.get(300)
-        if d and frames[3600].trend==d and frames[3600].shift_time is not None and frames[3600].shift_time<now:
-            when=frames[3600].shift_time
-            hit_zone=next((v for v in reversed(touches[d]) if v[0]+300<=when and v[2] in frames[v[1]].zones and v[2] not in filled),None)
-            if hit_zone:
+        if d and frames[3600].trend==d:
+            for name,tf_mode in (("M5",300),("M15",900),("H1",3600),("H4",14400)):
+                f=frames[tf_mode];when=f.shift_time
+                if tf_mode!=300 and (f.trend!=d or when is None or when>=now):continue
+                cutoff=when if tf_mode!=300 else now-300
+                hit_zone=next((v for v in reversed(touches[d]) if v[0]+300<=cutoff and v[2] in frames[v[1]].zones and v[2] not in filled),None)
+                if not hit_zone:continue
                 local=next((z for z in reversed(frames[300].zones) if z.side==d and z.kind in ("OB","FVG","IFVG") and z not in filled and hit_zone[0]<=z.born<=now and now-z.born<=1800),None)
-                if local:
-                    _,tf,z=hit_zone
-                    edge=local.lo if d==1 else local.hi
-                    protected=frames[300].last.get(-d)
-                    relevant=protected is not None and hit_zone[0]<=protected.t<now and d*(protected.px-edge)<=0
-                    anchor=protected.px if relevant else edge
-                    ideas["OF_ZONE"]=dict(d=d,anchor=anchor,anchor_kind="protecting_swing" if relevant else "entry_zone_invalidation",
-                                         anchor_at=b.utc(protected.t if relevant else local.born),entry_limit=local.hi if d==1 else local.lo,
-                                         lo=local.lo,hi=local.hi,zone=z,poi_tf=tf,poi=z.kind,entry_zone=local.kind,
-                                         poi_touch_utc=b.utc(hit_zone[0]),shift_utc=b.utc(now),shift_price=frames[300].shift_close,shift_time=now,setup_utc=b.utc(now))
+                if not local:continue
+                _,tf,z=hit_zone
+                edge=local.lo if d==1 else local.hi
+                protected=frames[300].last.get(-d)
+                relevant=protected is not None and hit_zone[0]<=protected.t<now and d*(protected.px-edge)<=0
+                anchor=protected.px if relevant else edge
+                idea=dict(d=d,anchor=anchor,anchor_kind="protecting_swing" if relevant else "entry_zone_invalidation",
+                          anchor_at=b.utc(protected.t if relevant else local.born),entry_limit=local.hi if d==1 else local.lo,
+                          lo=local.lo,hi=local.hi,zone=z,poi_tf=tf,poi=z.kind,entry_zone=local.kind,
+                          poi_touch_utc=b.utc(hit_zone[0]),shift_utc=b.utc(now),shift_price=frames[300].shift_close,
+                          shift_time=now,confirmation_tf=tf_mode,setup_utc=b.utc(now))
+                for variant in ("base","weak"):ideas[f"OF_{name}_{variant}"]=dict(idea)
         d=shifts.get(900)
-        if d:
-            sweep=levels.sweeps[d];pivot=frames[900].shift_pivot
-            if sweep and pivot and sweep["close"]<now and now-sweep["close"]<=MAX_AGE:
-                ideas["SWEEP_EXTREME"]=dict(d=d,anchor=sweep["extreme"],anchor_kind="sweep_extreme",anchor_at=b.utc(sweep["close"]),entry_limit=pivot.px,lo=pivot.px,hi=pivot.px,
-                                           zone=None,poi_tf=900,poi="Sweep",sweep=sweep,shift_price=frames[900].shift_close,shift_time=now,setup_utc=b.utc(now))
+        if d and bounds and d in excursion:
+            lo,hi=bounds;extreme,hit_zone=excursion[d]
+            if hit_zone and lo<x.c<hi:
+                tf,z=hit_zone
+                if z in frames[tf].zones and z not in filled and (extreme<lo if d==1 else extreme>hi):
+                    ideas["IB_M15_market"]=dict(d=d,anchor=extreme,anchor_kind="IB_deviation_extreme",entry_limit=x.c,
+                        lo=x.c,hi=x.c,zone=z,poi_tf=tf,poi=z.kind,range_low=lo,range_high=hi,
+                        fixed_target=(hi if d==1 else lo,"opposite_IB_boundary"),
+                        shift_price=frames[900].shift_close,shift_time=now,setup_utc=b.utc(now))
+                    excursion.pop(d,None)
         for model,idea in ideas.items():
-            targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled,first_tests=first_tests)
-            event_tf=300 if model=="OF_ZONE" else 900
+            targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled,first_tests=first_tests,fixed_target=idea.get("fixed_target"))
+            event_tf=300 if model.startswith("OF_") else 900
             event_key=(event_tf,idea["shift_time"],idea["d"])
             if targets is not None:
                 targets["shift_inside_zones"]=shift_fresh.get(event_key,[])
@@ -442,7 +501,13 @@ def main():
         eligible=[a for a in train if a.model==m and a.report()["trades"]>=5]
         best=max(eligible,key=lambda a:a.report()["expectancy_r"],default=None)
         selected[m]={"chosen_before_holdout":best.name if best else None,"holdout":holdout_stats[best.name] if best else None}
-    report={"classification":"historical_research_only","instrument":"Binance USD-M BTCUSDT",
+    tp_diagnostics={}
+    for a in full:
+        rejected=[x for x in a.audit if "net_rr_below_two" in x["events"]]
+        counts=Counter(x["targets"]["target_kind"] for x in rejected)
+        tp_diagnostics[a.name]={"rr_rejections":len(rejected),"gross_ge_2_net_below_2":sum(x.get("gross_rr",0)>=2 for x in rejected),
+                                "target_types":dict(counts),"examples":rejected[:2]}
+    report={"tp_diagnostics":tp_diagnostics,"classification":"historical_research_only","instrument":"Binance USD-M BTCUSDT",
             "period_utc":[b.utc(start),b.utc(end)],"evaluation_m5":(end-start)//300,
             "warmup_days":30,"archive_sha256":pins,"funding_settlements":len(funding),
             "initial_usd":1000,"risk_fraction":.01,"leverage_cap":5,"min_net_rr":2,
@@ -458,7 +523,8 @@ def main():
                            "fixed 3bp buffer; OB wick touch is not FVG full-fill; structural audit includes rejected setups",
                            "BB excluded from POI and FTA; shift CLOSE in a pre-existing active opposing zone blocks, overlapping limit waits for new setup",
                            "FTA recomputed at retest before placement; frozen TP and SL; post-placement FTA touch cancels pending, post-fill touch moves BE",
-                           "fresh FTA only: first M5 wick overlap after confirmed creation retires zone from future FTA selection; first contact at shift retains veto, event-time snapshot prevents QM hindsight; entry POI unchanged"]}
+                           "fresh FTA only: first M5 wick overlap after confirmed creation retires zone from future FTA selection; first contact at shift retains veto, event-time snapshot prevents QM hindsight; entry POI unchanged",
+                           "all ten original research variants; OF weak uses Binance taker delta proxy; IB market next open with opposite range boundary and RR recheck; no Sweep model in this configured suite"]}
     out=Path("risk-profile-output");out.mkdir(exist_ok=True)
     (out/"summary.json").write_text(json.dumps(report,indent=2,allow_nan=False)+"\n")
     (out/"trades.json").write_text(json.dumps({a.name:a.rows for a in full},indent=2,allow_nan=False)+"\n")
