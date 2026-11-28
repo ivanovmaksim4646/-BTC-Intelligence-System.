@@ -67,6 +67,50 @@ def early_spot_watch(current, now):
     return result
 
 
+def spot_persistence(history, now):
+    """Use disjoint reconciled OKX spot M5 buckets and same-instrument prices."""
+    import math
+    out = {"source":"OKX BTC-USDT", "status":"unavailable", "trade_signal":None,
+           "experimental":True}
+    if not isinstance(history,list):
+        return out
+    end = int(now.timestamp())//300*300000
+    index = {}
+    conflicts = set()
+    for row in history:
+        if not isinstance(row,dict) or row.get("instrument")!="BTC-USDT" or row.get("volume_reconciled") is not True:
+            continue
+        t = row.get("end_ms")
+        if type(t) is not int or row.get("start_ms")!=t-300000 or t%300000:
+            continue
+        if t in index and index[t]!=row:
+            conflicts.add(t)
+        index[t]=row
+    needed = list(range(end-3300000,end+1,300000))
+    if any(t not in index or t in conflicts for t in needed):
+        return out
+    try:
+        rows = [tuple(float(index[t][k]) for k in ("delta_btc_reconciled","volume_btc_reconciled","open_usdt","close_usdt")) for t in needed]
+    except (KeyError,ValueError,TypeError,OverflowError):
+        return out
+    if any(not all(math.isfinite(x) for x in row) or row[1]<=0 or abs(row[0])>row[1] or min(row[2:])<=0 for row in rows):
+        return out
+    blocks = []
+    for i in range(0,12,3):
+        part = rows[i:i+3]
+        delta = sum(x[0] for x in part)
+        volume = sum(x[1] for x in part)
+        blocks.append({"end_ms":needed[i+2],"delta_btc":delta,"pressure":delta/volume,
+                       "price_return":part[-1][3]/part[0][2]-1})
+    out.update(status="observed",end_ms=end,blocks=blocks,
+               coverage="volume_reconciled_not_sequence_certified",direction=None)
+    for sign,label in ((1,"LONG"),(-1,"SHORT")):
+        if all(sign*b["pressure"]>0.1 for b in blocks[-2:]):
+            out["direction"]="WATCH "+label
+            out["price_response"]="aligned" if all(sign*b["price_return"]>0 for b in blocks[-2:]) else "mixed_or_divergent"
+    return out
+
+
 def compact_book(current, now):
     book = current.get("order_book") or {}
     stamp = timestamp(book.get("snapshot_time_utc"))
@@ -275,6 +319,7 @@ def main():
     report["chart_snapshot"] = compact_chart(read("BTC-okx-futures-candles.json"),
                                              read("BTC-okx-market-context-v1.json"))
     report["okx_reconciled_flow"] = read("BTC-okx-reconciled-flow-current.json")
+    report["okx_spot_persistence"] = spot_persistence(read("BTC-okx-reconciled-m5-history.json"), dt.datetime.now(dt.timezone.utc))
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
     temp.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
