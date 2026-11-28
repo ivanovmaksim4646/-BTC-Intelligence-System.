@@ -1,18 +1,18 @@
 {
-  "generated_at_utc": "2026-11-28T15:35:50.725353+00:00",
+  "generated_at_utc": "2026-11-28T15:40:58.641115+00:00",
   "breadth": {
     "source": "CoinGecko global",
-    "asof_utc": "2026-11-28T15:27:32+00:00",
-    "btc_d_pct": 57.694224791378026,
-    "total_usd": 2060546818221.5571,
-    "total_ex_btc_usd": 871730304985.2245,
-    "total_ex_btc_eth_usd": 671064137266.6155,
+    "asof_utc": "2026-11-28T15:37:33+00:00",
+    "btc_d_pct": 57.704527256871515,
+    "total_usd": 2059287062619.493,
+    "total_ex_btc_usd": 870985198272.9988,
+    "total_ex_btc_eth_usd": 670552963565.9669,
     "classification": "provider_universe_proxies_not_tradingview_indices"
   },
   "macro": {
     "cpi_index": {
-      "source": "FRED",
-      "series": "CPIAUCSL",
+      "source": "BLS",
+      "series": "CUSR0000SA0",
       "observation_date": "2026-10-01",
       "actual": 337.476,
       "previous": 336.298,
@@ -21,8 +21,8 @@
       "surprise": null
     },
     "unemployment_pct": {
-      "source": "FRED",
-      "series": "UNRATE",
+      "source": "BLS",
+      "series": "LNS14000000",
       "observation_date": "2026-10-01",
       "actual": 4.1,
       "previous": 4.2,
@@ -31,8 +31,8 @@
       "surprise": null
     },
     "payrolls_thousands": {
-      "source": "FRED",
-      "series": "PAYEMS",
+      "source": "BLS",
+      "series": "CES0000000001",
       "observation_date": "2026-10-01",
       "actual": 159293.0,
       "previous": 159128.0,
@@ -40,23 +40,23 @@
       "consensus_forecast": null,
       "surprise": null
     },
-    "effective_fed_funds_pct": {
-      "source": "FRED",
-      "series": "FEDFUNDS",
-      "observation_date": "2026-10-01",
-      "actual": 3.88,
-      "previous": 3.75,
-      "previous_date": "2026-09-01",
-      "consensus_forecast": null,
-      "surprise": null
-    },
     "ppi_index": {
-      "source": "FRED",
-      "series": "PPIACO",
+      "source": "BLS",
+      "series": "WPU00000000",
       "observation_date": "2026-10-01",
       "actual": 293.921,
       "previous": 294.473,
       "previous_date": "2026-09-01",
+      "consensus_forecast": null,
+      "surprise": null
+    },
+    "effective_fed_funds_pct": {
+      "source": "New York Fed",
+      "series": "EFFR_daily",
+      "observation_date": "2026-11-25",
+      "actual": 3.88,
+      "previous": 3.88,
+      "previous_date": "2026-11-24",
       "consensus_forecast": null,
       "surprise": null
     }
