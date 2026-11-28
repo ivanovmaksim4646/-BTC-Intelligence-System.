@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "classification": "research_watch_only",
-  "generated_at_utc": "2026-11-28T13:35:20.094292+00:00",
-  "decision": "NO_TRADE",
+  "generated_at_utc": "2026-11-28T13:36:25.448496+00:00",
+  "decision": "LONG_WATCH",
   "entry_signal": false,
   "trade_signal": null,
   "entry": null,
@@ -10,16 +10,22 @@
   "take_profit": null,
   "rr": null,
   "probability": null,
-  "matched_event": null,
+  "matched_event": {
+    "event": "m5_bullish_shift",
+    "symbol": "OKX:BTCUSDT.P",
+    "time_ms": 1795872900000
+  },
   "reasons": [
-    "order_flow_not_directionally_aligned"
+    "watch_only_not_entry",
+    "futures_chart_poi_sl_tp_rr_not_validated",
+    "kraken_and_tradingview_cross_venue_limitations"
   ],
   "confluence": {
     "classification": "research_confluence_only",
     "decision": "NO_TRADE",
     "models": {
-      "IFVG_H1_W1": "unavailable",
-      "HTF_POI_QM_LTF": "unavailable"
+      "IFVG_H1_W1": "context_observed_not_trade",
+      "HTF_POI_QM_LTF": "no_recent_directional_pair"
     },
     "note": "Research context only; confluence never authorizes trade entries."
   }
