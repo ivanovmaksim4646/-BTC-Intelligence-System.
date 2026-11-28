@@ -19,6 +19,10 @@ jobs:
           python-version: '3.12'
       - run: python -m unittest discover -s tests -p test_advisory_context_v1.py -v
       - run: python -m src.market_breadth_macro_v1
+      - name: Read current production data without modifying main
+        run: |
+          git fetch --depth=1 origin main
+          git show FETCH_HEAD:data/BTC-okx-reconciled-flow-current.json > data/BTC-okx-reconciled-flow-current.json
       - run: python -m src.advisory_context_v1
       - uses: actions/upload-artifact@v4
         with:
