@@ -1,19 +1,19 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-28T00:56:14.093857Z",
+  "checked_at_utc": "2026-11-28T01:01:19.568964Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
-      "status": "unverified",
-      "age_seconds": 56
+      "status": "ok",
+      "age_seconds": 57
     },
     "order_flow_analysis": {
       "status": "ok",
-      "age_seconds": 54
+      "age_seconds": 56
     },
     "structure_observation": {
       "status": "ok",
-      "age_seconds": 54
+      "age_seconds": 56
     },
     "watchlist_evaluation": {
       "status": "ok",
@@ -21,10 +21,10 @@
     },
     "github_workflow_trigger": {
       "status": "ok",
-      "age_seconds": 53,
+      "age_seconds": 54,
       "event": "workflow_dispatch",
       "source": "cloudflare",
-      "slot": "2026-11-28T00:55:00.000Z"
+      "slot": "2026-11-28T01:00:00.000Z"
     },
     "cloudflare_dispatch": {
       "status": "last_dispatch_observed",
@@ -38,7 +38,7 @@
     },
     "okx_spot": {
       "status": "volume_reconciled",
-      "age_seconds": 74,
+      "age_seconds": 80,
       "h4_buckets": 48,
       "h4_required": 48,
       "backfill_error": null,
@@ -46,7 +46,7 @@
     },
     "okx_swap": {
       "status": "partial",
-      "age_seconds": 74,
+      "age_seconds": 80,
       "h4_buckets": 39,
       "h4_required": 48,
       "backfill_error": null,
@@ -57,7 +57,7 @@
     }
   },
   "fully_operational_confirmed": false,
-  "core_snapshot_ok": false,
+  "core_snapshot_ok": true,
   "notes": [
     "GitHub workflow success does not guarantee five-minute scheduling.",
     "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
