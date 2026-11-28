@@ -1,4 +1,2233 @@
 {
+  "tp_diagnostics": {
+    "QM_M15_B03": {
+      "rr_rejections": 106,
+      "gross_ge_2_net_below_2": 69,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 74,
+      "target_types": {
+        "London high": 12,
+        "swing 60m": 27,
+        "Asia low": 16,
+        "NY high": 12,
+        "Asia high": 14,
+        "NY low": 12,
+        "swing 240m": 2,
+        "PDL": 4,
+        "PDH": 2,
+        "London low": 5
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-28T09:45:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 90824.1,
+            "anchor_kind": "confirmed_M15_QM_head",
+            "anchor_at": "2025-11-28T07:45:00+00:00",
+            "entry_limit": 91117.1,
+            "lo": 91117.1,
+            "hi": 91117.1,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "poi_touch_utc": "2025-11-28T07:20:00+00:00",
+            "shift_utc": "2025-11-28T09:00:00+00:00",
+            "shift_price": 91649.9,
+            "shift_time": 1764320400,
+            "setup_utc": "2025-11-28T09:45:00+00:00"
+          },
+          "targets": {
+            "target": 91931.9,
+            "target_kind": "London high",
+            "fta": 91855.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 91855.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 43,
+            "target_ladder": [
+              {
+                "price": 91931.9,
+                "kind": "London high"
+              },
+              {
+                "price": 91931.9,
+                "kind": "PDH"
+              },
+              {
+                "price": 91931.9,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 91931.9,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92498.6,
+                "kind": "NY high"
+              },
+              {
+                "price": 92498.6,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 90796.85277000001,
+          "net_rr": 1.5341503150120768,
+          "gross_rr": 2.544284301850182,
+          "stop_distance_pct": 0.35146775961920823,
+          "target_distance_pct": 0.8942339034056048,
+          "diagnostic_major_target": {
+            "price": 91931.9,
+            "kind": "PDH",
+            "net_rr": 1.5341503150120768,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-12-13T04:15:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 90077.0,
+            "anchor_kind": "confirmed_M15_QM_head",
+            "anchor_at": "2025-12-13T01:45:00+00:00",
+            "entry_limit": 90211.4,
+            "lo": 90211.4,
+            "hi": 90211.4,
+            "zone": {
+              "kind": "OB",
+              "side": 1,
+              "lo": 89200.0,
+              "hi": 90618.0,
+              "born": 1765483200
+            },
+            "poi_tf": 14400,
+            "poi": "OB",
+            "poi_touch_utc": "2025-12-13T01:25:00+00:00",
+            "shift_utc": "2025-12-13T03:45:00+00:00",
+            "shift_price": 90370.2,
+            "shift_time": 1765597500,
+            "setup_utc": "2025-12-13T04:15:00+00:00"
+          },
+          "targets": {
+            "target": 90617.7,
+            "target_kind": "swing 60m",
+            "fta": 90432.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 90432.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 48,
+            "target_ladder": [
+              {
+                "price": 90617.7,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92630.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 92630.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92685.5,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92719.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 92719.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 92719.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93547.3,
+                "kind": "PDH"
+              },
+              {
+                "price": 93547.3,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93547.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 94443.7,
+                "kind": "PDH"
+              },
+              {
+                "price": 94443.7,
+                "kind": "swing 240m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 90049.97690000001,
+          "net_rr": 0.9725791285669763,
+          "gross_rr": 2.5169879651675604,
+          "stop_distance_pct": 0.17893869289245642,
+          "target_distance_pct": 0.4503865365131269,
+          "diagnostic_major_target": {
+            "price": 92719.0,
+            "kind": "PDH",
+            "net_rr": 8.273639315932831,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_M5_base_B03": {
+      "rr_rejections": 582,
+      "gross_ge_2_net_below_2": 450,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 375,
+      "target_types": {
+        "Asia high": 61,
+        "Asia low": 53,
+        "swing 60m": 201,
+        "London high": 52,
+        "London low": 56,
+        "NY low": 40,
+        "NY high": 52,
+        "PDL": 30,
+        "PDH": 33,
+        "swing 240m": 4
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-27T09:20:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 91368.4,
+            "anchor_kind": "entry_zone_invalidation",
+            "anchor_at": "2025-11-27T09:20:00+00:00",
+            "entry_limit": 91557.9,
+            "lo": 91368.4,
+            "hi": 91557.9,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 91145.1,
+              "hi": 91440.0,
+              "born": 1764234000
+            },
+            "poi_tf": 3600,
+            "poi": "IFVG",
+            "entry_zone": "IFVG",
+            "poi_touch_utc": "2025-11-27T09:00:00+00:00",
+            "shift_utc": "2025-11-27T09:20:00+00:00",
+            "shift_price": 91719.1,
+            "shift_time": 1764235200,
+            "confirmation_tf": 300,
+            "setup_utc": "2025-11-27T09:20:00+00:00"
+          },
+          "targets": {
+            "target": 91850.0,
+            "target_kind": "Asia high",
+            "fta": 91850.0,
+            "fta_kind": "Asia high",
+            "fta_zone": null,
+            "external_boundary": 91557.9,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 42,
+            "target_ladder": [
+              {
+                "price": 91850.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 91850.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92498.6,
+                "kind": "NY high"
+              },
+              {
+                "price": 92498.6,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 60m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 91340.98948,
+          "net_rr": 0.47461764673439555,
+          "gross_rr": 1.3466382358956994,
+          "stop_distance_pct": 0.23691076357145627,
+          "target_distance_pct": 0.319033092720569,
+          "diagnostic_major_target": {
+            "price": 93150.0,
+            "kind": "PDH",
+            "net_rr": 4.240753837307996,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-11-28T15:20:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 91919.4,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-11-28T15:05:00+00:00",
+            "entry_limit": 92220.2,
+            "lo": 92175.6,
+            "hi": 92220.2,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-11-28T13:15:00+00:00",
+            "shift_utc": "2025-11-28T15:20:00+00:00",
+            "shift_price": 92559.9,
+            "shift_time": 1764343200,
+            "confirmation_tf": 300,
+            "setup_utc": "2025-11-28T15:20:00+00:00"
+          },
+          "targets": {
+            "target": 93150.0,
+            "target_kind": "Asia high",
+            "fta": 93080.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 93080.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 40,
+            "target_ladder": [
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 96012.2,
+                "kind": "PDH"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 60m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 91891.82418,
+          "net_rr": 1.7496631652967354,
+          "gross_rr": 2.831511772090892,
+          "stop_distance_pct": 0.35607797423991827,
+          "target_distance_pct": 1.008238975842606,
+          "diagnostic_major_target": {
+            "price": 93150.0,
+            "kind": "PDH",
+            "net_rr": 1.7496631652967354,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_M5_weak_B03": {
+      "rr_rejections": 588,
+      "gross_ge_2_net_below_2": 454,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 379,
+      "target_types": {
+        "Asia high": 61,
+        "Asia low": 54,
+        "swing 60m": 202,
+        "London high": 53,
+        "London low": 58,
+        "NY low": 40,
+        "NY high": 52,
+        "PDL": 31,
+        "PDH": 33,
+        "swing 240m": 4
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-27T09:20:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 91368.4,
+            "anchor_kind": "entry_zone_invalidation",
+            "anchor_at": "2025-11-27T09:20:00+00:00",
+            "entry_limit": 91557.9,
+            "lo": 91368.4,
+            "hi": 91557.9,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 91145.1,
+              "hi": 91440.0,
+              "born": 1764234000
+            },
+            "poi_tf": 3600,
+            "poi": "IFVG",
+            "entry_zone": "IFVG",
+            "poi_touch_utc": "2025-11-27T09:00:00+00:00",
+            "shift_utc": "2025-11-27T09:20:00+00:00",
+            "shift_price": 91719.1,
+            "shift_time": 1764235200,
+            "confirmation_tf": 300,
+            "setup_utc": "2025-11-27T09:20:00+00:00"
+          },
+          "targets": {
+            "target": 91850.0,
+            "target_kind": "Asia high",
+            "fta": 91850.0,
+            "fta_kind": "Asia high",
+            "fta_zone": null,
+            "external_boundary": 91557.9,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 42,
+            "target_ladder": [
+              {
+                "price": 91850.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 91850.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92498.6,
+                "kind": "NY high"
+              },
+              {
+                "price": 92498.6,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 60m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 91340.98948,
+          "net_rr": 0.47461764673439555,
+          "gross_rr": 1.3466382358956994,
+          "stop_distance_pct": 0.23691076357145627,
+          "target_distance_pct": 0.319033092720569,
+          "diagnostic_major_target": {
+            "price": 93150.0,
+            "kind": "PDH",
+            "net_rr": 4.240753837307996,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-11-28T15:20:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 91919.4,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-11-28T15:05:00+00:00",
+            "entry_limit": 92220.2,
+            "lo": 92175.6,
+            "hi": 92220.2,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-11-28T13:15:00+00:00",
+            "shift_utc": "2025-11-28T15:20:00+00:00",
+            "shift_price": 92559.9,
+            "shift_time": 1764343200,
+            "confirmation_tf": 300,
+            "setup_utc": "2025-11-28T15:20:00+00:00"
+          },
+          "targets": {
+            "target": 93150.0,
+            "target_kind": "Asia high",
+            "fta": 93080.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 93080.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 40,
+            "target_ladder": [
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 96012.2,
+                "kind": "PDH"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 60m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 91891.82418,
+          "net_rr": 1.7496631652967354,
+          "gross_rr": 2.831511772090892,
+          "stop_distance_pct": 0.35607797423991827,
+          "target_distance_pct": 1.008238975842606,
+          "diagnostic_major_target": {
+            "price": 93150.0,
+            "kind": "PDH",
+            "net_rr": 1.7496631652967354,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_M15_base_B03": {
+      "rr_rejections": 123,
+      "gross_ge_2_net_below_2": 60,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 65,
+      "target_types": {
+        "Asia high": 17,
+        "NY high": 17,
+        "PDH": 11,
+        "swing 60m": 32,
+        "NY low": 12,
+        "London high": 12,
+        "Asia low": 8,
+        "London low": 6,
+        "PDL": 8
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-28T15:20:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 91919.4,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-11-28T15:05:00+00:00",
+            "entry_limit": 92220.2,
+            "lo": 92175.6,
+            "hi": 92220.2,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-11-28T13:15:00+00:00",
+            "shift_utc": "2025-11-28T15:20:00+00:00",
+            "shift_price": 92559.9,
+            "shift_time": 1764343200,
+            "confirmation_tf": 900,
+            "setup_utc": "2025-11-28T15:20:00+00:00"
+          },
+          "targets": {
+            "target": 93150.0,
+            "target_kind": "Asia high",
+            "fta": 93080.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 93080.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 40,
+            "target_ladder": [
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 96012.2,
+                "kind": "PDH"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 60m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 91891.82418,
+          "net_rr": 1.7496631652967354,
+          "gross_rr": 2.831511772090892,
+          "stop_distance_pct": 0.35607797423991827,
+          "target_distance_pct": 1.008238975842606,
+          "diagnostic_major_target": {
+            "price": 93150.0,
+            "kind": "PDH",
+            "net_rr": 1.7496631652967354,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-12-06T16:10:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 89661.4,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-12-06T15:55:00+00:00",
+            "entry_limit": 89831.9,
+            "lo": 89831.8,
+            "hi": 89831.9,
+            "zone": {
+              "kind": "FVG",
+              "side": 1,
+              "lo": 87640.0,
+              "hi": 90156.4,
+              "born": 1764705600
+            },
+            "poi_tf": 14400,
+            "poi": "FVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-12-06T13:25:00+00:00",
+            "shift_utc": "2025-12-06T16:10:00+00:00",
+            "shift_price": 89920.0,
+            "shift_time": 1765037400,
+            "confirmation_tf": 900,
+            "setup_utc": "2025-12-06T16:10:00+00:00"
+          },
+          "targets": {
+            "target": 90257.3,
+            "target_kind": "NY high",
+            "fta": 90257.3,
+            "fta_kind": "NY high",
+            "fta_zone": null,
+            "external_boundary": 90257.3,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 48,
+            "target_ladder": [
+              {
+                "price": 90257.3,
+                "kind": "NY high"
+              },
+              {
+                "price": 91445.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 91445.2,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92227.6,
+                "kind": "London high"
+              },
+              {
+                "price": 92455.4,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92665.5,
+                "kind": "Asia high"
+              },
+              {
+                "price": 92665.5,
+                "kind": "PDH"
+              },
+              {
+                "price": 92665.5,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92676.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93256.3,
+                "kind": "NY high"
+              },
+              {
+                "price": 93256.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93600.0,
+                "kind": "London high"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 89634.50158,
+          "net_rr": 0.9266703069106711,
+          "gross_rr": 2.155032446561698,
+          "stop_distance_pct": 0.21974200701532276,
+          "target_distance_pct": 0.47355115499060885,
+          "diagnostic_major_target": {
+            "price": 92665.5,
+            "kind": "PDH",
+            "net_rr": 8.37660480273396,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_M15_weak_B03": {
+      "rr_rejections": 123,
+      "gross_ge_2_net_below_2": 60,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 65,
+      "target_types": {
+        "Asia high": 17,
+        "NY high": 17,
+        "PDH": 11,
+        "swing 60m": 32,
+        "NY low": 12,
+        "London high": 12,
+        "Asia low": 8,
+        "London low": 6,
+        "PDL": 8
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-28T15:20:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 91919.4,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-11-28T15:05:00+00:00",
+            "entry_limit": 92220.2,
+            "lo": 92175.6,
+            "hi": 92220.2,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-11-28T13:15:00+00:00",
+            "shift_utc": "2025-11-28T15:20:00+00:00",
+            "shift_price": 92559.9,
+            "shift_time": 1764343200,
+            "confirmation_tf": 900,
+            "setup_utc": "2025-11-28T15:20:00+00:00"
+          },
+          "targets": {
+            "target": 93150.0,
+            "target_kind": "Asia high",
+            "fta": 93080.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 93080.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 40,
+            "target_ladder": [
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 96012.2,
+                "kind": "PDH"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "swing 60m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 91891.82418,
+          "net_rr": 1.7496631652967354,
+          "gross_rr": 2.831511772090892,
+          "stop_distance_pct": 0.35607797423991827,
+          "target_distance_pct": 1.008238975842606,
+          "diagnostic_major_target": {
+            "price": 93150.0,
+            "kind": "PDH",
+            "net_rr": 1.7496631652967354,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-12-06T16:10:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 89661.4,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-12-06T15:55:00+00:00",
+            "entry_limit": 89831.9,
+            "lo": 89831.8,
+            "hi": 89831.9,
+            "zone": {
+              "kind": "FVG",
+              "side": 1,
+              "lo": 87640.0,
+              "hi": 90156.4,
+              "born": 1764705600
+            },
+            "poi_tf": 14400,
+            "poi": "FVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-12-06T13:25:00+00:00",
+            "shift_utc": "2025-12-06T16:10:00+00:00",
+            "shift_price": 89920.0,
+            "shift_time": 1765037400,
+            "confirmation_tf": 900,
+            "setup_utc": "2025-12-06T16:10:00+00:00"
+          },
+          "targets": {
+            "target": 90257.3,
+            "target_kind": "NY high",
+            "fta": 90257.3,
+            "fta_kind": "NY high",
+            "fta_zone": null,
+            "external_boundary": 90257.3,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 48,
+            "target_ladder": [
+              {
+                "price": 90257.3,
+                "kind": "NY high"
+              },
+              {
+                "price": 91445.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 91445.2,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92227.6,
+                "kind": "London high"
+              },
+              {
+                "price": 92455.4,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92665.5,
+                "kind": "Asia high"
+              },
+              {
+                "price": 92665.5,
+                "kind": "PDH"
+              },
+              {
+                "price": 92665.5,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92676.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93256.3,
+                "kind": "NY high"
+              },
+              {
+                "price": 93256.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93600.0,
+                "kind": "London high"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 89634.50158,
+          "net_rr": 0.9266703069106711,
+          "gross_rr": 2.155032446561698,
+          "stop_distance_pct": 0.21974200701532276,
+          "target_distance_pct": 0.47355115499060885,
+          "diagnostic_major_target": {
+            "price": 92665.5,
+            "kind": "PDH",
+            "net_rr": 8.37660480273396,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_H1_base_B03": {
+      "rr_rejections": 61,
+      "gross_ge_2_net_below_2": 34,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 36,
+      "target_types": {
+        "swing 60m": 12,
+        "NY high": 9,
+        "NY low": 10,
+        "PDH": 1,
+        "Asia low": 11,
+        "London high": 7,
+        "Asia high": 7,
+        "PDL": 3,
+        "London low": 1
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-29T18:45:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 90166.1,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-11-29T18:30:00+00:00",
+            "entry_limit": 90402.5,
+            "lo": 90398.0,
+            "hi": 90402.5,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-11-29T15:55:00+00:00",
+            "shift_utc": "2025-11-29T18:45:00+00:00",
+            "shift_price": 90540.4,
+            "shift_time": 1764441900,
+            "confirmation_tf": 3600,
+            "setup_utc": "2025-11-29T18:45:00+00:00"
+          },
+          "targets": {
+            "target": 91209.0,
+            "target_kind": "swing 60m",
+            "fta": 90659.0,
+            "fta_kind": "opposing_IFVG_15m",
+            "fta_zone": {
+              "kind": "IFVG",
+              "tf": 900,
+              "low": 90659.0,
+              "high": 90714.0,
+              "formed_utc": "2025-11-29T17:45:00+00:00",
+              "first_test_utc": null
+            },
+            "external_boundary": 90985.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 46,
+            "target_ladder": [
+              {
+                "price": 91209.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93080.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 93080.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93080.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93080.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 90139.05017,
+          "net_rr": 1.7427439535368392,
+          "gross_rr": 3.061303930239799,
+          "stop_distance_pct": 0.2914187439506626,
+          "target_distance_pct": 0.892121346201709,
+          "diagnostic_major_target": {
+            "price": 93080.0,
+            "kind": "PDH",
+            "net_rr": 6.5389257867238335,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-12-02T13:40:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 87005.0,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-12-02T13:05:00+00:00",
+            "entry_limit": 87269.4,
+            "lo": 87245.7,
+            "hi": 87269.4,
+            "zone": {
+              "kind": "OB",
+              "side": 1,
+              "lo": 86061.1,
+              "hi": 88477.6,
+              "born": 1764201600
+            },
+            "poi_tf": 86400,
+            "poi": "OB",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-12-02T11:50:00+00:00",
+            "shift_utc": "2025-12-02T13:40:00+00:00",
+            "shift_price": 87480.1,
+            "shift_time": 1764682800,
+            "confirmation_tf": 3600,
+            "setup_utc": "2025-12-02T13:40:00+00:00"
+          },
+          "targets": {
+            "target": 87640.0,
+            "target_kind": "swing 60m",
+            "fta": 87576.5,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 87516.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 53,
+            "target_ladder": [
+              {
+                "price": 87640.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 87713.9,
+                "kind": "Asia high"
+              },
+              {
+                "price": 90396.9,
+                "kind": "PDH"
+              },
+              {
+                "price": 91592.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 91818.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 91934.4,
+                "kind": "NY high"
+              },
+              {
+                "price": 91934.4,
+                "kind": "PDH"
+              },
+              {
+                "price": 91934.4,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 91934.4,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93080.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 93080.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93080.0,
+                "kind": "swing 1440m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 86978.8985,
+          "net_rr": 0.6016443510615936,
+          "gross_rr": 1.275724910198425,
+          "stop_distance_pct": 0.33287899309494334,
+          "target_distance_pct": 0.42466202357298877,
+          "diagnostic_major_target": {
+            "price": 90396.9,
+            "kind": "PDH",
+            "net_rr": 7.2807599050901,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_H1_weak_B03": {
+      "rr_rejections": 61,
+      "gross_ge_2_net_below_2": 34,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 36,
+      "target_types": {
+        "swing 60m": 12,
+        "NY high": 9,
+        "NY low": 10,
+        "PDH": 1,
+        "Asia low": 11,
+        "London high": 7,
+        "Asia high": 7,
+        "PDL": 3,
+        "London low": 1
+      },
+      "examples": [
+        {
+          "at_utc": "2025-11-29T18:45:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 90166.1,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-11-29T18:30:00+00:00",
+            "entry_limit": 90402.5,
+            "lo": 90398.0,
+            "hi": 90402.5,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 89885.7,
+              "hi": 91388.5,
+              "born": 1764273600
+            },
+            "poi_tf": 14400,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-11-29T15:55:00+00:00",
+            "shift_utc": "2025-11-29T18:45:00+00:00",
+            "shift_price": 90540.4,
+            "shift_time": 1764441900,
+            "confirmation_tf": 3600,
+            "setup_utc": "2025-11-29T18:45:00+00:00"
+          },
+          "targets": {
+            "target": 91209.0,
+            "target_kind": "swing 60m",
+            "fta": 90659.0,
+            "fta_kind": "opposing_IFVG_15m",
+            "fta_zone": {
+              "kind": "IFVG",
+              "tf": 900,
+              "low": 90659.0,
+              "high": 90714.0,
+              "formed_utc": "2025-11-29T17:45:00+00:00",
+              "first_test_utc": null
+            },
+            "external_boundary": 90985.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 46,
+            "target_ladder": [
+              {
+                "price": 91209.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93080.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 93080.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93080.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93080.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 93150.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 93150.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93400.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93799.1,
+                "kind": "PDH"
+              },
+              {
+                "price": 93799.1,
+                "kind": "swing 240m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 90139.05017,
+          "net_rr": 1.7427439535368392,
+          "gross_rr": 3.061303930239799,
+          "stop_distance_pct": 0.2914187439506626,
+          "target_distance_pct": 0.892121346201709,
+          "diagnostic_major_target": {
+            "price": 93080.0,
+            "kind": "PDH",
+            "net_rr": 6.5389257867238335,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2025-12-02T13:40:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 87005.0,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-12-02T13:05:00+00:00",
+            "entry_limit": 87269.4,
+            "lo": 87245.7,
+            "hi": 87269.4,
+            "zone": {
+              "kind": "OB",
+              "side": 1,
+              "lo": 86061.1,
+              "hi": 88477.6,
+              "born": 1764201600
+            },
+            "poi_tf": 86400,
+            "poi": "OB",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-12-02T11:50:00+00:00",
+            "shift_utc": "2025-12-02T13:40:00+00:00",
+            "shift_price": 87480.1,
+            "shift_time": 1764682800,
+            "confirmation_tf": 3600,
+            "setup_utc": "2025-12-02T13:40:00+00:00"
+          },
+          "targets": {
+            "target": 87640.0,
+            "target_kind": "swing 60m",
+            "fta": 87576.5,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 87516.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 53,
+            "target_ladder": [
+              {
+                "price": 87640.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 87713.9,
+                "kind": "Asia high"
+              },
+              {
+                "price": 90396.9,
+                "kind": "PDH"
+              },
+              {
+                "price": 91592.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 91818.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 91934.4,
+                "kind": "NY high"
+              },
+              {
+                "price": 91934.4,
+                "kind": "PDH"
+              },
+              {
+                "price": 91934.4,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 91934.4,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93080.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 93080.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 93080.0,
+                "kind": "swing 1440m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 86978.8985,
+          "net_rr": 0.6016443510615936,
+          "gross_rr": 1.275724910198425,
+          "stop_distance_pct": 0.33287899309494334,
+          "target_distance_pct": 0.42466202357298877,
+          "diagnostic_major_target": {
+            "price": 90396.9,
+            "kind": "PDH",
+            "net_rr": 7.2807599050901,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_H4_base_B03": {
+      "rr_rejections": 12,
+      "gross_ge_2_net_below_2": 7,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 9,
+      "target_types": {
+        "swing 60m": 4,
+        "NY high": 1,
+        "NY low": 2,
+        "Asia high": 3,
+        "PDH": 2
+      },
+      "examples": [
+        {
+          "at_utc": "2025-12-26T06:45:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 88780.0,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-12-26T05:40:00+00:00",
+            "entry_limit": 89085.0,
+            "lo": 89057.7,
+            "hi": 89085.0,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 88445.9,
+              "hi": 89102.0,
+              "born": 1766718000
+            },
+            "poi_tf": 3600,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-12-26T03:55:00+00:00",
+            "shift_utc": "2025-12-26T06:45:00+00:00",
+            "shift_price": 89199.8,
+            "shift_time": 1766731500,
+            "confirmation_tf": 14400,
+            "setup_utc": "2025-12-26T06:45:00+00:00"
+          },
+          "targets": {
+            "target": 89432.0,
+            "target_kind": "swing 60m",
+            "fta": 89432.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 89100.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 60,
+            "target_ladder": [
+              {
+                "price": 89432.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90451.9,
+                "kind": "NY high"
+              },
+              {
+                "price": 90451.9,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90599.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 90599.0,
+                "kind": "swing 1440m"
+              },
+              {
+                "price": 90599.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 90599.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90617.7,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92630.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 92630.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92685.5,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92719.0,
+                "kind": "Asia high"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 88753.36600000001,
+          "net_rr": 0.4867966801737606,
+          "gross_rr": 1.0463342118118453,
+          "stop_distance_pct": 0.37226693607228034,
+          "target_distance_pct": 0.3895156311388,
+          "diagnostic_major_target": {
+            "price": 90599.0,
+            "kind": "PDH",
+            "net_rr": 3.043538201763902,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2026-01-01T21:15:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 88193.2,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2026-01-01T20:45:00+00:00",
+            "entry_limit": 88277.3,
+            "lo": 88233.3,
+            "hi": 88277.3,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 88024.3,
+              "hi": 88233.5,
+              "born": 1767290400
+            },
+            "poi_tf": 3600,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2026-01-01T19:40:00+00:00",
+            "shift_utc": "2026-01-01T21:15:00+00:00",
+            "shift_price": 88345.5,
+            "shift_time": 1767302100,
+            "confirmation_tf": 14400,
+            "setup_utc": "2026-01-01T21:15:00+00:00"
+          },
+          "targets": {
+            "target": 88475.8,
+            "target_kind": "swing 60m",
+            "fta": 88403.8,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 88403.8,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 64,
+            "target_ladder": [
+              {
+                "price": 88475.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 89192.8,
+                "kind": "NY high"
+              },
+              {
+                "price": 89192.8,
+                "kind": "PDH"
+              },
+              {
+                "price": 89192.8,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 89192.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 89355.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 89355.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 89355.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 89791.5,
+                "kind": "London high"
+              },
+              {
+                "price": 90373.4,
+                "kind": "Asia high"
+              },
+              {
+                "price": 90373.4,
+                "kind": "PDH"
+              },
+              {
+                "price": 90373.4,
+                "kind": "swing 240m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 88166.74204,
+          "net_rr": 0.3194481694931421,
+          "gross_rr": 1.7954383384062986,
+          "stop_distance_pct": 0.12523939903010803,
+          "target_distance_pct": 0.22485961849762057,
+          "diagnostic_major_target": {
+            "price": 89192.8,
+            "kind": "PDH",
+            "net_rr": 3.3805061585078526,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "OF_H4_weak_B03": {
+      "rr_rejections": 12,
+      "gross_ge_2_net_below_2": 7,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 9,
+      "target_types": {
+        "swing 60m": 4,
+        "NY high": 1,
+        "NY low": 2,
+        "Asia high": 3,
+        "PDH": 2
+      },
+      "examples": [
+        {
+          "at_utc": "2025-12-26T06:45:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 88780.0,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2025-12-26T05:40:00+00:00",
+            "entry_limit": 89085.0,
+            "lo": 89057.7,
+            "hi": 89085.0,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 88445.9,
+              "hi": 89102.0,
+              "born": 1766718000
+            },
+            "poi_tf": 3600,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2025-12-26T03:55:00+00:00",
+            "shift_utc": "2025-12-26T06:45:00+00:00",
+            "shift_price": 89199.8,
+            "shift_time": 1766731500,
+            "confirmation_tf": 14400,
+            "setup_utc": "2025-12-26T06:45:00+00:00"
+          },
+          "targets": {
+            "target": 89432.0,
+            "target_kind": "swing 60m",
+            "fta": 89432.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 89100.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 60,
+            "target_ladder": [
+              {
+                "price": 89432.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90451.9,
+                "kind": "NY high"
+              },
+              {
+                "price": 90451.9,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90599.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 90599.0,
+                "kind": "swing 1440m"
+              },
+              {
+                "price": 90599.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 90599.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90617.7,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92630.0,
+                "kind": "NY high"
+              },
+              {
+                "price": 92630.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92685.5,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92719.0,
+                "kind": "Asia high"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 88753.36600000001,
+          "net_rr": 0.4867966801737606,
+          "gross_rr": 1.0463342118118453,
+          "stop_distance_pct": 0.37226693607228034,
+          "target_distance_pct": 0.3895156311388,
+          "diagnostic_major_target": {
+            "price": 90599.0,
+            "kind": "PDH",
+            "net_rr": 3.043538201763902,
+            "not_traded": true
+          }
+        },
+        {
+          "at_utc": "2026-01-01T21:15:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 88193.2,
+            "anchor_kind": "protecting_swing",
+            "anchor_at": "2026-01-01T20:45:00+00:00",
+            "entry_limit": 88277.3,
+            "lo": 88233.3,
+            "hi": 88277.3,
+            "zone": {
+              "kind": "IFVG",
+              "side": 1,
+              "lo": 88024.3,
+              "hi": 88233.5,
+              "born": 1767290400
+            },
+            "poi_tf": 3600,
+            "poi": "IFVG",
+            "entry_zone": "FVG",
+            "poi_touch_utc": "2026-01-01T19:40:00+00:00",
+            "shift_utc": "2026-01-01T21:15:00+00:00",
+            "shift_price": 88345.5,
+            "shift_time": 1767302100,
+            "confirmation_tf": 14400,
+            "setup_utc": "2026-01-01T21:15:00+00:00"
+          },
+          "targets": {
+            "target": 88475.8,
+            "target_kind": "swing 60m",
+            "fta": 88403.8,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 88403.8,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 64,
+            "target_ladder": [
+              {
+                "price": 88475.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 89192.8,
+                "kind": "NY high"
+              },
+              {
+                "price": 89192.8,
+                "kind": "PDH"
+              },
+              {
+                "price": 89192.8,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 89192.8,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 89355.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 89355.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 89355.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 89791.5,
+                "kind": "London high"
+              },
+              {
+                "price": 90373.4,
+                "kind": "Asia high"
+              },
+              {
+                "price": 90373.4,
+                "kind": "PDH"
+              },
+              {
+                "price": 90373.4,
+                "kind": "swing 240m"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 88166.74204,
+          "net_rr": 0.3194481694931421,
+          "gross_rr": 1.7954383384062986,
+          "stop_distance_pct": 0.12523939903010803,
+          "target_distance_pct": 0.22485961849762057,
+          "diagnostic_major_target": {
+            "price": 89192.8,
+            "kind": "PDH",
+            "net_rr": 3.3805061585078526,
+            "not_traded": true
+          }
+        }
+      ]
+    },
+    "IB_M15_market_B03": {
+      "rr_rejections": 72,
+      "gross_ge_2_net_below_2": 13,
+      "first_major_liquidity_net_ge_2_diagnostic_only": 0,
+      "target_types": {
+        "opposite_IB_boundary": 72
+      },
+      "examples": [
+        {
+          "at_utc": "2025-12-07T16:00:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 87688.0,
+            "anchor_kind": "IB_deviation_extreme",
+            "entry_limit": 89505.0,
+            "lo": 89505.0,
+            "hi": 89505.0,
+            "zone": {
+              "kind": "FVG",
+              "side": 1,
+              "lo": 87640.0,
+              "hi": 90156.4,
+              "born": 1764705600
+            },
+            "poi_tf": 14400,
+            "poi": "FVG",
+            "range_low": 88870.1,
+            "range_high": 90257.3,
+            "fixed_target": [
+              90257.3,
+              "opposite_IB_boundary"
+            ],
+            "shift_price": 89505.0,
+            "shift_time": 1765123200,
+            "setup_utc": "2025-12-07T16:00:00+00:00"
+          },
+          "targets": {
+            "target": 90257.3,
+            "target_kind": "opposite_IB_boundary",
+            "fta": 89750.0,
+            "fta_kind": "Asia high",
+            "fta_zone": null,
+            "external_boundary": 89505.0,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 53,
+            "target_ladder": [
+              {
+                "price": 89750.0,
+                "kind": "Asia high"
+              },
+              {
+                "price": 89750.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 89750.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 90257.3,
+                "kind": "NY high"
+              },
+              {
+                "price": 90257.3,
+                "kind": "PDH"
+              },
+              {
+                "price": 90257.3,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 90257.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 91445.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 91445.2,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92227.6,
+                "kind": "London high"
+              },
+              {
+                "price": 92455.4,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 92665.5,
+                "kind": "Asia high"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 87661.6936,
+          "net_rr": 0.31843595550901144,
+          "gross_rr": 0.40812531221071136,
+          "stop_distance_pct": 2.0594451706608585,
+          "target_distance_pct": 0.8405117032568046
+        },
+        {
+          "at_utc": "2025-12-12T06:15:00+00:00",
+          "idea": {
+            "d": 1,
+            "anchor": 89200.0,
+            "anchor_kind": "IB_deviation_extreme",
+            "entry_limit": 92656.1,
+            "lo": 92656.1,
+            "hi": 92656.1,
+            "zone": {
+              "kind": "Rejection",
+              "side": 1,
+              "lo": 89200.0,
+              "hi": 91977.5,
+              "born": 1765497600
+            },
+            "poi_tf": 86400,
+            "poi": "Rejection",
+            "range_low": 91520.0,
+            "range_high": 94443.7,
+            "fixed_target": [
+              94443.7,
+              "opposite_IB_boundary"
+            ],
+            "shift_price": 92656.1,
+            "shift_time": 1765520100,
+            "setup_utc": "2025-12-12T06:15:00+00:00"
+          },
+          "targets": {
+            "target": 94443.7,
+            "target_kind": "opposite_IB_boundary",
+            "fta": 92719.0,
+            "fta_kind": "swing 15m",
+            "fta_zone": null,
+            "external_boundary": 92656.1,
+            "overlap_zones": [],
+            "shift_inside_zones": [],
+            "previously_tested_ignored_count": 43,
+            "target_ladder": [
+              {
+                "price": 92719.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 93547.3,
+                "kind": "PDH"
+              },
+              {
+                "price": 93547.3,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 94443.7,
+                "kind": "PDH"
+              },
+              {
+                "price": 94443.7,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 94443.7,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 94555.0,
+                "kind": "PDH"
+              },
+              {
+                "price": 94555.0,
+                "kind": "swing 1440m"
+              },
+              {
+                "price": 94555.0,
+                "kind": "swing 240m"
+              },
+              {
+                "price": 94555.0,
+                "kind": "swing 60m"
+              },
+              {
+                "price": 96012.2,
+                "kind": "NY high"
+              },
+              {
+                "price": 96012.2,
+                "kind": "PDH"
+              }
+            ]
+          },
+          "events": [
+            "net_rr_below_two"
+          ],
+          "initial_sl": 89173.24,
+          "net_rr": 0.4588824566523434,
+          "gross_rr": 0.5132563467954471,
+          "stop_distance_pct": 3.758910638371354,
+          "target_distance_pct": 1.9292847421810233
+        }
+      ]
+    }
+  },
   "classification": "historical_research_only",
   "instrument": "Binance USD-M BTCUSDT",
   "period_utc": [
@@ -60,8 +2289,8 @@
   ],
   "train_cut_utc": "2026-08-27T00:00:00+00:00",
   "full": {
-    "QM_HEAD_B03": {
-      "model": "QM_HEAD",
+    "QM_M15_B03": {
+      "model": "QM_M15",
       "buffer_bps": 3,
       "events": 336,
       "trades": 16,
@@ -94,8 +2323,140 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "OF_ZONE_B03": {
-      "model": "OF_ZONE",
+    "OF_M5_base_B03": {
+      "model": "OF_M5_base",
+      "buffer_bps": 3,
+      "events": 1488,
+      "trades": 84,
+      "wins": 10,
+      "losses": 53,
+      "be": 21,
+      "win_rate_pct": 15.873015873015873,
+      "expectancy_r": -0.2234792063775869,
+      "net_r": -18.7722533357173,
+      "pnl_usd": -183.832193884331,
+      "equity": 816.167806115669,
+      "profit_factor": 0.6522594038625708,
+      "drawdown_pct": 27.649957075159527,
+      "outcomes": {
+        "SL": 52,
+        "BE": 21,
+        "gap_SL": 1,
+        "TP": 10
+      },
+      "rejections": {
+        "structural_stop_breached_on_confirmation": 135,
+        "net_rr_below_two": 582,
+        "fta_or_stop_before_fill": 32,
+        "target_or_stop_before_retest": 289,
+        "shift_inside_fresh_fta": 214,
+        "setup_invalidated_or_expired": 80,
+        "censored_fill_bar": 25,
+        "expired_limit": 40,
+        "no_external_liquidity": 4,
+        "fta_already_reached_at_limit_placement": 2
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 1
+    },
+    "OF_M5_weak_B03": {
+      "model": "OF_M5_weak",
+      "buffer_bps": 3,
+      "events": 1514,
+      "trades": 9,
+      "wins": 1,
+      "losses": 4,
+      "be": 4,
+      "win_rate_pct": 20.0,
+      "expectancy_r": -0.43461982753513617,
+      "net_r": -3.9115784478162254,
+      "pnl_usd": -37.38943753878425,
+      "equity": 962.6105624612157,
+      "profit_factor": 0.3647626451280138,
+      "drawdown_pct": 5.877588797244937,
+      "outcomes": {
+        "BE": 4,
+        "TP": 1,
+        "SL": 4
+      },
+      "rejections": {
+        "structural_stop_breached_on_confirmation": 136,
+        "net_rr_below_two": 588,
+        "weakness_filter": 174,
+        "target_or_stop_before_retest": 300,
+        "shift_inside_fresh_fta": 216,
+        "setup_invalidated_or_expired": 81,
+        "fta_or_stop_before_fill": 1,
+        "no_external_liquidity": 4,
+        "expired_limit": 2,
+        "censored_fill_bar": 1,
+        "fta_already_reached_at_limit_placement": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 1
+    },
+    "OF_M15_base_B03": {
+      "model": "OF_M15_base",
+      "buffer_bps": 3,
+      "events": 174,
+      "trades": 14,
+      "wins": 1,
+      "losses": 4,
+      "be": 9,
+      "win_rate_pct": 20.0,
+      "expectancy_r": -0.2589634296282973,
+      "net_r": -3.625488014796163,
+      "pnl_usd": -34.96626690017433,
+      "equity": 965.0337330998257,
+      "profit_factor": 0.4678972465797417,
+      "drawdown_pct": 9.871869777537912,
+      "outcomes": {
+        "BE": 9,
+        "SL": 3,
+        "gap_SL": 1,
+        "TP": 1
+      },
+      "rejections": {
+        "target_or_stop_before_retest": 10,
+        "net_rr_below_two": 123,
+        "shift_inside_fresh_fta": 19,
+        "setup_invalidated_or_expired": 4,
+        "structural_stop_breached_on_confirmation": 2,
+        "censored_fill_bar": 1,
+        "fta_or_stop_before_fill": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_M15_weak_B03": {
+      "model": "OF_M15_weak",
+      "buffer_bps": 3,
+      "events": 175,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "target_or_stop_before_retest": 10,
+        "net_rr_below_two": 123,
+        "shift_inside_fresh_fta": 20,
+        "setup_invalidated_or_expired": 4,
+        "weakness_filter": 16,
+        "structural_stop_breached_on_confirmation": 2
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H1_base_B03": {
+      "model": "OF_H1_base",
       "buffer_bps": 3,
       "events": 97,
       "trades": 7,
@@ -126,40 +2487,120 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "SWEEP_EXTREME_B03": {
-      "model": "SWEEP_EXTREME",
+    "OF_H1_weak_B03": {
+      "model": "OF_H1_weak",
       "buffer_bps": 3,
-      "events": 180,
-      "trades": 4,
+      "events": 97,
+      "trades": 1,
       "wins": 0,
-      "losses": 1,
-      "be": 3,
-      "win_rate_pct": 0.0,
-      "expectancy_r": -0.3931650495989415,
-      "net_r": -1.572660198395766,
-      "pnl_usd": -15.27971570473369,
-      "equity": 984.7202842952663,
+      "losses": 0,
+      "be": 1,
+      "win_rate_pct": null,
+      "expectancy_r": -0.23056506312537275,
+      "net_r": -0.23056506312537275,
+      "pnl_usd": -2.2304360399999723,
+      "equity": 997.76956396,
       "profit_factor": 0.0,
-      "drawdown_pct": 2.4038037538372414,
+      "drawdown_pct": 0.3549089576639908,
       "outcomes": {
-        "BE": 3,
-        "SL": 1
+        "BE": 1
       },
       "rejections": {
-        "net_rr_below_two": 146,
-        "shift_inside_fresh_fta": 17,
-        "expired_limit": 4,
-        "target_or_stop_before_retest": 4,
-        "setup_invalidated_or_expired": 3,
-        "fta_or_stop_before_fill": 2
+        "shift_inside_fresh_fta": 12,
+        "net_rr_below_two": 61,
+        "weakness_filter": 15,
+        "setup_invalidated_or_expired": 4,
+        "target_or_stop_before_retest": 3,
+        "expired_limit": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_base_B03": {
+      "model": "OF_H4_base",
+      "buffer_bps": 3,
+      "events": 17,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "expired_limit": 1,
+        "net_rr_below_two": 12,
+        "shift_inside_fresh_fta": 2,
+        "setup_invalidated_or_expired": 1,
+        "target_or_stop_before_retest": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_weak_B03": {
+      "model": "OF_H4_weak",
+      "buffer_bps": 3,
+      "events": 17,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "weakness_filter": 1,
+        "net_rr_below_two": 12,
+        "shift_inside_fresh_fta": 2,
+        "setup_invalidated_or_expired": 1,
+        "target_or_stop_before_retest": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "IB_M15_market_B03": {
+      "model": "IB_M15_market",
+      "buffer_bps": 3,
+      "events": 96,
+      "trades": 20,
+      "wins": 2,
+      "losses": 3,
+      "be": 15,
+      "win_rate_pct": 40.0,
+      "expectancy_r": -0.037770237440023946,
+      "net_r": -0.7554047488004789,
+      "pnl_usd": -7.951059203383807,
+      "equity": 992.0489407966162,
+      "profit_factor": 0.8483395932528041,
+      "drawdown_pct": 3.864365157554006,
+      "outcomes": {
+        "BE": 15,
+        "TP": 2,
+        "SL": 2,
+        "gap_SL": 1
+      },
+      "rejections": {
+        "net_rr_below_two": 72,
+        "shift_inside_fresh_fta": 3,
+        "limit_inside_active_opposing_zone": 1
       },
       "pending_at_end": 0,
       "setup_at_end": 0
     }
   },
   "train": {
-    "QM_HEAD_B03": {
-      "model": "QM_HEAD",
+    "QM_M15_B03": {
+      "model": "QM_M15",
       "buffer_bps": 3,
       "events": 240,
       "trades": 15,
@@ -192,8 +2633,137 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "OF_ZONE_B03": {
-      "model": "OF_ZONE",
+    "OF_M5_base_B03": {
+      "model": "OF_M5_base",
+      "buffer_bps": 3,
+      "events": 1105,
+      "trades": 64,
+      "wins": 7,
+      "losses": 42,
+      "be": 15,
+      "win_rate_pct": 14.285714285714286,
+      "expectancy_r": -0.2684132258330057,
+      "net_r": -17.178446453312365,
+      "pnl_usd": -166.653106189323,
+      "equity": 833.346893810677,
+      "profit_factor": 0.598491019147112,
+      "drawdown_pct": 27.649957075159527,
+      "outcomes": {
+        "SL": 41,
+        "BE": 15,
+        "gap_SL": 1,
+        "TP": 7
+      },
+      "rejections": {
+        "structural_stop_breached_on_confirmation": 99,
+        "net_rr_below_two": 431,
+        "fta_or_stop_before_fill": 25,
+        "target_or_stop_before_retest": 218,
+        "shift_inside_fresh_fta": 156,
+        "setup_invalidated_or_expired": 55,
+        "censored_fill_bar": 20,
+        "expired_limit": 32,
+        "no_external_liquidity": 4,
+        "fta_already_reached_at_limit_placement": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_M5_weak_B03": {
+      "model": "OF_M5_weak",
+      "buffer_bps": 3,
+      "events": 1123,
+      "trades": 6,
+      "wins": 1,
+      "losses": 2,
+      "be": 3,
+      "win_rate_pct": 33.333333333333336,
+      "expectancy_r": -0.20981548660502478,
+      "net_r": -1.2588929196301486,
+      "pnl_usd": -11.774299709058369,
+      "equity": 988.2257002909416,
+      "profit_factor": 0.6458203774423404,
+      "drawdown_pct": 3.4161331864290156,
+      "outcomes": {
+        "BE": 3,
+        "TP": 1,
+        "SL": 2
+      },
+      "rejections": {
+        "structural_stop_breached_on_confirmation": 100,
+        "net_rr_below_two": 435,
+        "weakness_filter": 135,
+        "target_or_stop_before_retest": 225,
+        "shift_inside_fresh_fta": 157,
+        "setup_invalidated_or_expired": 56,
+        "fta_or_stop_before_fill": 1,
+        "no_external_liquidity": 4,
+        "expired_limit": 2,
+        "censored_fill_bar": 1,
+        "fta_already_reached_at_limit_placement": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_M15_base_B03": {
+      "model": "OF_M15_base",
+      "buffer_bps": 3,
+      "events": 126,
+      "trades": 12,
+      "wins": 0,
+      "losses": 4,
+      "be": 8,
+      "win_rate_pct": 0.0,
+      "expectancy_r": -0.5532954170827568,
+      "net_r": -6.6395450049930815,
+      "pnl_usd": -62.983394357716634,
+      "equity": 937.0166056422834,
+      "profit_factor": 0.0,
+      "drawdown_pct": 9.871869777537912,
+      "outcomes": {
+        "BE": 8,
+        "SL": 3,
+        "gap_SL": 1
+      },
+      "rejections": {
+        "target_or_stop_before_retest": 7,
+        "net_rr_below_two": 91,
+        "shift_inside_fresh_fta": 12,
+        "setup_invalidated_or_expired": 2,
+        "structural_stop_breached_on_confirmation": 2
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_M15_weak_B03": {
+      "model": "OF_M15_weak",
+      "buffer_bps": 3,
+      "events": 127,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "target_or_stop_before_retest": 7,
+        "net_rr_below_two": 91,
+        "shift_inside_fresh_fta": 13,
+        "setup_invalidated_or_expired": 2,
+        "weakness_filter": 12,
+        "structural_stop_breached_on_confirmation": 2
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H1_base_B03": {
+      "model": "OF_H1_base",
       "buffer_bps": 3,
       "events": 69,
       "trades": 5,
@@ -223,39 +2793,118 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "SWEEP_EXTREME_B03": {
-      "model": "SWEEP_EXTREME",
+    "OF_H1_weak_B03": {
+      "model": "OF_H1_weak",
       "buffer_bps": 3,
-      "events": 133,
-      "trades": 2,
+      "events": 69,
+      "trades": 1,
       "wins": 0,
       "losses": 0,
-      "be": 2,
+      "be": 1,
       "win_rate_pct": null,
-      "expectancy_r": -0.16339997901421488,
-      "net_r": -0.32679995802842976,
-      "pnl_usd": -3.1268832000000657,
-      "equity": 996.8731167999999,
+      "expectancy_r": -0.23056506312537275,
+      "net_r": -0.23056506312537275,
+      "pnl_usd": -2.2304360399999723,
+      "equity": 997.76956396,
       "profit_factor": 0.0,
-      "drawdown_pct": 0.7500866693512465,
+      "drawdown_pct": 0.3549089576639908,
       "outcomes": {
-        "BE": 2
+        "BE": 1
       },
       "rejections": {
-        "net_rr_below_two": 109,
-        "shift_inside_fresh_fta": 11,
-        "expired_limit": 4,
-        "target_or_stop_before_retest": 2,
+        "shift_inside_fresh_fta": 9,
+        "net_rr_below_two": 45,
+        "weakness_filter": 8,
         "setup_invalidated_or_expired": 3,
-        "fta_or_stop_before_fill": 2
+        "target_or_stop_before_retest": 2,
+        "expired_limit": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_base_B03": {
+      "model": "OF_H4_base",
+      "buffer_bps": 3,
+      "events": 12,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "expired_limit": 1,
+        "net_rr_below_two": 8,
+        "shift_inside_fresh_fta": 1,
+        "setup_invalidated_or_expired": 1,
+        "target_or_stop_before_retest": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_weak_B03": {
+      "model": "OF_H4_weak",
+      "buffer_bps": 3,
+      "events": 12,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "weakness_filter": 1,
+        "net_rr_below_two": 8,
+        "shift_inside_fresh_fta": 1,
+        "setup_invalidated_or_expired": 1,
+        "target_or_stop_before_retest": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "IB_M15_market_B03": {
+      "model": "IB_M15_market",
+      "buffer_bps": 3,
+      "events": 61,
+      "trades": 11,
+      "wins": 2,
+      "losses": 1,
+      "be": 8,
+      "win_rate_pct": 66.66666666666667,
+      "expectancy_r": 0.15059531133616447,
+      "net_r": 1.656548424697809,
+      "pnl_usd": 15.575281614698042,
+      "equity": 1015.575281614698,
+      "profit_factor": 1.5389298217134877,
+      "drawdown_pct": 3.79036046813902,
+      "outcomes": {
+        "BE": 8,
+        "TP": 2,
+        "SL": 1
+      },
+      "rejections": {
+        "net_rr_below_two": 48,
+        "shift_inside_fresh_fta": 2
       },
       "pending_at_end": 0,
       "setup_at_end": 0
     }
   },
   "holdout": {
-    "QM_HEAD_B03": {
-      "model": "QM_HEAD",
+    "QM_M15_B03": {
+      "model": "QM_M15",
       "buffer_bps": 3,
       "events": 95,
       "trades": 1,
@@ -285,8 +2934,132 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "OF_ZONE_B03": {
-      "model": "OF_ZONE",
+    "OF_M5_base_B03": {
+      "model": "OF_M5_base",
+      "buffer_bps": 3,
+      "events": 379,
+      "trades": 20,
+      "wins": 3,
+      "losses": 11,
+      "be": 6,
+      "win_rate_pct": 21.428571428571427,
+      "expectancy_r": -0.07969034412024681,
+      "net_r": -1.593806882404936,
+      "pnl_usd": -20.907813558012663,
+      "equity": 979.0921864419873,
+      "profit_factor": 0.8472929240063574,
+      "drawdown_pct": 10.383201352108106,
+      "outcomes": {
+        "TP": 3,
+        "SL": 11,
+        "BE": 6
+      },
+      "rejections": {
+        "net_rr_below_two": 151,
+        "setup_invalidated_or_expired": 25,
+        "structural_stop_breached_on_confirmation": 35,
+        "shift_inside_fresh_fta": 57,
+        "target_or_stop_before_retest": 68,
+        "censored_fill_bar": 5,
+        "expired_limit": 8,
+        "fta_or_stop_before_fill": 7,
+        "fta_already_reached_at_limit_placement": 1,
+        "no_external_liquidity": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 1
+    },
+    "OF_M5_weak_B03": {
+      "model": "OF_M5_weak",
+      "buffer_bps": 3,
+      "events": 387,
+      "trades": 3,
+      "wins": 0,
+      "losses": 2,
+      "be": 1,
+      "win_rate_pct": 0.0,
+      "expectancy_r": -0.8842285093953589,
+      "net_r": -2.6526855281860766,
+      "pnl_usd": -25.94089226244364,
+      "equity": 974.0591077375564,
+      "profit_factor": 0.0,
+      "drawdown_pct": 2.9965532304502163,
+      "outcomes": {
+        "BE": 1,
+        "SL": 2
+      },
+      "rejections": {
+        "net_rr_below_two": 153,
+        "setup_invalidated_or_expired": 25,
+        "weakness_filter": 39,
+        "target_or_stop_before_retest": 72,
+        "structural_stop_breached_on_confirmation": 35,
+        "shift_inside_fresh_fta": 58,
+        "no_external_liquidity": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 1
+    },
+    "OF_M15_base_B03": {
+      "model": "OF_M15_base",
+      "buffer_bps": 3,
+      "events": 48,
+      "trades": 2,
+      "wins": 1,
+      "losses": 0,
+      "be": 1,
+      "win_rate_pct": 100.0,
+      "expectancy_r": 1.5070284950984596,
+      "net_r": 3.014056990196919,
+      "pnl_usd": 29.884935954711864,
+      "equity": 1029.8849359547119,
+      "profit_factor": 11.262762994713611,
+      "drawdown_pct": 2.1649928314723788,
+      "outcomes": {
+        "TP": 1,
+        "BE": 1
+      },
+      "rejections": {
+        "target_or_stop_before_retest": 3,
+        "net_rr_below_two": 32,
+        "censored_fill_bar": 1,
+        "shift_inside_fresh_fta": 6,
+        "setup_invalidated_or_expired": 2,
+        "fta_or_stop_before_fill": 1,
+        "no_external_liquidity": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_M15_weak_B03": {
+      "model": "OF_M15_weak",
+      "buffer_bps": 3,
+      "events": 48,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "target_or_stop_before_retest": 3,
+        "net_rr_below_two": 32,
+        "weakness_filter": 4,
+        "shift_inside_fresh_fta": 6,
+        "setup_invalidated_or_expired": 2,
+        "no_external_liquidity": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H1_base_B03": {
+      "model": "OF_H1_base",
       "buffer_bps": 3,
       "events": 28,
       "trades": 2,
@@ -315,39 +3088,112 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "SWEEP_EXTREME_B03": {
-      "model": "SWEEP_EXTREME",
+    "OF_H1_weak_B03": {
+      "model": "OF_H1_weak",
       "buffer_bps": 3,
-      "events": 45,
-      "trades": 2,
+      "events": 28,
+      "trades": 0,
       "wins": 0,
-      "losses": 1,
-      "be": 1,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "net_rr_below_two": 16,
+        "weakness_filter": 7,
+        "shift_inside_fresh_fta": 3,
+        "target_or_stop_before_retest": 1,
+        "setup_invalidated_or_expired": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_base_B03": {
+      "model": "OF_H4_base",
+      "buffer_bps": 3,
+      "events": 5,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "net_rr_below_two": 4,
+        "shift_inside_fresh_fta": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_weak_B03": {
+      "model": "OF_H4_weak",
+      "buffer_bps": 3,
+      "events": 5,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "net_rr_below_two": 4,
+        "shift_inside_fresh_fta": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "IB_M15_market_B03": {
+      "model": "IB_M15_market",
+      "buffer_bps": 3,
+      "events": 35,
+      "trades": 9,
+      "wins": 0,
+      "losses": 2,
+      "be": 7,
       "win_rate_pct": 0.0,
-      "expectancy_r": -0.6229301201836681,
-      "net_r": -1.2458602403673362,
-      "pnl_usd": -12.152832504733624,
-      "equity": 987.8471674952664,
+      "expectancy_r": -0.26799479705536533,
+      "net_r": -2.411953173498288,
+      "pnl_usd": -22.93791200120893,
+      "equity": 977.0620879987911,
       "profit_factor": 0.0,
-      "drawdown_pct": 1.6610050820143996,
+      "drawdown_pct": 2.293791200120898,
       "outcomes": {
-        "SL": 1,
-        "BE": 1
+        "BE": 7,
+        "gap_SL": 1,
+        "SL": 1
       },
       "rejections": {
-        "net_rr_below_two": 37,
-        "shift_inside_fresh_fta": 4,
-        "target_or_stop_before_retest": 2
+        "net_rr_below_two": 24,
+        "shift_inside_fresh_fta": 1,
+        "limit_inside_active_opposing_zone": 1
       },
       "pending_at_end": 0,
       "setup_at_end": 0
     }
   },
   "selected": {
-    "QM_HEAD": {
-      "chosen_before_holdout": "QM_HEAD_B03",
+    "QM_M15": {
+      "chosen_before_holdout": "QM_M15_B03",
       "holdout": {
-        "model": "QM_HEAD",
+        "model": "QM_M15",
         "buffer_bps": 3,
         "events": 95,
         "trades": 1,
@@ -378,10 +3224,120 @@
         "setup_at_end": 0
       }
     },
-    "OF_ZONE": {
-      "chosen_before_holdout": "OF_ZONE_B03",
+    "OF_M5_base": {
+      "chosen_before_holdout": "OF_M5_base_B03",
       "holdout": {
-        "model": "OF_ZONE",
+        "model": "OF_M5_base",
+        "buffer_bps": 3,
+        "events": 379,
+        "trades": 20,
+        "wins": 3,
+        "losses": 11,
+        "be": 6,
+        "win_rate_pct": 21.428571428571427,
+        "expectancy_r": -0.07969034412024681,
+        "net_r": -1.593806882404936,
+        "pnl_usd": -20.907813558012663,
+        "equity": 979.0921864419873,
+        "profit_factor": 0.8472929240063574,
+        "drawdown_pct": 10.383201352108106,
+        "outcomes": {
+          "TP": 3,
+          "SL": 11,
+          "BE": 6
+        },
+        "rejections": {
+          "net_rr_below_two": 151,
+          "setup_invalidated_or_expired": 25,
+          "structural_stop_breached_on_confirmation": 35,
+          "shift_inside_fresh_fta": 57,
+          "target_or_stop_before_retest": 68,
+          "censored_fill_bar": 5,
+          "expired_limit": 8,
+          "fta_or_stop_before_fill": 7,
+          "fta_already_reached_at_limit_placement": 1,
+          "no_external_liquidity": 1
+        },
+        "pending_at_end": 0,
+        "setup_at_end": 1
+      }
+    },
+    "OF_M5_weak": {
+      "chosen_before_holdout": "OF_M5_weak_B03",
+      "holdout": {
+        "model": "OF_M5_weak",
+        "buffer_bps": 3,
+        "events": 387,
+        "trades": 3,
+        "wins": 0,
+        "losses": 2,
+        "be": 1,
+        "win_rate_pct": 0.0,
+        "expectancy_r": -0.8842285093953589,
+        "net_r": -2.6526855281860766,
+        "pnl_usd": -25.94089226244364,
+        "equity": 974.0591077375564,
+        "profit_factor": 0.0,
+        "drawdown_pct": 2.9965532304502163,
+        "outcomes": {
+          "BE": 1,
+          "SL": 2
+        },
+        "rejections": {
+          "net_rr_below_two": 153,
+          "setup_invalidated_or_expired": 25,
+          "weakness_filter": 39,
+          "target_or_stop_before_retest": 72,
+          "structural_stop_breached_on_confirmation": 35,
+          "shift_inside_fresh_fta": 58,
+          "no_external_liquidity": 1
+        },
+        "pending_at_end": 0,
+        "setup_at_end": 1
+      }
+    },
+    "OF_M15_base": {
+      "chosen_before_holdout": "OF_M15_base_B03",
+      "holdout": {
+        "model": "OF_M15_base",
+        "buffer_bps": 3,
+        "events": 48,
+        "trades": 2,
+        "wins": 1,
+        "losses": 0,
+        "be": 1,
+        "win_rate_pct": 100.0,
+        "expectancy_r": 1.5070284950984596,
+        "net_r": 3.014056990196919,
+        "pnl_usd": 29.884935954711864,
+        "equity": 1029.8849359547119,
+        "profit_factor": 11.262762994713611,
+        "drawdown_pct": 2.1649928314723788,
+        "outcomes": {
+          "TP": 1,
+          "BE": 1
+        },
+        "rejections": {
+          "target_or_stop_before_retest": 3,
+          "net_rr_below_two": 32,
+          "censored_fill_bar": 1,
+          "shift_inside_fresh_fta": 6,
+          "setup_invalidated_or_expired": 2,
+          "fta_or_stop_before_fill": 1,
+          "no_external_liquidity": 1
+        },
+        "pending_at_end": 0,
+        "setup_at_end": 0
+      }
+    },
+    "OF_M15_weak": {
+      "chosen_before_holdout": null,
+      "holdout": null
+    },
+    "OF_H1_base": {
+      "chosen_before_holdout": "OF_H1_base_B03",
+      "holdout": {
+        "model": "OF_H1_base",
         "buffer_bps": 3,
         "events": 28,
         "trades": 2,
@@ -411,14 +3367,53 @@
         "setup_at_end": 0
       }
     },
-    "SWEEP_EXTREME": {
+    "OF_H1_weak": {
       "chosen_before_holdout": null,
       "holdout": null
+    },
+    "OF_H4_base": {
+      "chosen_before_holdout": null,
+      "holdout": null
+    },
+    "OF_H4_weak": {
+      "chosen_before_holdout": null,
+      "holdout": null
+    },
+    "IB_M15_market": {
+      "chosen_before_holdout": "IB_M15_market_B03",
+      "holdout": {
+        "model": "IB_M15_market",
+        "buffer_bps": 3,
+        "events": 35,
+        "trades": 9,
+        "wins": 0,
+        "losses": 2,
+        "be": 7,
+        "win_rate_pct": 0.0,
+        "expectancy_r": -0.26799479705536533,
+        "net_r": -2.411953173498288,
+        "pnl_usd": -22.93791200120893,
+        "equity": 977.0620879987911,
+        "profit_factor": 0.0,
+        "drawdown_pct": 2.293791200120898,
+        "outcomes": {
+          "BE": 7,
+          "gap_SL": 1,
+          "SL": 1
+        },
+        "rejections": {
+          "net_rr_below_two": 24,
+          "shift_inside_fresh_fta": 1,
+          "limit_inside_active_opposing_zone": 1
+        },
+        "pending_at_end": 0,
+        "setup_at_end": 0
+      }
     }
   },
   "stress_fee7_slip3": {
-    "QM_HEAD_B03": {
-      "model": "QM_HEAD",
+    "QM_M15_B03": {
+      "model": "QM_M15",
       "buffer_bps": 3,
       "events": 336,
       "trades": 15,
@@ -451,8 +3446,137 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "OF_ZONE_B03": {
-      "model": "OF_ZONE",
+    "OF_M5_base_B03": {
+      "model": "OF_M5_base",
+      "buffer_bps": 3,
+      "events": 1497,
+      "trades": 60,
+      "wins": 6,
+      "losses": 40,
+      "be": 14,
+      "win_rate_pct": 13.043478260869565,
+      "expectancy_r": -0.35087853749190073,
+      "net_r": -21.052712249514045,
+      "pnl_usd": -193.60306703237643,
+      "equity": 806.3969329676236,
+      "profit_factor": 0.5341622741369194,
+      "drawdown_pct": 24.633150945936865,
+      "outcomes": {
+        "SL": 40,
+        "BE": 14,
+        "TP": 6
+      },
+      "rejections": {
+        "structural_stop_breached_on_confirmation": 136,
+        "net_rr_below_two": 714,
+        "fta_or_stop_before_fill": 27,
+        "target_or_stop_before_retest": 221,
+        "shift_inside_fresh_fta": 215,
+        "setup_invalidated_or_expired": 71,
+        "censored_fill_bar": 21,
+        "expired_limit": 25,
+        "no_external_liquidity": 4,
+        "fta_already_reached_at_limit_placement": 2
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 1
+    },
+    "OF_M5_weak_B03": {
+      "model": "OF_M5_weak",
+      "buffer_bps": 3,
+      "events": 1517,
+      "trades": 4,
+      "wins": 0,
+      "losses": 2,
+      "be": 2,
+      "win_rate_pct": 0.0,
+      "expectancy_r": -0.8934049707830474,
+      "net_r": -3.5736198831321895,
+      "pnl_usd": -34.86268470205721,
+      "equity": 965.1373152979428,
+      "profit_factor": 0.0,
+      "drawdown_pct": 3.4862684702057223,
+      "outcomes": {
+        "SL": 2,
+        "BE": 2
+      },
+      "rejections": {
+        "structural_stop_breached_on_confirmation": 136,
+        "net_rr_below_two": 725,
+        "weakness_filter": 129,
+        "target_or_stop_before_retest": 226,
+        "shift_inside_fresh_fta": 216,
+        "setup_invalidated_or_expired": 72,
+        "fta_or_stop_before_fill": 1,
+        "no_external_liquidity": 4,
+        "censored_fill_bar": 1,
+        "fta_already_reached_at_limit_placement": 1,
+        "expired_limit": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 1
+    },
+    "OF_M15_base_B03": {
+      "model": "OF_M15_base",
+      "buffer_bps": 3,
+      "events": 174,
+      "trades": 12,
+      "wins": 1,
+      "losses": 4,
+      "be": 7,
+      "win_rate_pct": 20.0,
+      "expectancy_r": -0.33775474012353196,
+      "net_r": -4.053056881482384,
+      "pnl_usd": -38.90294088083965,
+      "equity": 961.0970591191603,
+      "profit_factor": 0.3952700499926437,
+      "drawdown_pct": 9.683606266799726,
+      "outcomes": {
+        "BE": 7,
+        "SL": 3,
+        "gap_SL": 1,
+        "TP": 1
+      },
+      "rejections": {
+        "target_or_stop_before_retest": 5,
+        "net_rr_below_two": 131,
+        "shift_inside_fresh_fta": 19,
+        "setup_invalidated_or_expired": 4,
+        "structural_stop_breached_on_confirmation": 2,
+        "fta_or_stop_before_fill": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_M15_weak_B03": {
+      "model": "OF_M15_weak",
+      "buffer_bps": 3,
+      "events": 175,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "target_or_stop_before_retest": 5,
+        "net_rr_below_two": 131,
+        "shift_inside_fresh_fta": 20,
+        "setup_invalidated_or_expired": 4,
+        "weakness_filter": 13,
+        "structural_stop_breached_on_confirmation": 2
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H1_base_B03": {
+      "model": "OF_H1_base",
       "buffer_bps": 3,
       "events": 97,
       "trades": 4,
@@ -481,32 +3605,108 @@
       "pending_at_end": 0,
       "setup_at_end": 0
     },
-    "SWEEP_EXTREME_B03": {
-      "model": "SWEEP_EXTREME",
+    "OF_H1_weak_B03": {
+      "model": "OF_H1_weak",
       "buffer_bps": 3,
-      "events": 180,
-      "trades": 2,
+      "events": 97,
+      "trades": 0,
       "wins": 0,
-      "losses": 1,
-      "be": 1,
-      "win_rate_pct": 0.0,
-      "expectancy_r": -0.6037655123755943,
-      "net_r": -1.2075310247511886,
-      "pnl_usd": -11.68998046428078,
-      "equity": 988.3100195357192,
-      "profit_factor": 0.0,
-      "drawdown_pct": 1.6782098896439668,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "shift_inside_fresh_fta": 12,
+        "net_rr_below_two": 66,
+        "weakness_filter": 11,
+        "setup_invalidated_or_expired": 4,
+        "target_or_stop_before_retest": 3,
+        "expired_limit": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_base_B03": {
+      "model": "OF_H4_base",
+      "buffer_bps": 3,
+      "events": 17,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "net_rr_below_two": 13,
+        "shift_inside_fresh_fta": 2,
+        "setup_invalidated_or_expired": 1,
+        "target_or_stop_before_retest": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "OF_H4_weak_B03": {
+      "model": "OF_H4_weak",
+      "buffer_bps": 3,
+      "events": 17,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "be": 0,
+      "win_rate_pct": null,
+      "expectancy_r": null,
+      "net_r": 0,
+      "pnl_usd": 0.0,
+      "equity": 1000.0,
+      "profit_factor": null,
+      "drawdown_pct": 0.0,
+      "outcomes": {},
+      "rejections": {
+        "net_rr_below_two": 13,
+        "shift_inside_fresh_fta": 2,
+        "setup_invalidated_or_expired": 1,
+        "target_or_stop_before_retest": 1
+      },
+      "pending_at_end": 0,
+      "setup_at_end": 0
+    },
+    "IB_M15_market_B03": {
+      "model": "IB_M15_market",
+      "buffer_bps": 3,
+      "events": 96,
+      "trades": 15,
+      "wins": 1,
+      "losses": 2,
+      "be": 12,
+      "win_rate_pct": 33.333333333333336,
+      "expectancy_r": -0.14013865929527933,
+      "net_r": -2.10207988942919,
+      "pnl_usd": -21.37504435092137,
+      "equity": 978.6249556490786,
+      "profit_factor": 0.5117142504803633,
+      "drawdown_pct": 4.046347753565815,
       "outcomes": {
-        "BE": 1,
-        "SL": 1
+        "BE": 12,
+        "TP": 1,
+        "SL": 1,
+        "gap_SL": 1
       },
       "rejections": {
-        "net_rr_below_two": 149,
-        "shift_inside_fresh_fta": 17,
-        "expired_limit": 4,
-        "target_or_stop_before_retest": 3,
-        "setup_invalidated_or_expired": 3,
-        "fta_or_stop_before_fill": 2
+        "net_rr_below_two": 77,
+        "shift_inside_fresh_fta": 3,
+        "limit_inside_active_opposing_zone": 1
       },
       "pending_at_end": 0,
       "setup_at_end": 0
@@ -521,6 +3721,7 @@
     "fixed 3bp buffer; OB wick touch is not FVG full-fill; structural audit includes rejected setups",
     "BB excluded from POI and FTA; shift CLOSE in a pre-existing active opposing zone blocks, overlapping limit waits for new setup",
     "FTA recomputed at retest before placement; frozen TP and SL; post-placement FTA touch cancels pending, post-fill touch moves BE",
-    "fresh FTA only: first M5 wick overlap after confirmed creation retires zone from future FTA selection; first contact at shift retains veto, event-time snapshot prevents QM hindsight; entry POI unchanged"
+    "fresh FTA only: first M5 wick overlap after confirmed creation retires zone from future FTA selection; first contact at shift retains veto, event-time snapshot prevents QM hindsight; entry POI unchanged",
+    "all ten original research variants; OF weak uses Binance taker delta proxy; IB market next open with opposite range boundary and RR recheck; no Sweep model in this configured suite"
   ]
 }
