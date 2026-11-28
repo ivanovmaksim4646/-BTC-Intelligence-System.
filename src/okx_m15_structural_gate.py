@@ -125,7 +125,7 @@ def evaluate(snapshot,now=None):
         if first["t"]+M5!=close:
             row["reasons"].append("first_retest_already_passed");continue
         for tf,z in hits:
-            risk=structural_plan(frames,direction,first["c"],q["head"],z,close)
+            risk=structural_plan(frames,direction,first["c"],q["head"],z,close,separate_fta=True)
             p={"direction":direction,"entry_close_utc":close,"htf":tf,
                "poi_kind":z["kind"],"poi_formed":z["formed"],"model":"MTF_POI_QM_M15",
                "shift_close_utc":shift,"neckline":level,"qm_head":head,
