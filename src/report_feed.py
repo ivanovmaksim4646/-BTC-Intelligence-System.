@@ -425,7 +425,14 @@ def backup_market_context(now, fetch=None):
         try:
             return fn(url)
         except Exception as exc:
-            return {"status":"unavailable","error_type":type(exc).__name__}
+            from urllib.error import HTTPError
+            result = {"status":"unavailable","error_type":type(exc).__name__}
+            if isinstance(exc, HTTPError):
+                result["http_status"] = exc.code
+                result["endpoint"] = url.split("?")[0]
+                result["failure_category"] = ("restricted_or_forbidden" if exc.code in (403,451) else
+                    "rate_limit" if exc.code in (418,429) else "server_error" if exc.code >= 500 else "http_error")
+            return result
     with ThreadPoolExecutor(max_workers=4) as pool:
         result=dict(zip(specs,pool.map(safe,specs.values())))
     return {"generated_at_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
