@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-28T01:10:21.295766Z",
+  "collected_at_utc": "2026-11-28T01:15:21.336591Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -781,37 +781,25 @@
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59837.4
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795790700,
           "high": 61193.9,
           "kind": "bearish_fvg",
           "low": 60202.0
-        },
-        {
-          "formed_at": 1795824000,
-          "high": 59863.7,
-          "kind": "bullish_fvg",
-          "low": 59805.3
         }
       ],
-      "last_close": 59837.5,
-      "last_high": 59931.4,
-      "last_low": 59837.4,
-      "latest_closed_utc": "2026-11-28T00:45:00Z",
+      "last_close": 60010.2,
+      "last_high": 60052.4,
+      "last_low": 59778.5,
+      "latest_closed_utc": "2026-11-28T01:00:00Z",
       "qm": [
-        {
-          "broken_level": 61480.4,
-          "direction": "long",
-          "head_extreme": 61056.1,
-          "head_time": 1795421700,
-          "left_shoulder": 61312.1,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795425300
-        },
         {
           "broken_level": 61213.4,
           "direction": "short",
@@ -910,6 +898,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795801500
+        },
+        {
+          "broken_level": 59828.9,
+          "direction": "long",
+          "head_extreme": 59540.9,
+          "head_time": 1795816800,
+          "left_shoulder": 59650.5,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795824900
         }
       ],
       "status": "ok"
@@ -922,12 +921,18 @@
           "high": 59908.4,
           "kind": "bullish_fvg",
           "low": 59870.0
+        },
+        {
+          "formed_at": 1795828200,
+          "high": 59988.0,
+          "kind": "bullish_fvg",
+          "low": 59964.7
         }
       ],
-      "last_close": 59999.9,
-      "last_high": 60000.0,
-      "last_low": 59908.4,
-      "latest_closed_utc": "2026-11-28T01:05:00Z",
+      "last_close": 60010.2,
+      "last_high": 60052.4,
+      "last_low": 59988.0,
+      "latest_closed_utc": "2026-11-28T01:10:00Z",
       "qm": [
         {
           "broken_level": 60737.8,
