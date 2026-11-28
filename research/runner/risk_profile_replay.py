@@ -483,6 +483,8 @@ def self_test():
 
 def main():
     self_test()
+    configured=json.loads(Path(__file__).with_name("config.json").read_text())["models"]
+    assert tuple(configured)==MODELS and len(MODELS)==10
     bars,pins=verified_bars(START,END,Path(".research-cache"))
     start,end=stamp(START),stamp(END)
     funding=verified_funding(start,end)
@@ -505,7 +507,21 @@ def main():
     for a in full:
         rejected=[x for x in a.audit if "net_rr_below_two" in x["events"]]
         counts=Counter(x["targets"]["target_kind"] for x in rejected)
+        eligible_htf=0
+        # Diagnostic only: first major known liquidity level, not chosen
+        # according to its RR and never used to change an actual trade.
+        for x in rejected:
+            idea=x["idea"];d=idea["d"];e=idea["entry_limit"];s=x["initial_sl"]
+            if idea.get("fixed_target"):continue
+            major=next((v for v in x["targets"]["target_ladder"] if v["kind"] in ("PDH","PDL","PMH","PML","swing 240m","swing 1440m")),None)
+            if major:
+                en=e*(1+d*a.slip);st=s*(1-d*a.slip);tp=major["price"]*(1-d*a.slip)
+                loss=d*(en-st)+a.fee*(en+st);gain=d*(tp-en)-a.fee*(en+tp)
+                if loss>0:
+                    x["diagnostic_major_target"]={**major,"net_rr":gain/loss,"not_traded":True}
+                    eligible_htf+=int(gain>=2*loss)
         tp_diagnostics[a.name]={"rr_rejections":len(rejected),"gross_ge_2_net_below_2":sum(x.get("gross_rr",0)>=2 for x in rejected),
+                                "first_major_liquidity_net_ge_2_diagnostic_only":eligible_htf,
                                 "target_types":dict(counts),"examples":rejected[:2]}
     report={"tp_diagnostics":tp_diagnostics,"classification":"historical_research_only","instrument":"Binance USD-M BTCUSDT",
             "period_utc":[b.utc(start),b.utc(end)],"evaluation_m5":(end-start)//300,
