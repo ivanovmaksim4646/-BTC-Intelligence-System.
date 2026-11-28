@@ -251,3 +251,7 @@ Commits 671517ed, 12cc20bd, 0c0c460a, 17595d47, 80b53b21 add pure predicates and
 
 ### 2026-11-28 | Backtest #6 — all available models
 User requested one annual research campaign, integer numbering only (#6, then #7 etc.). Config commit 48d43e0183ef9fac94d881e9186db4ee731e64b1 selects QM_M15, OF M5/M15/H1/H4 base and weak, and IB_M15_market; 2025-11-27 to 2026-11-27 UTC exclusive. Existing push-triggered runner; actual run/result not yet confirmed. Models have independent accounts; combined portfolio results require explicit overlap/risk arbitration, not summing returns. Latest confirmed filters are not fully wired into legacy QM/OF, nor are general range, limit fills and all FTA management variants implemented. No production changes. Next verify exact commit run and implement missing integration before calling this complete strategy validation.
+
+
+### 2026-11-28 | Backtest #6 export repair
+Run 46133902363 failed in charts.py after eight regression tests passed: IB market evidence has no touch_open_utc/retest_close_utc. Commit 8761637766a5f29bd72d3b2ae99a1ef69212ac29 renders missing timestamps explicitly, omits fictitious retest levels, and shows actual range boundaries. Push triggers the existing annual research workflow; new run and results must be verified. This is a technical export repair only, not full integration: general range, limit execution, FTA invalidation/retest, structural stop variants and common portfolio arbitration remain pending. The ten-model run is diagnostic, not final #6 acceptance. No main or live signal changes.
