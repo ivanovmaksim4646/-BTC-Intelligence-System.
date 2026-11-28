@@ -1,7 +1,7 @@
-name: FTA management audit v3
+name: Fresh FTA annual replay v4
 on:
   push:
-    branches: [research/fta-management-v3]
+    branches: [research/fresh-fta-v4]
     paths:
       - 'research/runner/**'
       - 'research/baseline/**'
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   replay:
-    if: github.ref == 'refs/heads/research/fta-management-v3'
+    if: github.ref == 'refs/heads/research/fresh-fta-v4'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -59,4 +59,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/risk-results/
           git commit -m "data: publish structural risk research results"
-          git push origin HEAD:research/fta-management-v3
+          git push origin HEAD:research/fresh-fta-v4
