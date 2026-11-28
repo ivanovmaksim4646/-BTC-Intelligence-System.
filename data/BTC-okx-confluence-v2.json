@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-28T11:41:10.505495+00:00",
+  "generated_at_utc": "2026-11-28T11:45:43.035630+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -19,63 +19,63 @@
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "4.51890825",
-        "volume_btc": "6.31325599",
+        "delta_btc": "1.47108394",
+        "volume_btc": "5.76042608",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
       "futures": {
-        "delta_btc": "77.1969",
-        "volume_btc": "165.9467",
+        "delta_btc": "12.5784",
+        "volume_btc": "145.8382",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "15m": {
       "spot": {
-        "delta_btc": "-2.65366696",
-        "volume_btc": "42.84235048",
+        "delta_btc": "-2.61712049",
+        "volume_btc": "45.46772747",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
       "futures": {
-        "delta_btc": "-19.8119",
-        "volume_btc": "802.1887",
+        "delta_btc": "-49.8312",
+        "volume_btc": "802.5878",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "1h": {
       "spot": {
-        "delta_btc": "-5.51198529",
-        "volume_btc": "129.13823173",
+        "delta_btc": "-5.21887630",
+        "volume_btc": "132.21383626",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
       "futures": {
-        "delta_btc": "389.8496",
-        "volume_btc": "3454.2114",
+        "delta_btc": "348.5344",
+        "volume_btc": "3444.9298",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     },
     "4h": {
       "spot": {
-        "delta_btc": "81.01511088",
-        "volume_btc": "623.72142046",
+        "delta_btc": "63.35080035",
+        "volume_btc": "599.25263933",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
       "futures": {
-        "delta_btc": "-649.8062",
-        "volume_btc": "10414.8996",
+        "delta_btc": "-656.2902",
+        "volume_btc": "10471.4186",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       }
     }
   },
   "structure": {
-    "5m": "mixed",
+    "5m": "bearish",
     "15m": "bearish",
     "1h": "bearish",
     "4h": "mixed"
@@ -83,40 +83,40 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": -48.4565,
-      "delta_percent": -0.14905,
-      "elapsed_seconds": 282.933,
-      "previous_timestamp_ms": 1795865770489,
-      "current_timestamp_ms": 1795866053422,
+      "delta_btc": 10.3144,
+      "delta_percent": 0.03177,
+      "elapsed_seconds": 287.621,
+      "previous_timestamp_ms": 1795866053422,
+      "current_timestamp_ms": 1795866341043,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 6.79737907664e-05,
-      "rate_percent": 0.0067974,
+      "rate_fraction": 6.77659594241e-05,
+      "rate_percent": 0.0067766,
       "next_funding_time_ms": 1795910400000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59167.6,
-      "index_price": 59193.8,
-      "mark_timestamp_ms": 1795866054261,
-      "index_timestamp_ms": 1795866053635,
-      "mark_minus_index_usdt": -26.2,
-      "premium_bps": -4.426139,
+      "mark_price": 59172.9,
+      "index_price": 59202.3,
+      "mark_timestamp_ms": 1795866341931,
+      "index_timestamp_ms": 1795866341732,
+      "mark_minus_index_usdt": -29.4,
+      "premium_bps": -4.966023,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "bid_heavier",
-    "timestamp_ms": 1795866053908,
+    "resting_side": "balanced",
+    "timestamp_ms": 1795866341558,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
     "cpi_index": {
-      "source": "BLS",
-      "series": "CUSR0000SA0",
+      "source": "FRED",
+      "series": "CPIAUCSL",
       "observation_date": "2026-10-01",
       "actual": 337.476,
       "previous": 336.298,
@@ -125,8 +125,8 @@
       "surprise": null
     },
     "unemployment_pct": {
-      "source": "BLS",
-      "series": "LNS14000000",
+      "source": "FRED",
+      "series": "UNRATE",
       "observation_date": "2026-10-01",
       "actual": 4.1,
       "previous": 4.2,
@@ -135,8 +135,8 @@
       "surprise": null
     },
     "payrolls_thousands": {
-      "source": "BLS",
-      "series": "CES0000000001",
+      "source": "FRED",
+      "series": "PAYEMS",
       "observation_date": "2026-10-01",
       "actual": 159293.0,
       "previous": 159128.0,
@@ -144,23 +144,23 @@
       "consensus_forecast": null,
       "surprise": null
     },
-    "ppi_index": {
-      "source": "BLS",
-      "series": "WPU00000000",
+    "effective_fed_funds_pct": {
+      "source": "FRED",
+      "series": "FEDFUNDS",
       "observation_date": "2026-10-01",
-      "actual": 293.921,
-      "previous": 294.473,
+      "actual": 3.88,
+      "previous": 3.75,
       "previous_date": "2026-09-01",
       "consensus_forecast": null,
       "surprise": null
     },
-    "effective_fed_funds_pct": {
-      "source": "New York Fed",
-      "series": "EFFR_daily",
-      "observation_date": "2026-11-25",
-      "actual": 3.88,
-      "previous": 3.88,
-      "previous_date": "2026-11-24",
+    "ppi_index": {
+      "source": "FRED",
+      "series": "PPIACO",
+      "observation_date": "2026-10-01",
+      "actual": 293.921,
+      "previous": 294.473,
+      "previous_date": "2026-09-01",
       "consensus_forecast": null,
       "surprise": null
     }
@@ -177,7 +177,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795866000,
+  "m5_close_s": 1795866300,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
