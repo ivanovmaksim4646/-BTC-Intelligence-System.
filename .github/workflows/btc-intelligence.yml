@@ -254,11 +254,9 @@ jobs:
         run: |
           git config user.name "btc-intelligence-bot"
           git config user.email "btc-intelligence-bot@users.noreply.github.com"
-          if [[ "${{ steps.collect.outcome }}" == "success" ]]; then
-            git add data state
-          elif [[ -f data/BTC-intelligence-errors.csv ]]; then
-            git add data/BTC-intelligence-errors.csv
-          fi
+          # Independent collectors publish even if Kraken fails.
+          # Downstream consumers must still enforce source freshness and coverage.
+          git add data state
           if git diff --cached --quiet; then
             echo "No data changes"
             exit 0
