@@ -42,3 +42,35 @@ class AdvisoryTests(unittest.TestCase):
         self.assertEqual(a["windows"]["5m"]["divergence_candidate"],"price_down_delta_positive")
         b=flow_segments([row(end,2),row(end,3)],end)["BTC-USDT"]
         self.assertEqual(b["consecutive_m5"],0)
+
+    def test_liquidation_page(self):
+        from src.advisory_events_v1 import liquidation_map
+        row=dict(timestamp_ms=int(self.now.timestamp()*1000),price="59050",position_direction="LONG",reported_amount="1")
+        d=dict(source="Bitget USDT-FUTURES BTCUSDT",classification="exchange_reported_liquidation_orders_not_execution_certified",status="observed_page",records=[row,row])
+        a=liquidation_map(d,self.now)
+        self.assertEqual(a["records"],1)
+        self.assertEqual(a["bins"][0]["LONG"],1)
+        self.assertIsNone(a["liquidation_heatmap"])
+    def test_surprise_timestamp(self):
+        from src.advisory_events_v1 import surprise
+        release=self.now.isoformat()
+        f=dict(series="CPI",period="2026-10",unit="pct",release_at_utc=release,value=.2,observed_at_utc=(self.now-dt.timedelta(minutes=5)).isoformat())
+        a=dict(f,value=.3,observed_at_utc=release,first_release_verified=True)
+        self.assertAlmostEqual(surprise(f,a),.1)
+        self.assertIsNone(surprise(dict(f,observed_at_utc=release),a))
+    def test_reaction_gap(self):
+        from src.advisory_events_v1 import btc_reaction
+        t=int(self.now.timestamp())
+        rows=[dict(t=x,o=100,h=103,l=99,c=102 if x==t else 100) for x in (t-300,t,t+600)]
+        d=dict(source="OKX BTC-USDT-SWAP",status="verified",timeframes={"5m":{"status":"ok","bars":rows}})
+        a=btc_reaction({"release_at_utc":self.now.isoformat()},d,self.now+dt.timedelta(minutes=15))
+        self.assertAlmostEqual(a["windows"]["5m"]["return_pct"],2)
+        self.assertNotIn("15m",a["windows"])
+    def test_forecast_match(self):
+        from src.advisory_events_v1 import forecast_matches
+        t=(self.now+dt.timedelta(days=1)).isoformat()
+        events=[dict(category="CPI",release_at_utc=t,source_url="https://www.bls.gov/")]
+        rows=[dict(title="CPI m/m",country="USD",date=t,forecast="0.2%",previous="0.3%")]
+        self.assertEqual(len(forecast_matches(rows,events,self.now)),1)
+        rows[0]["date"]=self.now.isoformat()
+        self.assertEqual(forecast_matches(rows,events,self.now),[])
