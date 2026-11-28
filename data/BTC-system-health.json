@@ -1,34 +1,34 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-28T04:41:27.029899Z",
+  "checked_at_utc": "2026-11-28T04:45:04.495822Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
       "status": "ok",
-      "age_seconds": 69
+      "age_seconds": 71
     },
     "order_flow_analysis": {
       "status": "ok",
-      "age_seconds": 67
+      "age_seconds": 70
     },
     "structure_observation": {
       "status": "ok",
-      "age_seconds": 67
+      "age_seconds": 70
     },
     "watchlist_evaluation": {
       "status": "ok",
-      "age_seconds": 66
+      "age_seconds": 69
     },
     "github_workflow_trigger": {
       "status": "ok",
-      "age_seconds": 66,
-      "event": "workflow_dispatch",
-      "source": "cloudflare",
-      "slot": "2026-11-28T04:40:00.000Z"
+      "age_seconds": 69,
+      "event": "schedule",
+      "source": "github",
+      "slot": ""
     },
     "cloudflare_dispatch": {
-      "status": "last_dispatch_observed",
-      "note": "A recent Cloudflare-origin GitHub run was observed; this does not prove continuous uptime"
+      "status": "last_dispatch_unverified",
+      "note": "A GitHub schedule event does not prove Cloudflare dispatch works"
     },
     "tradingview_intake": {
       "status": "event_history_present",
@@ -38,7 +38,7 @@
     },
     "okx_spot": {
       "status": "volume_reconciled",
-      "age_seconds": 87,
+      "age_seconds": 304,
       "h4_buckets": 48,
       "h4_required": 48,
       "backfill_error": null,
@@ -46,7 +46,7 @@
     },
     "okx_swap": {
       "status": "partial",
-      "age_seconds": 87,
+      "age_seconds": 304,
       "h4_buckets": 41,
       "h4_required": 48,
       "backfill_error": null,
@@ -57,7 +57,7 @@
     }
   },
   "fully_operational_confirmed": false,
-  "core_snapshot_ok": true,
+  "core_snapshot_ok": false,
   "notes": [
     "GitHub workflow success does not guarantee five-minute scheduling.",
     "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
