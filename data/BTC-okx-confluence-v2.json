@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-28T10:37:56.824329+00:00",
+  "generated_at_utc": "2026-11-28T10:40:45.237571+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,58 +12,26 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
+    "reconciled_flow_5m",
+    "reconciled_flow_15m",
+    "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
-      "spot": {
-        "delta_btc": "-0.82156335",
-        "volume_btc": "1.74238391",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      },
-      "futures": {
-        "delta_btc": "-87.7668",
-        "volume_btc": "279.5506",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "spot": null,
+      "futures": null
     },
     "15m": {
-      "spot": {
-        "delta_btc": "-18.45547732",
-        "volume_btc": "27.82588668",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      },
-      "futures": {
-        "delta_btc": "-117.1076",
-        "volume_btc": "1055.1350",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "spot": null,
+      "futures": null
     },
     "1h": {
-      "spot": {
-        "delta_btc": "-30.57044511",
-        "volume_btc": "117.97827141",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      },
-      "futures": {
-        "delta_btc": "-276.4837",
-        "volume_btc": "2686.7629",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "spot": null,
+      "futures": null
     },
     "4h": {
-      "spot": {
-        "delta_btc": "84.37841880",
-        "volume_btc": "1054.26235038",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      },
+      "spot": null,
       "futures": null
     }
   },
@@ -76,34 +44,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 63.0087,
-      "delta_percent": 0.19482,
-      "elapsed_seconds": 297.622,
-      "previous_timestamp_ms": 1795861977204,
-      "current_timestamp_ms": 1795862274826,
+      "delta_btc": 23.0679,
+      "delta_percent": 0.07119,
+      "elapsed_seconds": 168.416,
+      "previous_timestamp_ms": 1795862274826,
+      "current_timestamp_ms": 1795862443242,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 5.54149381204e-05,
-      "rate_percent": 0.0055415,
+      "rate_fraction": 5.62060015022e-05,
+      "rate_percent": 0.0056206,
       "next_funding_time_ms": 1795910400000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59194.7,
-      "index_price": 59216.7,
-      "mark_timestamp_ms": 1795862275665,
-      "index_timestamp_ms": 1795862275109,
-      "mark_minus_index_usdt": -22.0,
-      "premium_bps": -3.715168,
+      "mark_price": 59247.6,
+      "index_price": 59271.9,
+      "mark_timestamp_ms": 1795862444103,
+      "index_timestamp_ms": 1795862443747,
+      "mark_minus_index_usdt": -24.3,
+      "premium_bps": -4.09975,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "bid_heavier",
-    "timestamp_ms": 1795862275309,
+    "resting_side": "ask_heavier",
+    "timestamp_ms": 1795862443709,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -170,7 +138,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795862100,
+  "m5_close_s": 1795862400,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
