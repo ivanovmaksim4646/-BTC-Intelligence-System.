@@ -61,13 +61,18 @@ def render(path, bars, trades):
         shift=e["shift"]
         points=[("Shift",epoch(shift["close_utc"])-300,shift["close_price"]),("Entry",t,r["entry"])]
         points.extend((f'QM{j+1}',epoch(p["open_utc"]),p["price"]) for j,p in enumerate(e.get("qm_pivots",[])))
-        begin=max(0,min(i-36,bisect_left(times,epoch(e["touch_open_utc"]))-4,
+        touch=e.get("touch_open_utc")
+        retest=e.get("retest_close_utc")
+        begin=max(0,min(i-36,bisect_left(times,epoch(touch))-4 if touch else i-36,
             *( [bisect_left(times,epoch(p["open_utc"])) for p in e.get("qm_pivots",[])] or [i])))
-        doc.append(panel(bars[begin:i+25],[
-            ("Entry",r["entry"]),("SL",r["stop"]),("TP",r["target"]),("Shift",shift["level"]),
-            ("Retest low",r["retest_lo"]),("Retest high",r["retest_hi"])],points,"Ретест та вхід · M5",300))
-        doc.append(f'<p>Дотик POI {e["touch_open_utc"]}. Shift {shift["tf_seconds"]//60} хв, закриття {shift["close_utc"]} '
-            f'за рівнем {shift["level"]:.2f}. Закриття ретесту {e["retest_close_utc"]}. '
+        levels=[("Entry",r["entry"]),("SL",r["stop"]),("TP",r["target"]),("Shift",shift["level"])]
+        if retest:
+            levels.extend([("Retest low",r["retest_lo"]),("Retest high",r["retest_hi"])])
+        if "range_low" in e and "range_high" in e:
+            levels.extend([("Range low",e["range_low"]),("Range high",e["range_high"])])
+        doc.append(panel(bars[begin:i+25],levels,points,"Ретест та вхід · M5" if retest else "Девіація та вхід · M5",300))
+        doc.append(f'<p>Дотик POI {escape(touch or "час не записано")}. Shift {shift["tf_seconds"]//60} хв, закриття {shift["close_utc"]} '
+            f'за рівнем {shift["level"]:.2f}. Закриття ретесту {escape(retest or "не записано / market entry")}. '
             f'Структурна ціль {escape(r["target_type"])}. Плановий RR {r["planned_RR"]:.2f}. '
             f'Вихід {escape(r["outcome"])} о {r["exit_utc"]}, результат {r["R"]:+.2f}R.</p></article>')
     if not trades:
