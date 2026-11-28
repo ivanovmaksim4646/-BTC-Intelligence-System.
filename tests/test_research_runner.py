@@ -73,3 +73,34 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(compare(dict(ex,direction="SHORT")),"mismatch")
         self.assertEqual(compare(dict(ex,direction="SHORT",expected="skip")),"match")
         self.assertEqual(compare(dict(ex,entry_utc="1970-01-02T00:05:00+00:00")),"outside_config")
+
+
+class ConfirmedRuleIntegrationTests(unittest.TestCase):
+    def test_confirmed_predicates(self):
+        from research.runner.confirmed_filters import self_test
+        self_test()
+
+    def test_inside_bar_chart_without_retest(self):
+        from tempfile import TemporaryDirectory
+        from research.runner.charts import render
+        bars=[replay.Bar(t,100,110,90,105,1,.5) for t in range(0,7200,300)]
+        row=dict(model="IB_M15_market",d=1,entry_utc=replay.utc(3600),
+                 poi_tf=3600,poi="OB",poi_lo=90,poi_hi=95,entry=100,
+                 stop=89,target=125,retest_lo=100,retest_hi=100,
+                 target_type="opposite_IB_boundary",planned_RR=2,
+                 outcome="TP",exit_utc=replay.utc(3900),R=2,
+                 evidence=dict(range_low=95,range_high=125,
+                    shift=dict(close_utc=replay.utc(3600),close_price=100,
+                               level=99,tf_seconds=900)))
+        with TemporaryDirectory() as folder:
+            path=Path(folder)/"entries.html"
+            render(path,bars,[row])
+            html=path.read_text()
+            self.assertIn("Range low",html)
+            self.assertIn("Range high",html)
+            self.assertNotIn("Retest low",html)
+            self.assertIn("час не записано",html)
+            row["evidence"].update(touch_open_utc=replay.utc(2700),
+                                   retest_close_utc=replay.utc(3300))
+            render(path,bars,[row])
+            self.assertIn("Retest low",path.read_text())
