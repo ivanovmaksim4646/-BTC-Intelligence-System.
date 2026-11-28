@@ -5,6 +5,8 @@ on:
     paths:
       - 'research/runner/execution_v6.py'
       - 'research/runner/structure_v7.py'
+      - 'research/runner/combined_v6.py'
+      - 'research/runner/portfolio_v6.py'
       - 'tests/test_execution_v6.py'
       - '.github/workflows/backtest6-integration-check.yml'
 permissions:
@@ -12,7 +14,7 @@ permissions:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -21,3 +23,18 @@ jobs:
       - run: python -m unittest discover -s tests -p 'test_execution_v6.py' -v
       - run: python -m research.runner.confirmed_filters
       - run: python -c "from research.runner import structure_v7; assert 'QM_M15' in structure_v7.MODELS"
+      - uses: actions/cache@v4
+        with:
+          path: .research-cache
+          key: btc-v6-control-${{ hashFiles('research/baseline/checksums.json') }}
+          restore-keys: |
+            btc-um-m5-v1-${{ hashFiles('research/baseline/checksums.json') }}-
+      - name: Seven-day historical control
+        run: python -m research.runner.combined_v6
+      - uses: actions/upload-artifact@v4
+        with:
+          name: btc-v6-control
+          path: research-output/
+          if-no-files-found: error
+      - name: Publish control summary
+        run: cat research-output/summary.json >> "$GITHUB_STEP_SUMMARY"
