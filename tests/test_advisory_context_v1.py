@@ -16,7 +16,7 @@ class AdvisoryTests(unittest.TestCase):
         r["market_cap"]=-1
         self.assertEqual(stablecoins([r],self.now),{})
     def test_etf(self):
-        html="<table><tr><th>Date</th><th>IBIT</th><th>FBTC</th><th>BTC</th><th>Total</th></tr><tr><td>27 Nov 2026</td><td>12.0</td><td>(2.0)</td><td>1.0</td><td>11.0</td></tr><tr><td>26 Nov 2026</td><td>12.0</td><td>-</td><td>1.0</td><td>13.0</td></tr></table>"
+        html="<table><tr><th>Date</th><th>IBIT</th><th>FBTC</th><th>BTC</th><th></th></tr><tr><td>27 Nov 2026</td><td>12.0</td><td>(2.0)</td><td>1.0</td><td>11.0</td></tr><tr><td>26 Nov 2026</td><td>12.0</td><td>-</td><td>1.0</td><td>13.0</td></tr></table>"
         result=etf_flows(html,self.now)
         self.assertEqual(result["latest"]["net_flow_usd_m"],11)
         self.assertEqual(len(result["recent_sessions"]),1)
@@ -29,3 +29,16 @@ class AdvisoryTests(unittest.TestCase):
         self.assertNotIn("4h",reconciled_coverage(doc,self.now)["instruments"]["BTC-USDT"])
     def test_deribit_envelope(self):
         self.assertEqual(volatility({"result":{"data":[[self.now.timestamp()*1000,1,1,1,45]]}},self.now)["status"],"observed")
+
+    def test_gap_aware_history(self):
+        from src.advisory_history_v1 import flow_segments
+        end=1800000000
+        def row(t,d):
+            return dict(instrument="BTC-USDT",volume_reconciled=True,end_ms=t,start_ms=t-300000,
+                       delta_btc_reconciled=d,volume_btc_reconciled=10,open_usdt=100,close_usdt=99)
+        a=flow_segments([row(end-600000,1),row(end,2)],end)["BTC-USDT"]
+        self.assertEqual(a["consecutive_m5"],1)
+        self.assertEqual(a["series"][0]["cumulative_reconciled_delta_btc"],2)
+        self.assertEqual(a["windows"]["5m"]["divergence_candidate"],"price_down_delta_positive")
+        b=flow_segments([row(end,2),row(end,3)],end)["BTC-USDT"]
+        self.assertEqual(b["consecutive_m5"],0)

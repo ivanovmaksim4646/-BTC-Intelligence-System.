@@ -4,6 +4,7 @@ on:
     branches: [research/advisory-market-coverage]
     paths:
       - 'src/advisory_context_v1.py'
+      - 'src/advisory_history_v1.py'
       - 'tests/test_advisory_context_v1.py'
       - '.github/workflows/advisory-context-research.yml'
 permissions:
@@ -23,8 +24,13 @@ jobs:
         run: |
           git fetch --depth=1 origin main
           git show FETCH_HEAD:data/BTC-okx-reconciled-flow-current.json > data/BTC-okx-reconciled-flow-current.json
+          git show FETCH_HEAD:data/BTC-okx-reconciled-m5-history.json > data/BTC-okx-reconciled-m5-history.json
+          git show FETCH_HEAD:data/BTC-okx-liquidity-history-v1.jsonl > data/BTC-okx-liquidity-history-v1.jsonl
       - run: python -m src.advisory_context_v1
+      - run: python -m src.advisory_history_v1
       - uses: actions/upload-artifact@v4
         with:
           name: advisory-context
-          path: data/BTC-advisory-context-v1.json
+          path: |
+            data/BTC-advisory-context-v1.json
+            data/BTC-advisory-history-v1.json
