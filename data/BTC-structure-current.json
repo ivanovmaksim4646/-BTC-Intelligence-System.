@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-28T12:05:19.182478Z",
+  "collected_at_utc": "2026-11-28T12:10:20.618677Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -945,7 +945,13 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 59348.4,
+          "reference_low": 59180.5
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795853100,
@@ -982,12 +988,18 @@
           "high": 59363.3,
           "kind": "bearish_fvg",
           "low": 59329.4
+        },
+        {
+          "formed_at": 1795867500,
+          "high": 59261.3,
+          "kind": "bullish_fvg",
+          "low": 59193.8
         }
       ],
-      "last_close": 59255.1,
-      "last_high": 59348.4,
-      "last_low": 59180.5,
-      "latest_closed_utc": "2026-11-28T12:00:00Z",
+      "last_close": 59262.9,
+      "last_high": 59317.8,
+      "last_low": 59261.3,
+      "latest_closed_utc": "2026-11-28T12:05:00Z",
       "qm": [
         {
           "broken_level": 61820.1,
