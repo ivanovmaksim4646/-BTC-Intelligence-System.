@@ -65,27 +65,32 @@ def summarize(rows,end):
     return out
 def collect_one(inst,end,max_runtime_seconds=180,max_pages_override=None):
     began=time.monotonic()
-    def fetch(cursor):
-        # Two parallel instruments, each at most four requests/s before latency.
+    pages_left=max_pages_override if max_pages_override is not None else (500 if inst.endswith("SWAP") else 180)
+    budget=pages_left
+    def trade_page(params):
+        nonlocal pages_left
+        if pages_left<=0:return []
         if time.monotonic()-began>max_runtime_seconds:raise TimeoutError("bounded collection deadline")
         time.sleep(.25)
+        pages_left-=1
+        return request("market/history-trades",params)
+    def fetch(cursor):
         p={"instId":inst,"type":"1","limit":"100"}
-        if cursor is None:
-            # Pagination type=2 returns trades STRICTLY earlier than the given
-            # timestamp. BTC Spot can have no print in the first second after
-            # M5 close; a +1s cursor then excludes all post-close trades and
-            # fails the independent upper-boundary evidence gate.
-            #
-            # Seed Spot from a bounded post-close margin, while preserving
-            # type=1 trade-id pagination and exact closed-candle volume match.
-            # If no actual post-close trade exists yet, provenance stays
-            # incomplete instead of inventing boundary coverage.
-            margin_ms=60000 if inst=="BTC-USDT" else 1000
-            p.update(type="2", after=str(end+margin_ms))
-        else:p["after"]=str(cursor)
-        return request("market/history-trades",p)
+        if cursor is not None:
+            return trade_page(dict(p,after=str(cursor)))
+        # Seed by timestamp and continue by trade ID. A sparse first second can
+        # miss every actual post-close trade even for the perpetual contract.
+        margin_ms=60000 if inst=="BTC-USDT" else 1000
+        p.update(type="2",after=str(end+margin_ms))
+        rows=trade_page(p)
+        if inst=="BTC-USDT-SWAP" and pages_left and not any(int(r["ts"])>=end for r in rows):
+            # Discard the narrow page, so no overlapping rows enter the sum.
+            # Both requests consume the same total request and time budgets.
+            rows=trade_page(dict(p,after=str(end+60000)))
+        return rows
     try:
-        r=probe(inst,fetch,end,max_pages=max_pages_override if max_pages_override is not None else (500 if inst.endswith("SWAP") else 180))
+        r=probe(inst,fetch,end,max_pages=budget)
+        r["trade_page_requests"]=budget-pages_left
         # The recent-candles endpoint only returns the latest bars. A
         # retrospective gap up to four hours old must query the historical
         # endpoint using a timestamp cursor or reconciliation will fail
@@ -161,9 +166,11 @@ def main():
     out={"classification":"volume_reconciled_rest_research_only","end_ms":end,"results":results,
          "spot_backfill":{"target_end_ms":target,
                           "volume_reconciled":backfill.get("volume_reconciled") if backfill else None,
+                          "reason":backfill.get("reconciliation_reason") if backfill else None,
                           "error":backfill.get("error") if backfill else None},
          "futures_backfill":{"target_end_ms":swap_target,
                              "volume_reconciled":swap_backfill.get("volume_reconciled") if swap_backfill else None,
+                             "reason":swap_backfill.get("reconciliation_reason") if swap_backfill else None,
                              "error":swap_backfill.get("error") if swap_backfill else None},
          "history_count":len(rows),"instruments":summarize(rows,end),"trade_signal":None}
     write(HISTORY,rows);write(CURRENT,out)
