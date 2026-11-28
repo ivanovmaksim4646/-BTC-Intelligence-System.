@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-11-28T16:15:46.712545+00:00",
+  "generated_at_utc": "2026-11-28T16:20:54.356749+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "paper_signal_preview_only",
   "decision": "NO_TRADE",
   "paper_signal": null,
   "execution_enabled": false,
   "reasons": [
-    "no_aligned_direction"
+    "incomplete_or_conflicting_evidence"
   ],
   "warnings": [
     "liquidation_heatmap_unavailable",
@@ -18,13 +18,15 @@
       "macro"
     ],
     "core_missing": [],
-    "conflicts": [],
+    "conflicts": [
+      "spot_futures_disagree_15m"
+    ],
     "watch_candidates": [],
     "entry_gate_reasons": [
       "no_same_bar_independently_corroborated_okx_tv_alert"
     ],
     "entry_gate_diagnostics": {
-      "latest_m5_close_s": 1795882500,
+      "latest_m5_close_s": 1795882800,
       "matching_tv_events": 0,
       "qm_patterns": 9,
       "direction_matched_qm": 0,
