@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "htf_observation_only",
-  "generated_at_utc": "2026-11-28T11:55:20.041631+00:00",
+  "generated_at_utc": "2026-11-28T12:00:25.829997+00:00",
   "venue": "Kraken Spot XBTUSD",
   "futures_chart_validated": false,
   "trade_signal": null,
@@ -13,11 +13,17 @@
   "timeframes": {
     "H1": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-28T10:00:00+00:00",
-      "last_high": 59536.6,
-      "last_low": 59002.4,
-      "last_close": 59199.6,
-      "events": [],
+      "last_closed_candle_start_utc": "2026-11-28T11:00:00+00:00",
+      "last_high": 59241.1,
+      "last_low": 59040.0,
+      "last_close": 59187.7,
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 59536.6,
+          "reference_low": 59002.4
+        }
+      ],
       "fvg": [
         {
           "kind": "bearish_fvg",
@@ -32,20 +38,27 @@
           "high": 59876.6,
           "formed_at": 1795845600,
           "mitigation_status": "unknown"
+        },
+        {
+          "kind": "bearish_fvg",
+          "low": 59241.1,
+          "high": 59470.5,
+          "formed_at": 1795863600,
+          "mitigation_status": "unknown"
         }
       ],
       "futures_chart_validated": false
     },
     "H4": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-28T04:00:00+00:00",
-      "last_high": 60018.9,
-      "last_low": 59124.9,
-      "last_close": 59781.5,
+      "last_closed_candle_start_utc": "2026-11-28T08:00:00+00:00",
+      "last_high": 59797.5,
+      "last_low": 59002.4,
+      "last_close": 59187.7,
       "events": [
         {
           "kind": "sweep_low_reclaim_inside",
-          "reference_low": 59778.5
+          "reference_low": 59124.9
         }
       ],
       "fvg": [
