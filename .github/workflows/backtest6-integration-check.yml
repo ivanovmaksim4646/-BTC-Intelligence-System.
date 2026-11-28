@@ -10,6 +10,9 @@ on:
       - 'research/runner/portfolio_v6.py'
       - 'tests/test_execution_v6.py'
       - '.github/workflows/backtest6-integration-check.yml'
+concurrency:
+  group: backtest6-annual-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:

@@ -19,6 +19,7 @@ class ExecutionBook(b.Book):
         if policy not in ('fixed','be','half','structural'):raise ValueError('unknown stop policy')
         self.policy=policy
         super().__init__(name,fee,slip)
+        self.equity=self.peak=self.mtm_peak=1000.0
         self.pending=None
         self.limit_events=[]
         self.fta=None

@@ -7,7 +7,7 @@ from research.baseline.replay import stats
 def combine(books):
     rows=sorted((r for book in books.values() for r in book.rows),
                 key=lambda r:(r["entry_utc"],-r["planned_RR"],r["model"]))
-    accepted=[]; rejected=[]; equity=peak=10000.; dd=0.; occupied_until=""
+    accepted=[]; rejected=[]; equity=peak=1000.; dd=0.; occupied_until=""
     for r in rows:
         if r["entry_utc"]<occupied_until:
             rejected.append(dict(model=r["model"],entry_utc=r["entry_utc"],
@@ -26,6 +26,6 @@ def combine(books):
         occupied_until=r["exit_utc"]
         accepted.append(row)
     return dict(trades=accepted,excluded=rejected,
-                summary=dict(**stats(accepted),initial_equity=10000.,
+                summary=dict(**stats(accepted),initial_equity=1000.,
                 final_equity=equity,closed_drawdown_pct=dd*100,
                 overlap_excluded=len(rejected),classification="independent_candidate_projection"))
