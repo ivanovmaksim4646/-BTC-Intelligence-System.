@@ -4,12 +4,12 @@
   "results": [
     {
       "instrument": "BTC-USDT",
-      "pages": 18,
-      "records": 1800,
+      "pages": 20,
+      "records": 2000,
       "start_ms": 1795852200000,
       "end_ms": 1795852500000,
-      "oldest_ms": 1795852195909,
-      "newest_ms": 1795852534110,
+      "oldest_ms": 1795852192595,
+      "newest_ms": 1795852559376,
       "reason": "start_crossed",
       "both_time_boundaries_observed": true,
       "observed_buy_native": "29.01925144",
@@ -29,7 +29,7 @@
       "close_usdt": "59799.5",
       "quote_volume_usdt": "2828500.517760551",
       "reconciliation_reason": "exact_native_candle_volume_match",
-      "elapsed_seconds": 7.43
+      "elapsed_seconds": 8.15
     },
     {
       "instrument": "BTC-USDT-SWAP",
@@ -58,7 +58,7 @@
       "close_usdt": "59769.6",
       "quote_volume_usdt": "14459764.53903",
       "reconciliation_reason": "exact_native_candle_volume_match",
-      "elapsed_seconds": 26.16
+      "elapsed_seconds": 26.41
     }
   ],
   "spot_backfill": {
@@ -67,9 +67,9 @@
     "error": null
   },
   "futures_backfill": {
-    "target_end_ms": 1795839900000,
+    "target_end_ms": 1795849800000,
     "volume_reconciled": false,
-    "error": null
+    "error": "TimeoutError"
   },
   "history_count": 888,
   "instruments": {
