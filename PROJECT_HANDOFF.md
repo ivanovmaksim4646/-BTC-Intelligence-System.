@@ -255,3 +255,6 @@ User requested one annual research campaign, integer numbering only (#6, then #7
 
 ### 2026-11-28 | Backtest #6 export repair
 Run 46133902363 failed in charts.py after eight regression tests passed: IB market evidence has no touch_open_utc/retest_close_utc. Commit 8761637766a5f29bd72d3b2ae99a1ef69212ac29 renders missing timestamps explicitly, omits fictitious retest levels, and shows actual range boundaries. Push triggers the existing annual research workflow; new run and results must be verified. This is a technical export repair only, not full integration: general range, limit execution, FTA invalidation/retest, structural stop variants and common portfolio arbitration remain pending. The ten-model run is diagnostic, not final #6 acceptance. No main or live signal changes.
+
+### 2026-11-28 | Backtest #6 regression gates
+Commit 3e2c1ec6f41502b27c9407b285241ac449234b80 adds explicit CI coverage of confirmed predicates and chart rendering for IB market evidence without retest plus legacy retest evidence. This is test coverage, not execution integration. Diagnostic run 46134520350 passed prior regression step and was in replay when inspected. Full acceptance still requires research-only limit lifecycle, FTA protection and range integration without modifying frozen baseline, plus short control and annual replay. No production changes.
