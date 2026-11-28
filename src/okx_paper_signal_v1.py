@@ -52,6 +52,7 @@ def evaluate(confluence, gate, now=None):
     # unreachable. Never ignore actual conflicts or missing core evidence.
     diag["entry_gate_reasons"]=gate.get("reasons") or []
     diag["entry_gate_diagnostics"]=gate.get("diagnostics") or {}
+    diag["m15_structural_gate"]=gate.get("m15_structural_gate") or {}
     if diag["advisory_missing"]:
         out["warnings"].extend("advisory_missing_"+x for x in diag["advisory_missing"] if x!="liquidation_heatmap")
     if diag["core_missing"] or diag["conflicts"]:
