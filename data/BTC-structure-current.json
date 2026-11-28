@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-28T07:20:18.160458Z",
+  "collected_at_utc": "2026-11-28T07:25:20.395732Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -923,16 +923,8 @@
     "M5": {
       "events": [
         {
-          "break_level": 59588.2,
-          "broken_swing_utc": "2026-11-28T06:00:00Z",
-          "confirmation": "closed_candle_below_confirmed_swing_low",
-          "kind": "bearish_shift_candidate",
-          "not_bos": true,
-          "previous_structure": "higher_highs_higher_lows"
-        },
-        {
           "kind": "sweep_high_reclaim_inside",
-          "reference_high": 59650.6
+          "reference_high": 59662.7
         }
       ],
       "fvg": [
@@ -979,22 +971,11 @@
           "low": 59703.1
         }
       ],
-      "last_close": 59587.7,
-      "last_high": 59662.7,
-      "last_low": 59448.8,
-      "latest_closed_utc": "2026-11-28T07:15:00Z",
+      "last_close": 59650.1,
+      "last_high": 59678.8,
+      "last_low": 59553.9,
+      "latest_closed_utc": "2026-11-28T07:20:00Z",
       "qm": [
-        {
-          "broken_level": 60437.2,
-          "direction": "long",
-          "head_extreme": 60325.0,
-          "head_time": 1795736100,
-          "left_shoulder": 60326.8,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795737600
-        },
         {
           "broken_level": 61613.9,
           "direction": "short",
@@ -1093,6 +1074,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795847700
+        },
+        {
+          "broken_level": 59545.8,
+          "direction": "short",
+          "head_extreme": 59841.6,
+          "head_time": 1795847700,
+          "left_shoulder": 59759.8,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795849500
         }
       ],
       "status": "ok"
