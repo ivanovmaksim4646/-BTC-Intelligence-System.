@@ -2,7 +2,7 @@ name: BTC Intelligence Sync
 
 on:
   push:
-    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal, feature/btc-report-delivery-audit-v1, fix/futures-backfill-report-transfer]
+    branches: [main, feature/okx-flow-main-sync, feature/okx-report-confluence, feature/okx-flow-cursor, feature/okx-paper-signal-v1, feature/forward-paper-journal, feature/btc-report-delivery-audit-v1, fix/futures-backfill-report-transfer, feature/telegram-delivery-v1]
     paths:
       - 'src/collector.py'
       - 'src/forward_paper_journal_v1.py'
@@ -12,6 +12,8 @@ on:
       - 'src/okx_flow_history_v1.py'
       - 'tests/test_okx_flow_history_v1.py'
       - 'src/report_feed.py'
+      - 'src/telegram_delivery_v1.py'
+      - 'tests/test_telegram_delivery_v1.py'
       - 'tests/test_report_feed.py'
       - 'tests/test_compact_chart.py'
       - 'tests/test_collector.py'
@@ -223,6 +225,7 @@ jobs:
         run: python -m src.okx_paper_signal_v1
 
       - name: Generate synchronized BTC report feed after OKX confluence
+        id: telegram_report
         if: always()
         run: python src/report_feed.py
 
@@ -230,7 +233,8 @@ jobs:
         if: always()
         run: python src/okx_outcome_tracker_v1.py
 
-      - name: Update prospective paper journal (admission disabled)
+      - name: Update prospective paper journal (paper only)
+        id: telegram_journal
         if: always()
         run: python -m src.forward_paper_journal_v1
 
@@ -247,6 +251,17 @@ jobs:
         if: always()
         run: python src/system_health.py
 
+
+      - name: Send verified BTC WATCH and admitted PAPER alerts to Telegram
+        if: always() && (steps.telegram_report.outcome == 'success' || steps.telegram_journal.outcome == 'success')
+        continue-on-error: true
+        env:
+          BTC_TELEGRAM_ENABLED: "1"
+          BTC_TELEGRAM_WATCH_READY: ${{ steps.telegram_report.outcome == 'success' && '1' || '0' }}
+          BTC_TELEGRAM_PAPER_READY: ${{ steps.telegram_journal.outcome == 'success' && '1' || '0' }}
+          BTC_TELEGRAM_BOT_TOKEN: ${{ secrets.BTC_TELEGRAM_BOT_TOKEN }}
+          BTC_TELEGRAM_CHAT_ID: ${{ secrets.BTC_TELEGRAM_CHAT_ID }}
+        run: python -m src.telegram_delivery_v1
 
       - name: Commit state and measurements
         if: always() && (steps.collect.outcome == 'success' || steps.collect.outcome == 'failure')
