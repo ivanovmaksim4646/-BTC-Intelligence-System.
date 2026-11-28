@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-28T14:54:35.620762Z",
+  "collected_at_utc": "2026-11-28T14:55:37.999627Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -933,7 +933,12 @@
       "status": "ok"
     },
     "M5": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 59260.1
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795853700,
@@ -978,22 +983,11 @@
           "low": 59110.4
         }
       ],
-      "last_close": 59168.3,
-      "last_high": 59260.1,
-      "last_low": 59139.6,
-      "latest_closed_utc": "2026-11-28T14:45:00Z",
+      "last_close": 59241.8,
+      "last_high": 59346.0,
+      "last_low": 59180.2,
+      "latest_closed_utc": "2026-11-28T14:50:00Z",
       "qm": [
-        {
-          "broken_level": 61820.1,
-          "direction": "long",
-          "head_extreme": 61418.9,
-          "head_time": 1795765200,
-          "left_shoulder": 61560.3,
-          "model": "QM",
-          "retest_confirmation": "not_evaluated",
-          "status": "structure_candidate_only",
-          "structural_extreme_time": 1795767300
-        },
         {
           "broken_level": 61624.9,
           "direction": "long",
@@ -1092,6 +1086,17 @@
           "retest_confirmation": "not_evaluated",
           "status": "structure_candidate_only",
           "structural_extreme_time": 1795859100
+        },
+        {
+          "broken_level": 59311.4,
+          "direction": "long",
+          "head_extreme": 58890.0,
+          "head_time": 1795873500,
+          "left_shoulder": 59086.6,
+          "model": "QM",
+          "retest_confirmation": "not_evaluated",
+          "status": "structure_candidate_only",
+          "structural_extreme_time": 1795876500
         }
       ],
       "status": "ok"
