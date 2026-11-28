@@ -1,7 +1,7 @@
-name: Structural SL TP research
+name: Structural invalidation audit v2
 on:
   push:
-    branches: [research/structural-risk-comparison-v1]
+    branches: [research/structural-validation-v2]
     paths:
       - 'research/runner/**'
       - 'research/baseline/**'
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   replay:
-    if: github.ref == 'refs/heads/research/structural-risk-comparison-v1'
+    if: github.ref == 'refs/heads/research/structural-validation-v2'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -52,9 +52,11 @@ jobs:
         run: |
           mkdir -p research/risk-results
           cp risk-profile-output/summary.json research/risk-results/summary.json
+          cp risk-profile-output/structural-audit.json research/risk-results/structural-audit.json
+          cp risk-profile-output/trades.json research/risk-results/trades.json
           python -c 'import json,os; from pathlib import Path; Path("research/risk-results/latest.json").write_text(json.dumps({"input_commit":os.environ["GITHUB_SHA"],"run_id":os.environ["GITHUB_RUN_ID"]},indent=2)+"\n")'
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/risk-results/
           git commit -m "data: publish structural risk research results"
-          git push origin HEAD:research/structural-risk-comparison-v1
+          git push origin HEAD:research/structural-validation-v2
