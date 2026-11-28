@@ -452,6 +452,75 @@ def backup_market_context(now, fetch=None):
             "policy":"Independent market context only; no cross-venue substitution or aggregation."}
 
 
+def bitget_liquidation_sample(now, fetch=None):
+    """Recent exchange-reported liquidation records, not complete executed totals."""
+    import math
+    from urllib.request import Request,urlopen
+    url="https://api.bitget.com/api/v3/market/liquidations?category=USDT-FUTURES&symbol=BTCUSDT&limit=100"
+    out={"source":"Bitget USDT-FUTURES BTCUSDT","status":"unavailable","records":[],
+         "complete_coverage":False,"liquidation_heatmap":None,"amount_unit":None,
+         "classification":"exchange_reported_liquidation_orders_not_execution_certified"}
+    try:
+        if fetch is None:
+            with urlopen(Request(url,headers={"User-Agent":"BTC-Intelligence/1.0"}),timeout=8) as response:
+                raw=json.load(response)
+        else:
+            raw=fetch(url)
+        if raw.get("code")!="00000" or not isinstance(raw.get("data",{}).get("list"),list):
+            raise ValueError("unexpected response")
+        rows=raw["data"]["list"]
+        if len(rows)>100:
+            raise ValueError("unexpected page size")
+        records=[]
+        for row in rows:
+            t=int(row["ts"])
+            price=float(row["price"]);amount=float(row["amount"])
+            if (row["symbol"]!="BTCUSDT" or row["side"] not in ("buy","sell")
+                or not 0<=now.timestamp()*1000-t<=3*86400000
+                or not math.isfinite(price) or not math.isfinite(amount) or min(price,amount)<=0):
+                raise ValueError("invalid liquidation record")
+            records.append({"timestamp_ms":t,"position_direction":"LONG" if row["side"]=="buy" else "SHORT",
+                            "price":row["price"],"reported_amount":row["amount"]})
+        out.update(status="observed_page",records=sorted(records,key=lambda x:x["timestamp_ms"]),
+                   next_cursor=raw["data"].get("cursor"),page_size=len(records),
+                   limitation="Latest page only; delayed data possible, amount unit unspecified, no unique event ID; do not sum across overlapping pages.")
+    except (OSError,ValueError,TypeError,KeyError,AttributeError,OverflowError) as exc:
+        out["error_type"]=type(exc).__name__
+        out["http_status"]=getattr(exc,"code",None)
+    return out
+
+
+def liquidity_history_chart(now, lines):
+    """Compact sampled historical wall coordinates; do not interpolate gaps."""
+    import math
+    out={"source":"OKX BTC-USDT-SWAP","status":"unavailable","samples":[],"liquidation_heatmap":None}
+    index={}; conflicts=set()
+    for line in lines:
+        try:
+            row=json.loads(line); t=row["book_timestamp_ms"]
+            if row["source"]!=out["source"] or row["coverage"]!="single_cancelable_resting_book_snapshot" or type(t) is not int or not 0<=now.timestamp()*1000-t<=4*3600000:
+                continue
+            walls={}
+            for side in ("bid","ask"):
+                items=row[side+"_walls"]
+                if not isinstance(items,list) or len(items)>3:
+                    raise ValueError("invalid walls")
+                for x in items:
+                    if any(type(x.get(k)) not in (int,float) or not math.isfinite(x[k]) or x[k]<=0 for k in ("price","btc")):
+                        raise ValueError("invalid level")
+                walls[side]=[{"price":x["price"],"btc":x["btc"]} for x in items]
+            sample={"timestamp_ms":t,"bid":walls["bid"],"ask":walls["ask"]}
+            if t in index and index[t]!=sample:
+                conflicts.add(t)
+            index[t]=sample
+        except (ValueError,TypeError,KeyError,AttributeError):
+            continue
+    samples=[index[t] for t in sorted(index) if t not in conflicts]
+    out.update(status="sampled_history" if samples else "unavailable",samples=samples,
+               excluded_conflicts=len(conflicts),limitation="Top-three observed levels only; absent levels are unknown, not zero.")
+    return out
+
+
 def main():
     report = build(
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
@@ -467,6 +536,12 @@ def main():
     report["okx_spot_persistence"] = spot_persistence(read("BTC-okx-reconciled-m5-history.json"), dt.datetime.now(dt.timezone.utc))
     report["okx_visible_liquidity"] = okx_visible_liquidity(read("BTC-okx-liquidity-derivatives-v1.json"), read("BTC-okx-wall-persistence-v1.json"), dt.datetime.now(dt.timezone.utc))
     report["backup_market_context"] = backup_market_context(dt.datetime.now(dt.timezone.utc))
+    report["bitget_liquidations"] = bitget_liquidation_sample(dt.datetime.now(dt.timezone.utc))
+    try:
+        lines=(DATA/"BTC-okx-liquidity-history-v1.jsonl").read_text(encoding="utf-8").splitlines()
+    except (OSError,UnicodeError):
+        lines=[]
+    report["visible_liquidity_history"] = liquidity_history_chart(dt.datetime.now(dt.timezone.utc), lines)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
     temp.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
