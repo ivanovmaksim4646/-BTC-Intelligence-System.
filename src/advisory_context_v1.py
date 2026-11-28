@@ -89,8 +89,8 @@ def etf_flows(html,now):
         try:v=float(s);return v if math.isfinite(v) else None
         except ValueError:return None
     for table,r in parser.rows:
-        if len(r)>4 and r[-1].strip().lower()=="total" and "IBIT" in r and "FBTC" in r:
-            headers[table]=r;continue
+        if len(r)>4 and "IBIT" in r and "FBTC" in r and r[-1].strip().lower() in ("total",""):
+            headers[table]=r[:-1]+["Total"];continue
         h=headers.get(table)
         if not h or len(r)!=len(h):continue
         try:d=dt.datetime.strptime(r[0],"%d %b %Y").date()
