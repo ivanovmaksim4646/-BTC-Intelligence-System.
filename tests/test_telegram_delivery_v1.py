@@ -16,6 +16,8 @@ class TelegramDeliveryTests(unittest.TestCase):
     def test_candidate(self):
         now,doc=self.fixture()
         self.assertIn("WATCH LONG",candidate(doc,now)["text"])
+        self.assertTrue(candidate(doc,now)["text"].startswith("📊 АНАЛІТИКА"))
+        self.assertNotIn("ТОРГОВИЙ СИГНАЛ",candidate(doc,now)["text"])
         self.assertIsNone(candidate(doc,now+dt.timedelta(minutes=8)))
     def test_missing_block(self):
         now,doc=self.fixture()
@@ -40,7 +42,13 @@ class TelegramDeliveryTests(unittest.TestCase):
              "direction":"long","id":"a"*24,"issued_at_utc":now.isoformat(),
              "eligible_from":start,"expires_at":start+900,"entry":60000,
              "stop_loss":59400,"take_profit":61800,"cost_bps":14}
-        self.assertIn("PAPER LONG",paper_candidate(row,now)["text"])
+        msg=paper_candidate(row,now)["text"]
+        self.assertTrue(msg.startswith("🚨 ТОРГОВИЙ СИГНАЛ 🚨\n🟢 BTC PAPER LONG"))
+        self.assertIn("Entry:",msg)
+        self.assertIn("SL:",msg)
+        self.assertIn("TP:",msg)
+        short=dict(row,direction="short",stop_loss=60600,take_profit=58200)
+        self.assertTrue(paper_candidate(short,now)["text"].startswith("🚨 ТОРГОВИЙ СИГНАЛ 🚨\n🔴 BTC PAPER SHORT"))
         self.assertIsNone(paper_candidate(dict(row,status="expired"),now))
         self.assertIsNone(paper_candidate(dict(row,paper_only=False),now))
         self.assertIsNone(paper_candidate(dict(row,take_profit=60600),now))
