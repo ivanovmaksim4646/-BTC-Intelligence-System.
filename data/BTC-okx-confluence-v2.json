@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-28T00:16:25.039029+00:00",
+  "generated_at_utc": "2026-11-28T00:21:24.176455+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,42 +12,34 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
+    "reconciled_flow_5m",
+    "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "0.45059093",
-        "volume_btc": "4.15287327",
-        "direction": "long",
+        "delta_btc": "-1.52125778",
+        "volume_btc": "4.39673848",
+        "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": {
-        "delta_btc": "5.2933",
-        "volume_btc": "90.2031",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "15m": {
       "spot": {
-        "delta_btc": "3.84997705",
-        "volume_btc": "15.47897125",
+        "delta_btc": "0.54694523",
+        "volume_btc": "11.22202935",
         "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": {
-        "delta_btc": "78.4624",
-        "volume_btc": "351.4840",
-        "direction": "long",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "1h": {
       "spot": {
-        "delta_btc": "-9.04015280",
-        "volume_btc": "63.03213916",
+        "delta_btc": "-10.69729938",
+        "volume_btc": "64.84447114",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -55,8 +47,8 @@
     },
     "4h": {
       "spot": {
-        "delta_btc": "-21.53078874",
-        "volume_btc": "371.38279986",
+        "delta_btc": "-23.85514345",
+        "volume_btc": "371.82408225",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -72,34 +64,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 14.0869,
-      "delta_percent": 0.04401,
-      "elapsed_seconds": 295.584,
-      "previous_timestamp_ms": 1795824671735,
-      "current_timestamp_ms": 1795824967319,
+      "delta_btc": 31.1239,
+      "delta_percent": 0.0972,
+      "elapsed_seconds": 299.546,
+      "previous_timestamp_ms": 1795824967319,
+      "current_timestamp_ms": 1795825266865,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 5.47255558514e-05,
-      "rate_percent": 0.0054726,
+      "rate_fraction": 5.4167603284e-05,
+      "rate_percent": 0.0054168,
       "next_funding_time_ms": 1795881600000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59950.5,
-      "index_price": 59975.6,
-      "mark_timestamp_ms": 1795824968152,
-      "index_timestamp_ms": 1795824967047,
-      "mark_minus_index_usdt": -25.1,
-      "premium_bps": -4.185035,
+      "mark_price": 59946.7,
+      "index_price": 59977.5,
+      "mark_timestamp_ms": 1795825267732,
+      "index_timestamp_ms": 1795825267261,
+      "mark_minus_index_usdt": -30.8,
+      "premium_bps": -5.135259,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "ask_heavier",
-    "timestamp_ms": 1795824967805,
+    "resting_side": "balanced",
+    "timestamp_ms": 1795825267355,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -166,7 +158,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795824900,
+  "m5_close_s": 1795825200,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
