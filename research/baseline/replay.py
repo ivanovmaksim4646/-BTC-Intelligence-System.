@@ -1,11 +1,14 @@
 """Event-driven paper replay on verified Binance USD-M BTCUSDT M5 klines."""
 import csv, json, math
 from collections import deque, namedtuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from dataset import ROOT,START,END,stamp
+if __package__:
+ from .dataset import ROOT,START,END,stamp
+else:
+ from dataset import ROOT,START,END,stamp
 Bar=namedtuple('Bar','t o h l c v buy')
 Pivot=namedtuple('Pivot','side px t')
 Zone=namedtuple('Zone','kind side lo hi born')
@@ -21,7 +24,7 @@ def utc(t):return datetime.fromtimestamp(t,timezone.utc).isoformat()
 class Frame:
  def __init__(self,step):
   self.step=step; self.bars=deque(maxlen=16); self.zones=[]; self.pivots=deque(maxlen=10)
-  self.last={}; self.broken={}; self.break_time={}; self.shift_time=None; self.trend=0; self.since=None; self.openbar=None
+  self.last={}; self.broken={}; self.break_time={}; self.shift_time=None; self.shift_pivot=None; self.shift_close=None; self.trend=0; self.since=None; self.openbar=None
  def feed(self,x):
   t=x.t//self.step*self.step
   a=self.openbar
@@ -64,7 +67,7 @@ class Frame:
    if through(d,b.c,p.px) and self.broken.get(d)!=p.t:
     self.broken[d]=p.t;self.break_time[d]=now
     if self.trend==-d:
-     self.shift_time=now;event=d
+     self.shift_time=now;self.shift_pivot=p;self.shift_close=b.c;event=d
     self.trend=d;self.since=now
   qm=None
   if pivot and self.pivots[-1]==pivot and len(self.pivots)>=4:
@@ -103,11 +106,15 @@ class Setup:
  stop:float
  lo:float
  hi:float
+ evidence:dict=field(default_factory=dict)
 class Book:
- def __init__(self,name):self.name=name;self.setup=None;self.order=None;self.pos=None;self.rows=[];self.equity=10000.;self.peak=10000.;self.dd=0.;self.mtm_peak=10000.;self.mtm_dd=0.
+ def __init__(self,name,fee=FEE,slip=SLIP):
+  self.rejected=[];self.fee=fee;self.slip=slip;self.name=name;self.setup=None;self.order=None;self.pos=None;self.rows=[];self.equity=10000.;self.peak=10000.;self.dd=0.;self.mtm_peak=10000.;self.mtm_dd=0.
+ def reject(self,t,reason,s):
+  self.rejected.append(dict(model=self.name,time_utc=utc(t),reason=reason,setup_utc=utc(s.time),d=s.d))
  def close_pos(self,b,raw,why):
-  p=self.pos; d=p['d']; out=raw*(1-d*SLIP)
-  pnl=p['funding_cash']+p['qty']*(d*(out-p['entry'])-FEE*(out+p['entry']))
+  p=self.pos; d=p['d']; out=raw*(1-d*self.slip)
+  pnl=p['funding_cash']+p['qty']*(d*(out-p['entry'])-self.fee*(out+p['entry']))
   self.equity+=pnl;self.peak=max(self.peak,self.equity); self.dd=max(self.dd,1-self.equity/self.peak)
   p.update(exit_utc=utc(b.t+300),exit=out,outcome=why,pnl=pnl,R=pnl/p['risk'],equity=self.equity)
   self.rows.append(p);self.pos=None
@@ -116,13 +123,16 @@ class Book:
    rate,mark=funding[b.t]
    self.pos['funding_cash']-=self.pos['d']*self.pos['qty']*rate*mark
   if self.order:
-   s,lvl=self.order; self.order=None;d=s.d;entry=b.o*(1+d*SLIP)
-   stopout=s.stop*(1-d*SLIP);tpout=lvl.px*(1-d*SLIP)
-   loss=d*(entry-stopout)+FEE*(entry+stopout);gain=d*(tpout-entry)-FEE*(entry+tpout)
+   s,lvl=self.order; self.order=None;d=s.d;entry=b.o*(1+d*self.slip)
+   stopout=s.stop*(1-d*self.slip);tpout=lvl.px*(1-d*self.slip)
+   loss=d*(entry-stopout)+self.fee*(entry+stopout);gain=d*(tpout-entry)-self.fee*(entry+tpout)
    if through(d,b.o,s.stop) and loss>0 and gain>=2*loss and self.equity>0:
     budget=self.equity*.01
     qty=math.floor(budget/loss*1000)/1000
     if qty>0:self.pos=dict(model=self.name,d=d,entry_utc=utc(b.t),entry=entry,stop=s.stop,target=lvl.px,target_type=lvl.label,planned_RR=gain/loss,qty=qty,risk=budget,funding_cash=0.,poi=s.z.kind,poi_tf=s.tf,poi_lo=s.z.lo,poi_hi=s.z.hi,retest_lo=s.lo,retest_hi=s.hi,setup_utc=utc(s.time))
+    if self.pos and s.evidence:self.pos['evidence']=s.evidence
+    if qty<=0:self.reject(b.t,'quantity_below_step',s)
+   else:self.reject(b.t,'entry_or_net_rr_invalid',s)
   if self.pos:
    p=self.pos;d=p['d']; st=p['stop'];tp=p['target']
    if d*(b.o-st)<=0:self.close_pos(b,b.o,'gap_SL')
@@ -132,19 +142,28 @@ class Book:
    elif b.t+300==end:self.close_pos(b,b.c,'period_end')
   mark=self.equity
   if self.pos:
-   p=self.pos;d=p['d'];out=b.c*(1-d*SLIP)
-   mark+=p['funding_cash']+p['qty']*(d*(out-p['entry'])-FEE*(out+p['entry']))
+   p=self.pos;d=p['d'];out=b.c*(1-d*self.slip)
+   mark+=p['funding_cash']+p['qty']*(d*(out-p['entry'])-self.fee*(out+p['entry']))
   self.mtm_peak=max(self.mtm_peak,mark);self.mtm_dd=max(self.mtm_dd,1-mark/self.mtm_peak)
  def idle(self):return self.pos is None and self.order is None
-def backtest(data, funding, expected_count=365*288):
+def shift_trace(frame,tf):
+ return dict(tf_seconds=tf,close_utc=utc(frame.shift_time),level=frame.shift_pivot.px,close_price=frame.shift_close)
+def trace(hit,frame,tf):
+ return dict(poi_born_utc=utc(hit[2].born),touch_open_utc=utc(hit[0]),shift=shift_trace(frame,tf))
+BASE_MODELS=['QM_M15']+[f'OF_{tf}_{f}' for tf in ('M5','H1','H4') for f in ('base','weak')]
+MODELS=BASE_MODELS+['OF_M15_base','OF_M15_weak']
+def backtest(data, funding, expected_count=365*288, *, models=None, start=None, end=None, fee=FEE, slip=SLIP):
+ start=stamp_start if start is None else start
+ end=stamp_end if end is None else end
  frames={step:Frame(step) for step in FRAMES}; liq=Liquidity()
- names=['QM_M15']+[f'OF_{tf}_{f}' for tf in ('M5','H1','H4') for f in ('base','weak')]
- books={n:Book(n) for n in names};touches={1:deque(),-1:deque()}
+ names=BASE_MODELS if models is None else models
+ if not names or set(names)-set(MODELS) or len(names)!=len(set(names)):raise ValueError('invalid models')
+ books={n:Book(n,fee,slip) for n in names};touches={1:deque(),-1:deque()}
  count=0
  for b in data:
-  now=b.t+300;eligible=stamp_start<=b.t<stamp_end
+  now=b.t+300;eligible=start<=b.t<end
   if eligible:count+=1
-  for book in books.values():book.execute(b,stamp_end,funding)
+  for book in books.values():book.execute(b,end,funding)
   liq.bar(b)
   # M5 reaction to a previously known HTF zone. Timestamp touch at bar open for comparing QM head.
   for d in (1,-1):
@@ -171,25 +190,33 @@ def backtest(data, funding, expected_count=365*288):
    if not book.idle():continue
    s=book.setup
    if s and (s.z not in frames[s.tf].zones or now-s.time>10800 or not through(s.d,signprice(s.d,b),s.stop)):
-    book.setup=None;s=None
+    reason='poi_invalidated' if s.z not in frames[s.tf].zones else 'expired' if now-s.time>10800 else 'stop_breached_before_entry'
+    book.reject(now,reason,s);book.setup=None;s=None
    if s and now>s.time and b.l<=s.hi and b.h>=s.lo and through(s.d,b.c,(s.lo+s.hi)/2) and s.d*(b.c-b.o)>0:
     book.setup=None
     # Weakness of opposing aggressors: positive signed delta for the opponent,
     # but close back in the setup direction, in outer half of the M5 candle.
     delta=2*b.buy-b.v
-    if name.endswith('weak') and not (b.v>0 and s.d*delta/b.v<=-.10 and s.d*(b.c-(b.h+b.l)/2)>0):continue
+    if name.endswith('weak') and not (b.v>0 and s.d*delta/b.v<=-.10 and s.d*(b.c-(b.h+b.l)/2)>0):
+     book.reject(now,'weakness_filter',s);continue
     target=liq.target(s.d,b.c)
-    if target:book.order=(s,target)
+    if target:
+     s.evidence['retest_close_utc']=utc(now);book.order=(s,target)
+    else:book.reject(now,'no_unswept_target',s)
     continue
    if s:continue
    if name=='QM_M15':
     if not qm:continue
     d,shoulder,head,ht=qm
     hit=next((a for a in reversed(touches[d]) if a[0]+300<=ht and a[2] in frames[a[1]].zones),None)
-    if hit:book.setup=Setup(d,hit[2],hit[1],now,head-d*.1,shoulder,shoulder)
+    if hit:
+     book.setup=Setup(d,hit[2],hit[1],now,head-d*.1,shoulder,shoulder)
+     f=frames[900]
+     book.setup.evidence=trace(hit,f,900)
+     book.setup.evidence['qm_pivots']=[dict(side=p.side,price=p.px,open_utc=utc(p.t)) for p in list(f.pivots)[-4:]]
     continue
    if 300 not in events:continue
-   d=events[300];mode=name.split('_')[1];tf={'M5':300,'H1':3600,'H4':14400}[mode]
+   d=events[300];mode=name.split('_')[1];tf={'M5':300,'M15':900,'H1':3600,'H4':14400}[mode]
    if frames[3600].trend!=d:continue
    when=frames[tf].shift_time
    if tf!=300 and (frames[tf].trend!=d or when is None or when>=now):continue
@@ -200,7 +227,10 @@ def backtest(data, funding, expected_count=365*288):
    if zone and anchor:
     stop=(min(anchor.px,zone.lo) if d==1 else max(anchor.px,zone.hi))-d*.1
     book.setup=Setup(d,hit[2],hit[1],now,stop,zone.lo,zone.hi)
- assert count==expected_count
+    book.setup.evidence=trace(hit,m5,300)
+    book.setup.evidence.update(retest_type=zone.kind,stop_anchor=anchor.px)
+    if tf!=300:book.setup.evidence['higher_shift']=shift_trace(frames[tf],tf)
+ if count!=expected_count:raise ValueError(f"evaluation bars: expected {expected_count}, received {count}")
  return books
 def stats(rows):
  r=[p['R'] for p in rows];wins=[v for v in r if v>0];loss=-sum(v for v in r if v<0)

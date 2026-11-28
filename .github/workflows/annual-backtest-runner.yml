@@ -3,24 +3,50 @@ on:
   push:
     branches: [research/annual-backtest-runner]
     paths:
-      - 'src/annual_backtest_input.py'
+      - 'research/runner/**'
+      - 'research/baseline/**'
+      - 'src/binance_vision_archive.py'
+      - 'src/binance_futures_candles.py'
+      - 'tests/test_research_runner.py'
       - '.github/workflows/annual-backtest-runner.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: btc-research-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  archive:
+  replay:
+    if: github.ref == 'refs/heads/research/annual-backtest-runner'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m unittest discover -s tests -q
-      - run: python -m src.annual_backtest_input
+      - uses: actions/cache@v4
+        with:
+          path: .research-cache
+          key: btc-um-m5-v1-${{ hashFiles('research/baseline/checksums.json') }}-${{ hashFiles('research/runner/config.json') }}
+          restore-keys: |
+            btc-um-m5-v1-${{ hashFiles('research/baseline/checksums.json') }}-
+      - name: Research regression tests
+        run: python -m unittest discover -s tests -p 'test_research_runner.py' -v
+      - name: Replay verified archives
+        run: python -m research.runner.replay
+      - name: Show result and input revision
+        run: |
+          echo "Input commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          cat research-output/summary.json >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
-          name: annual-btc-research-input
+          name: btc-research-${{ github.run_id }}-${{ github.run_attempt }}
           path: research-output/
-          retention-days: 7
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish tables for GitHub connector
+        run: bash research/runner/publish.sh
