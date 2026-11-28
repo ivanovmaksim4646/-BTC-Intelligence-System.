@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-28T15:15:53.320702Z",
+  "checked_at_utc": "2026-11-28T15:17:51.039578Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
@@ -9,26 +9,26 @@
     },
     "order_flow_analysis": {
       "status": "ok",
-      "age_seconds": 33
+      "age_seconds": 32
     },
     "structure_observation": {
       "status": "ok",
-      "age_seconds": 33
+      "age_seconds": 32
     },
     "watchlist_evaluation": {
       "status": "ok",
-      "age_seconds": 32
+      "age_seconds": 30
     },
     "github_workflow_trigger": {
       "status": "ok",
-      "age_seconds": 32,
-      "event": "workflow_dispatch",
-      "source": "cloudflare",
-      "slot": "2026-11-28T15:15:00.000Z"
+      "age_seconds": 30,
+      "event": "schedule",
+      "source": "github",
+      "slot": ""
     },
     "cloudflare_dispatch": {
-      "status": "last_dispatch_observed",
-      "note": "A recent Cloudflare-origin GitHub run was observed; this does not prove continuous uptime"
+      "status": "last_dispatch_unverified",
+      "note": "A GitHub schedule event does not prove Cloudflare dispatch works"
     },
     "tradingview_intake": {
       "status": "event_history_present",
@@ -38,7 +38,7 @@
     },
     "okx_spot": {
       "status": "volume_reconciled",
-      "age_seconds": 53,
+      "age_seconds": 171,
       "h4_buckets": 48,
       "h4_required": 48,
       "backfill_error": null,
@@ -46,7 +46,7 @@
     },
     "okx_swap": {
       "status": "volume_reconciled",
-      "age_seconds": 53,
+      "age_seconds": 171,
       "h4_buckets": 48,
       "h4_required": 48,
       "backfill_error": null,
@@ -57,7 +57,7 @@
     }
   },
   "fully_operational_confirmed": false,
-  "core_snapshot_ok": true,
+  "core_snapshot_ok": false,
   "notes": [
     "GitHub workflow success does not guarantee five-minute scheduling.",
     "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
