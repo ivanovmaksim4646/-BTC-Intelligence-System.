@@ -74,3 +74,14 @@ class AdvisoryTests(unittest.TestCase):
         self.assertEqual(len(forecast_matches(rows,events,self.now)),1)
         rows[0]["date"]=self.now.isoformat()
         self.assertEqual(forecast_matches(rows,events,self.now),[])
+
+    def test_smart_sim_sides(self):
+        from src.advisory_liquidations_v1 import smart_sim
+        raw=dict(ok=True,estimated=True,symbol="BTC",current_price=100,target_price=95,move_pct=-5,clusters=[dict(price=98,side="long",notional_usd=500)])
+        self.assertEqual(smart_sim(raw,-5)["clusters"][0]["side"],"LONG")
+        raw["clusters"][0]["side"]="short"
+        with self.assertRaises(ValueError):smart_sim(raw,-5)
+    def test_smart_empty(self):
+        from src.advisory_liquidations_v1 import smart_sim,smart_realized
+        self.assertEqual(smart_sim(dict(ok=True,estimated=True,symbol="BTC",empty=True),5)["status"],"unavailable")
+        self.assertEqual(smart_realized(dict(symbol="BTC",window_minutes=240,clusters=[]))["status"],"empty_unverified")

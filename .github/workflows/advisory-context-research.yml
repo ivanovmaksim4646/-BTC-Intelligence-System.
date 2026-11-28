@@ -6,6 +6,7 @@ on:
       - 'src/advisory_context_v1.py'
       - 'src/advisory_history_v1.py'
       - 'src/advisory_events_v1.py'
+      - 'src/advisory_liquidations_v1.py'
       - 'tests/test_advisory_context_v1.py'
       - '.github/workflows/advisory-context-research.yml'
 permissions:
@@ -34,6 +35,7 @@ jobs:
       - run: python -m src.advisory_context_v1
       - run: python -m src.advisory_history_v1
       - run: python -m src.advisory_events_v1
+      - run: python -m src.advisory_liquidations_v1
       - uses: actions/upload-artifact@v4
         with:
           name: advisory-context
@@ -41,3 +43,4 @@ jobs:
             data/BTC-advisory-context-v1.json
             data/BTC-advisory-history-v1.json
             data/BTC-advisory-events-v1.json
+            data/BTC-advisory-liquidations-v1.json
