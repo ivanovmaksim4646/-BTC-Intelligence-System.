@@ -30,3 +30,18 @@ class TelegramDeliveryTests(unittest.TestCase):
     def test_bad_provider_response(self):
         with self.assertRaises(ValueError):
             send("123:dummy","123","TEST",lambda *a,**k:io.BytesIO(b'{"ok":false}'))
+
+
+    def test_paper_only_admitted_and_net_rr(self):
+        from src.telegram_delivery_v1 import paper_candidate
+        now,_=self.fixture()
+        start=int(now.timestamp())+300
+        row={"source":"OKX BTC-USDT-SWAP","paper_only":True,"status":"pending",
+             "direction":"long","id":"a"*24,"issued_at_utc":now.isoformat(),
+             "eligible_from":start,"expires_at":start+900,"entry":60000,
+             "stop_loss":59400,"take_profit":61800,"cost_bps":14}
+        self.assertIn("PAPER LONG",paper_candidate(row,now)["text"])
+        self.assertIsNone(paper_candidate(dict(row,status="expired"),now))
+        self.assertIsNone(paper_candidate(dict(row,paper_only=False),now))
+        self.assertIsNone(paper_candidate(dict(row,take_profit=60600),now))
+        self.assertIsNone(paper_candidate(row,now+dt.timedelta(minutes=8)))
