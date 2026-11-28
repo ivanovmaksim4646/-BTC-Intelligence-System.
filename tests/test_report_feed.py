@@ -126,3 +126,39 @@ class LiquidationAndHistoryFeedTests(unittest.TestCase):
         result=liquidity_history_chart(NOW,[json.dumps(row),json.dumps(other)])
         self.assertEqual(result["excluded_conflicts"],1)
         self.assertFalse(result["samples"])
+
+
+class FuturesBackupAndChartTests(unittest.TestCase):
+    def test_select_independent_kraken_when_okx_missing(self):
+        from src.report_feed import futures_report_sources
+        end=NOW.isoformat()
+        start=(NOW-dt.timedelta(minutes=5)).isoformat()
+        current={"collected_at_utc":STAMP,"order_flow":{"futures":{"M5":{
+            "delta":2,"total_volume":10,"coverage":"complete","unit":"BTC-equivalent contracts",
+            "window_start_utc":start,"window_end_utc":end}}}}
+        out=futures_report_sources(current,None,NOW)
+        self.assertEqual(out["windows"]["M5"]["preferred"],"Kraken")
+        self.assertIsNone(out["windows"]["M15"]["preferred"])
+        self.assertIsNone(out["trade_signal"])
+
+    def test_okx_incomplete_window_not_selected(self):
+        from src.report_feed import futures_report_sources
+        end=int(NOW.timestamp())*1000
+        row={"delta_btc_reconciled":"2","volume_btc_reconciled":"10",
+             "coverage":"volume_reconciled_not_sequence_certified","end_ms":end,
+             "start_ms":end-900000,"required_m5":3,"reconciled_m5":2}
+        okx={"classification":"volume_reconciled_rest_research_only",
+             "instruments":{"BTC-USDT-SWAP":{"rolling_windows":{"15m":row}}}}
+        self.assertIsNone(futures_report_sources({},okx,NOW)["windows"]["M15"]["preferred"])
+        row["reconciled_m5"]=3
+        self.assertEqual(futures_report_sources({},okx,NOW)["windows"]["M15"]["preferred"],"OKX")
+
+    def test_svg_valid_and_no_imputed_samples(self):
+        from src.report_feed import render_visible_liquidity_svg
+        import xml.etree.ElementTree as ET
+        sample={"timestamp_ms":int(NOW.timestamp())*1000,"bid":[{"price":59000,"btc":2}],"ask":[]}
+        svg=render_visible_liquidity_svg({"samples":[sample]})
+        root=ET.fromstring(svg)
+        points=[e for e in root.iter() if e.tag.endswith("circle") and len(e)]
+        self.assertEqual(len(points),1)
+        self.assertIn("not a liquidation heatmap",svg)
