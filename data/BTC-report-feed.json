@@ -1,11 +1,11 @@
 {
   "basis": {
-    "mark_minus_index_usd": 0.68977178,
-    "percent": 0.0011474523,
-    "source_time_utc": "2026-11-28T01:50:18.914Z"
+    "mark_minus_index_usd": 1.56378913,
+    "percent": 0.0026004495,
+    "source_time_utc": "2026-11-28T01:54:47.213Z"
   },
   "chart_snapshot": {
-    "collected_at_utc": "2026-11-28T01:51:18.178026+00:00",
+    "collected_at_utc": "2026-11-28T01:55:25.446308+00:00",
     "source": "OKX BTC-USDT-SWAP",
     "status": "verified_subset",
     "timeframes": {
@@ -1242,13 +1242,6 @@
       "5m": {
         "bars": [
           {
-            "c": 59690.0,
-            "h": 59772.3,
-            "l": 59690.0,
-            "o": 59736.0,
-            "t": 1795818600
-          },
-          {
             "c": 59720.1,
             "h": 59731.8,
             "l": 59682.5,
@@ -1520,6 +1513,13 @@
             "l": 60128.8,
             "o": 60154.1,
             "t": 1795830300
+          },
+          {
+            "c": 60170.0,
+            "h": 60198.0,
+            "l": 60143.9,
+            "o": 60150.0,
+            "t": 1795830600
           }
         ],
         "structure": {
@@ -1544,9 +1544,9 @@
             }
           ],
           "fresh_bos_or_choch": null,
-          "last_close": 60149.9,
-          "last_closed_candle_close_s": 1795830600,
-          "last_closed_candle_open_s": 1795830300,
+          "last_close": 60170.0,
+          "last_closed_candle_close_s": 1795830900,
+          "last_closed_candle_open_s": 1795830600,
           "note": "HH/HL or LH/LL is descriptive; any fresh break is an algorithmic candidate, not an entry.",
           "status": "observed",
           "structure": "mixed",
@@ -1556,8 +1556,8 @@
       }
     }
   },
-  "collected_at_utc": "2026-11-28T01:50:18.074346Z",
-  "collection_age_seconds_at_generation": 80,
+  "collected_at_utc": "2026-11-28T01:54:46.154134Z",
+  "collection_age_seconds_at_generation": 58,
   "economic_calendar": {
     "coverage": "Official schedule only; source-specific gaps possible; JOLTS and conflicting FOMC dates not guaranteed; consensus/actual/reaction unavailable",
     "events": [
@@ -1697,9 +1697,9 @@
     "absolute": 0.16362522705875,
     "relative_hourly": 2.7345625e-06,
     "relative_percent_hourly": 0.00027345625,
-    "source_time_utc": "2026-11-28T01:50:18.914Z"
+    "source_time_utc": "2026-11-28T01:54:47.213Z"
   },
-  "generated_at_utc": "2026-11-28T01:51:37.748227Z",
+  "generated_at_utc": "2026-11-28T01:55:44.377790Z",
   "max_allowed_age_seconds": 900,
   "notes": [
     "Age must be recomputed at report-reading time using collected_at_utc.",
@@ -1714,83 +1714,59 @@
         "funding": {
           "next_funding_time_ms": 1795881600000,
           "not_realized_funding": true,
-          "rate_fraction": 5.58149703661e-05,
-          "rate_percent": 0.0055815,
+          "rate_fraction": 5.60171177916e-05,
+          "rate_percent": 0.0056017,
           "status": "quoted_rate_snapshot"
         },
         "mark_index": {
-          "index_price": 60199.8,
-          "index_timestamp_ms": 1795830680107,
-          "mark_minus_index_usdt": -25.5,
-          "mark_price": 60174.3,
-          "mark_timestamp_ms": 1795830681103,
-          "premium_bps": -4.235894,
+          "index_price": 60217.1,
+          "index_timestamp_ms": 1795830927203,
+          "mark_minus_index_usdt": -26.9,
+          "mark_price": 60190.2,
+          "mark_timestamp_ms": 1795830927413,
+          "premium_bps": -4.46717,
           "status": "two_recent_public_snapshots",
           "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
         },
         "oi_change": {
-          "current_timestamp_ms": 1795830680143,
-          "delta_btc": 13.8368,
-          "delta_percent": 0.04317,
-          "elapsed_seconds": 313.804,
+          "current_timestamp_ms": 1795830926810,
+          "delta_btc": 5.4629,
+          "delta_percent": 0.01704,
+          "elapsed_seconds": 246.667,
           "limitation": "not_continuous_intraperiod_OI",
-          "previous_timestamp_ms": 1795830366339,
+          "previous_timestamp_ms": 1795830680143,
           "status": "two_verified_snapshots"
         }
       },
       "flow": {
         "15m": {
           "futures": null,
-          "spot": {
-            "delta_btc": "1.54114929",
-            "direction": "long",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "12.85331161"
-          }
+          "spot": null
         },
         "1h": {
           "futures": null,
-          "spot": {
-            "delta_btc": "17.32632168",
-            "direction": "long",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "104.09386714"
-          }
+          "spot": null
         },
         "4h": {
           "futures": null,
-          "spot": {
-            "delta_btc": "5.13681266",
-            "direction": "long",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "337.86610812"
-          }
+          "spot": null
         },
         "5m": {
-          "futures": {
-            "delta_btc": "-27.3247",
-            "direction": "short",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "125.9131"
-          },
-          "spot": {
-            "delta_btc": "-0.52799209",
-            "direction": "short",
-            "quality": "volume_reconciled_not_sequence_certified",
-            "volume_btc": "5.06966743"
-          }
+          "futures": null,
+          "spot": null
         }
       },
-      "generated_at_utc": "2026-11-28T01:51:37.664186+00:00",
+      "generated_at_utc": "2026-11-28T01:55:44.317468+00:00",
       "liquidity": {
         "interpretation": "cancellable_resting_orders_not_directional_vote",
         "resting_side": "bid_heavier",
-        "timestamp_ms": 1795830680705
+        "timestamp_ms": 1795830927155
       },
-      "m5_close_s": 1795830600,
+      "m5_close_s": 1795830900,
       "missing": [
         "macro",
         "liquidation_heatmap",
+        "reconciled_flow_5m",
         "reconciled_flow_15m",
         "reconciled_flow_1h",
         "reconciled_flow_4h"
@@ -1814,7 +1790,7 @@
     "end_ms": 1795830600000,
     "futures_backfill": {
       "error": null,
-      "target_end_ms": 1795817400000,
+      "target_end_ms": 1795830300000,
       "volume_reconciled": false
     },
     "history_count": 749,
@@ -2025,15 +2001,15 @@
         "complete_delta_btc": null,
         "completeness_verified": false,
         "delta_btc_reconciled": "-0.52799209",
-        "elapsed_seconds": 2.15,
+        "elapsed_seconds": 1.74,
         "end_ms": 1795830600000,
         "instrument": "BTC-USDT",
-        "newest_ms": 1795830629540,
+        "newest_ms": 1795830658390,
         "observed_buy_native": "2.27083767",
         "observed_delta_native": "-0.52799209",
         "observed_sell_native": "2.79882976",
         "observed_volume_native": "5.06966743",
-        "oldest_ms": 1795830210140,
+        "oldest_ms": 1795830233989,
         "open_usdt": "60180",
         "pages": 4,
         "quote_volume_usdt": "305151.072718194",
@@ -2054,7 +2030,7 @@
         "complete_delta_btc": null,
         "completeness_verified": false,
         "delta_btc_reconciled": "-27.3247",
-        "elapsed_seconds": 19.51,
+        "elapsed_seconds": 16.42,
         "end_ms": 1795830600000,
         "instrument": "BTC-USDT-SWAP",
         "newest_ms": 1795830600938,
@@ -2090,9 +2066,9 @@
       "M15": 0.426,
       "M5": 0.0
     },
-    "source_time_utc": "2026-11-28T01:50:18.914Z",
+    "source_time_utc": "2026-11-28T01:54:47.213Z",
     "unit": "BTC-equivalent contracts",
-    "value": 2034.7781
+    "value": 2034.813
   },
   "order_flow": {
     "H1": {
@@ -2147,9 +2123,9 @@
   "reasons": [],
   "report_data_status": "ready",
   "scheduler": {
-    "event": "workflow_dispatch",
-    "slot": "2026-11-28T01:50:00.000Z",
-    "source": "cloudflare"
+    "event": "schedule",
+    "slot": "",
+    "source": "github"
   },
   "schema_version": "1.1",
   "signal_policy": "No confirmed trade entry. Do not synthesize directional probabilities, targets, SL or RR.",
