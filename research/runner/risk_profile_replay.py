@@ -1,7 +1,7 @@
 """Research-only SL/TP comparison on the pinned Binance USD-M archive.
 
-Reuses baseline Frame/POI/QM and verified input reader. Nine independent
-accounts. This is a new research proxy, not the live OKX signal algorithm.
+Reuses baseline Frame/POI/QM and verified input reader. Three independent
+accounts with one fixed buffer and auditable structural decisions. This is a new research proxy, not the live OKX signal algorithm.
 No order submission, no changes to main, no historical CVD/orderbook claims.
 """
 import json
@@ -19,7 +19,7 @@ PL=ZoneInfo("Europe/Warsaw")
 LONDON=ZoneInfo("Europe/London")
 NY=ZoneInfo("America/New_York")
 DAY=86400
-BUFFERS=(3,5,10)
+BUFFERS=(3,)  # Existing production buffer; not optimized.
 MODELS=("QM_HEAD","OF_ZONE","SWEEP_EXTREME")
 TTL=900
 MAX_AGE=10800
@@ -101,24 +101,39 @@ class Account:
         self.name=f"{model}_B{buffer:02d}"
         self.equity=1000.;self.peak=1000.;self.dd=0.
         self.setup=None;self.pending=None;self.pos=None
-        self.rows=[];self.rejects=Counter();self.events=0
+        self.rows=[];self.rejects=Counter();self.events=0;self.audit=[];self.current_audit=None
     def idle(self):return self.setup is None and self.pending is None and self.pos is None
-    def reject(self,why):self.rejects[why]+=1
+    def reject(self,why):
+        self.rejects[why]+=1
+        if self.current_audit is not None:
+            self.current_audit["events"].append(why)
+    def audit_idea(self,idea,targets,now):
+        clean={k:(v._asdict() if hasattr(v,"_asdict") else v) for k,v in idea.items()}
+        self.current_audit={"at_utc":b.utc(now),"idea":clean,"targets":targets,"events":[]}
+        self.audit.append(self.current_audit)
     def propose(self,idea,targets,now,bar):
         self.events+=1
+        self.audit_idea(idea,targets,now)
         if not targets:self.reject("no_target");return
         d=idea["d"];e=idea["entry_limit"]
         s=idea["anchor"]*(1-d*self.buffer/10000)
         if d*(e-s)<=0:self.reject("invalid_stop");return
-        if hit(d,bar,targets["fta"]) or stop_hit(d,bar,s):
-            self.reject("fta_or_stop_already_reached");return
+        self.current_audit["initial_sl"]=s
+        # The confirmation candle predates the order. Its wick alone is not
+        # a pending-order cancellation; a close beyond FTA still rejects.
+        if stop_hit(d,bar,s):
+            self.reject("structural_stop_breached_on_confirmation");return
+        if d*(bar.c-targets["fta"])>=0:
+            self.reject("confirmation_close_at_or_beyond_fta");return
         entry=e*(1+d*self.slip)
         stop=s*(1-d*self.slip)
         target=targets["target"]*(1-d*self.slip)
         loss=d*(entry-stop)+self.fee*(entry+stop)
         gain=d*(target-entry)-self.fee*(entry+target)
+        self.current_audit["net_rr"]=gain/loss if loss>0 else None
         if loss<=0 or gain<2*loss:self.reject("net_rr_below_two");return
         self.setup={**idea,**targets,"stop":s,"born":now,"loss_per_btc":loss,"planned_rr":gain/loss}
+        self.current_audit["events"].append("setup_accepted")
     def close(self,x,raw,outcome):
         p=self.pos;d=p["d"]
         price=raw*(1-d*self.slip)
@@ -126,6 +141,7 @@ class Account:
         self.equity+=pnl
         self.rows.append({**p,"exit_utc":b.utc(x.t+300),"exit":price,"outcome":outcome,"pnl":pnl,
                           "R":pnl/p["risk"],"equity":self.equity})
+        if self.current_audit is not None:self.current_audit["events"].append(outcome)
         self.pos=None
     def on_bar(self,x,now,end,funding,frames,filled):
         if self.pos and x.t in funding:
@@ -135,7 +151,11 @@ class Account:
             p=self.pending;d=p["d"];e=p["entry_limit"]
             touch=x.l<=e<=x.h
             fta=hit(d,x,p["fta"]);stop=stop_hit(d,x,p["stop"])
-            if x.t>=p["expires"]:
+            zone=p.get("zone")
+            valid=zone is None or (zone in frames[p["poi_tf"]].zones and zone not in filled)
+            if not valid:
+                self.reject("pending_poi_invalidated");self.pending=None
+            elif x.t>=p["expires"]:
                 self.reject("expired_limit");self.pending=None
             elif fta or stop:
                 self.reject("censored_fill_bar" if touch else "fta_or_stop_before_fill");self.pending=None
@@ -146,6 +166,7 @@ class Account:
                     self.pos={**p,"model":self.name,"entry":fill,"entry_utc":b.utc(x.t),"fill_t":x.t,
                               "qty":qty,"risk":qty*p["loss_per_btc"],"funding":0.,"active_stop":p["stop"],"be_trigger":None}
                 else:self.reject("quantity_below_step")
+                if self.pos and self.current_audit is not None:self.current_audit["events"].append("limit_filled")
                 self.pending=None
         if self.pos:
             p=self.pos;d=p["d"];s=p["active_stop"];tp=p["target"]
@@ -168,6 +189,7 @@ class Account:
             elif now>s["born"] and x.l<=s["hi"] and x.h>=s["lo"] and d*(x.c-(s["lo"]+s["hi"])/2)>0 and d*(x.c-x.o)>0:
                 self.pending={**s,"expires":now+TTL,"retest_close_utc":b.utc(now)}
                 self.setup=None
+                if self.current_audit is not None:self.current_audit["events"].append("limit_placed")
         mark=self.equity
         if self.pos:
             p=self.pos;out=x.c*(1-p["d"]*self.slip)
@@ -206,10 +228,11 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
     for x in bars:
         now=x.t+300;eligible=start<=x.t<end
         if eligible:count+=1
-        # A wick fully through a pre-existing zone retires it, regardless of close.
+        # Wick full-fill retires an imbalance only; OB/Breaker/Rejection
+        # use existing timeframe-close invalidation in Frame.close.
         for f in frames.values():
             for z in f.zones:
-                if z.born<=x.t and (x.l<=z.lo if z.side==1 else x.h>=z.hi):filled.add(z)
+                if z.kind in ("FVG","IFVG") and z.born<=x.t and (x.l<=z.lo if z.side==1 else x.h>=z.hi):filled.add(z)
         if eligible:
             for a in accounts:a.on_bar(x,now,end,funding,frames,filled)
         levels.bar(x)
@@ -241,7 +264,7 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
             hit_zone=next((v for v in reversed(touches[d]) if v[0]+300<=ht and v[2] in frames[v[1]].zones and v[2] not in filled),None)
             if hit_zone:
                 _,tf,z=hit_zone
-                ideas["QM_HEAD"]=dict(d=d,anchor=head,entry_limit=shoulder,lo=shoulder,hi=shoulder,zone=z,poi_tf=tf,poi=z.kind,setup_utc=b.utc(now))
+                ideas["QM_HEAD"]=dict(d=d,anchor=head,anchor_kind="confirmed_M15_QM_head",anchor_at=b.utc(ht),entry_limit=shoulder,lo=shoulder,hi=shoulder,zone=z,poi_tf=tf,poi=z.kind,poi_touch_utc=b.utc(hit_zone[0]),shift_utc=b.utc(frames[900].shift_time),setup_utc=b.utc(now))
         d=shifts.get(300)
         if d and frames[3600].trend==d and frames[3600].shift_time is not None and frames[3600].shift_time<now:
             when=frames[3600].shift_time
@@ -250,19 +273,25 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
                 local=next((z for z in reversed(frames[300].zones) if z.side==d and z.kind in ("OB","FVG","IFVG") and z not in filled and hit_zone[0]<=z.born<=now and now-z.born<=1800),None)
                 if local:
                     _,tf,z=hit_zone
-                    ideas["OF_ZONE"]=dict(d=d,anchor=local.lo if d==1 else local.hi,entry_limit=local.hi if d==1 else local.lo,
-                                         lo=local.lo,hi=local.hi,zone=z,poi_tf=tf,poi=z.kind,entry_zone=local.kind,setup_utc=b.utc(now))
+                    edge=local.lo if d==1 else local.hi
+                    protected=frames[300].last.get(-d)
+                    relevant=protected is not None and hit_zone[0]<=protected.t<now and d*(protected.px-edge)<=0
+                    anchor=protected.px if relevant else edge
+                    ideas["OF_ZONE"]=dict(d=d,anchor=anchor,anchor_kind="protecting_swing" if relevant else "entry_zone_invalidation",
+                                         anchor_at=b.utc(protected.t if relevant else local.born),entry_limit=local.hi if d==1 else local.lo,
+                                         lo=local.lo,hi=local.hi,zone=z,poi_tf=tf,poi=z.kind,entry_zone=local.kind,
+                                         poi_touch_utc=b.utc(hit_zone[0]),shift_utc=b.utc(now),setup_utc=b.utc(now))
         d=shifts.get(900)
         if d:
             sweep=levels.sweeps[d];pivot=frames[900].shift_pivot
             if sweep and pivot and sweep["close"]<now and now-sweep["close"]<=MAX_AGE:
-                ideas["SWEEP_EXTREME"]=dict(d=d,anchor=sweep["extreme"],entry_limit=pivot.px,lo=pivot.px,hi=pivot.px,
+                ideas["SWEEP_EXTREME"]=dict(d=d,anchor=sweep["extreme"],anchor_kind="sweep_extreme",anchor_at=b.utc(sweep["close"]),entry_limit=pivot.px,lo=pivot.px,hi=pivot.px,
                                            zone=None,poi_tf=900,poi="Sweep",sweep=sweep,setup_utc=b.utc(now))
         for model,idea in ideas.items():
             targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled)
             for a in accounts:
                 if a.model!=model or not a.idle():continue
-                if reason:a.events+=1;a.reject(reason)
+                if reason:a.events+=1;a.audit_idea(idea,None,now);a.reject(reason)
                 else:a.propose(idea,targets,now,x)
     if count!=(end-start)//300:raise ValueError("evaluation coverage")
     return accounts
@@ -289,7 +318,10 @@ def self_test():
     assert a.rows[-1]["outcome"]=="BE" and a.rows[-1]["pnl"]<0
     a=Account("QM_HEAD",3,.0005,.0002)
     a.propose(dict(d=1,entry_limit=100,anchor=99,lo=100,hi=100,zone=None,poi_tf=900),result,300,b.Bar(0,100,102.2,99.5,100,1,0))
-    assert not a.setup and a.rejects["fta_or_stop_already_reached"]==1
+    assert a.setup and a.current_audit["events"]==["setup_accepted"]
+    a=Account("QM_HEAD",3,.0005,.0002)
+    a.propose(dict(d=1,entry_limit=100,anchor=99,lo=100,hi=100,zone=None,poi_tf=900),result,300,b.Bar(0,100,103,99.5,102.2,1,0))
+    assert not a.setup and a.rejects["confirmation_close_at_or_beyond_fta"]==1
 
 def main():
     self_test()
@@ -323,10 +355,13 @@ def main():
                            "nearest external target beyond confirmed M15 pivot; no RR-based target skipping",
                            "session windows Asia 02-08 Warsaw, London 08-10 London, NY 08-11 New York",
                            "limit after closed M5 retest, 15m expiry; conservative ambiguous fill handling",
-                           "BE nominal entry after FTA or confirmed favorable M5 shift, costs included"]}
+                           "BE nominal entry after FTA or confirmed favorable M5 shift, costs included",
+                           "fixed 3bp buffer; OB wick touch is not FVG full-fill; structural audit includes rejected setups",
+                           "confirmation wick predates pending order; close at or beyond FTA still rejects"]}
     out=Path("risk-profile-output");out.mkdir(exist_ok=True)
     (out/"summary.json").write_text(json.dumps(report,indent=2,allow_nan=False)+"\n")
     (out/"trades.json").write_text(json.dumps({a.name:a.rows for a in full},indent=2,allow_nan=False)+"\n")
+    (out/"structural-audit.json").write_text(json.dumps({a.name:a.audit for a in full},indent=2,allow_nan=False)+"\n")
     print("RISK_PROFILE_RESULT",json.dumps({k:v for k,v in report.items() if k not in ("archive_sha256",)},separators=(",",":")),flush=True)
 
 if __name__=="__main__":main()
