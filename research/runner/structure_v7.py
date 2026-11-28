@@ -6,8 +6,24 @@ from collections import deque
 from research.runner.execution_v6 import ExecutionBook
 from research.baseline.replay import utc
 from research.baseline.replay import (Frame, Liquidity, Book, Setup, FRAMES, FEE, SLIP,
-    stamp_start, stamp_end, through, overlap, signprice, trace, shift_trace, BASE_MODELS as OLD_MODELS)
+    stamp_start, stamp_end, through, overlap, signprice, trace, shift_trace, Level, BASE_MODELS as OLD_MODELS)
 MODELS=['QM_M15']+[f'OF_{tf}_{f}' for tf in ('M15','H1','H4') for f in ('base','weak')]
+def fta_ready(s,frames,bar,now):
+    blockers=[(tf,z) for tf in (900,3600,14400) for z in frames[tf].zones
+              if z.side==-s.d and z.lo<=bar.c<=z.hi]
+    wait=list(getattr(s,'fta_wait',None) or [])
+    if blockers:
+        s.fta_wait=list(dict.fromkeys(wait+blockers))
+        return False
+    if wait:
+        if not all(z not in frames[tf].zones and s.d*(bar.c-(z.hi if s.d==1 else z.lo))>0 for tf,z in wait):
+            return False
+        s.fta_wait=None
+        s.time=now
+        s.evidence['fta_invalidated_utc']=utc(now)
+        return False
+    return True
+
 def backtest(data, funding, expected_count=365*288, *, models=None, start=None, end=None, fee=FEE, slip=SLIP):
  start=stamp_start if start is None else start
  end=stamp_end if end is None else end
@@ -49,21 +65,7 @@ def backtest(data, funding, expected_count=365*288, *, models=None, start=None, 
    if s and (s.z not in frames[s.tf].zones or now-s.time>10800 or not through(s.d,signprice(s.d,b),s.stop)):
     reason='poi_invalidated' if s.z not in frames[s.tf].zones else 'expired' if now-s.time>10800 else 'stop_breached_before_entry'
     book.reject(now,reason,s);book.setup=None;s=None
-   if s:
-    blockers=[(tf,z) for tf in (900,3600,14400) for z in frames[tf].zones
-              if z.side==-s.d and z.lo<=b.c<=z.hi]
-    wait=getattr(s,'fta_wait',None)
-    if blockers:
-     s.fta_wait=blockers
-     continue
-    if wait:
-     # Require a closed candle beyond every blocking zone, not simple departure.
-     if not all(z not in frames[tf].zones and s.d*(b.c-(z.hi if s.d==1 else z.lo))>0 for tf,z in wait):
-      continue
-     s.fta_wait=None
-     s.time=now
-     s.evidence['fta_invalidated_utc']=utc(now)
-     continue
+   if s and not fta_ready(s,frames,b,now):continue
    if s and now>s.time and b.l<=s.hi and b.h>=s.lo and through(s.d,b.c,(s.lo+s.hi)/2) and s.d*(b.c-b.o)>0:
     book.setup=None
     # Weakness of opposing aggressors: positive signed delta for the opponent,
