@@ -1,6 +1,7 @@
 """Daily inside-bar deviation research: closed bars, context, M15 shift, range target.
 Market entry with confirmed FTA protection; limit and general range not yet wired.
 """
+from datetime import datetime
 from research.baseline import replay as b
 from research.runner.confirmed_filters import deviation_confirmed, entry_allowed, protection_trigger, tighten_stop
 
@@ -63,10 +64,28 @@ def run(data,funding,expected_count,*,start,end,fee,slip):
                     if protection_trigger(d,distance,True,events.get(step),step,step in events)),None)
                 if shift_tf:
                     old=p['stop']
-                    new=tighten_stop(d,old,p['entry'],bar.c)
+                    # Research convention: prefer the most protective confirmed
+                    # structural pivot with an intact same-side FVG ahead of it.
+                    # Otherwise use entry-price BE. Never loosen the stop.
+                    candidates=[]
+                    for anchor_tf in (3600,900):
+                        frame=frames[anchor_tf]
+                        pivot=frame.last.get(-d)
+                        if not pivot: continue
+                        if pivot.t < datetime.fromisoformat(p['entry_utc']).timestamp(): continue
+                        anchor=pivot.px
+                        if any(q.kind=='FVG' and q.side==d and q.born<=now
+                               and d*((q.lo if d==1 else q.hi)-anchor)>0
+                               and d*(bar.c-(q.hi if d==1 else q.lo))>=0
+                               for q in frame.zones):
+                            proposed=anchor-d*.1
+                            if tighten_stop(d,old,proposed,bar.c)!=old:
+                                candidates.append((proposed,anchor_tf))
+                    proposed,anchor_tf=max(candidates,key=lambda x:d*x[0]) if candidates else (p['entry'],None)
+                    new=tighten_stop(d,old,proposed,bar.c)
                     if new!=old:
                         p['stop']=new
-                        p.setdefault('management',[]).append({'time':b.utc(now),'reason':'FTA_BE','tf':tf,
+                        p.setdefault('management',[]).append({'time':b.utc(now),'reason':'FTA_structural' if anchor_tf else 'FTA_BE','anchor_tf':anchor_tf,'tf':tf,
                             'shift_tf':shift_tf,'distance_r':distance,'old_stop':old,'new_stop':new})
                     fta_touch=None
         if not bounds: continue
