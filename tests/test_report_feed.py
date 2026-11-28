@@ -70,3 +70,30 @@ class ReportFeedTests(unittest.TestCase):
         okx = {"source": "OKX BTC-USDT-SWAP", "classification": "okx_confluence_research_only",
                "generated_at_utc": "2026-11-26T11:00:00Z", "m5_close_s": int(NOW.timestamp())-3600}
         self.assertIsNone(build(*fixtures(), now=NOW, okx=okx)["okx_confluence"]["data"])
+
+
+class BackupMarketContextTests(unittest.TestCase):
+    def test_closed_binance_windows_and_independent_failure(self):
+        from src.report_feed import backup_market_context
+        end = int(NOW.timestamp()) // 300 * 300000
+        def fetch(url):
+            if "bybit" in url:
+                raise TimeoutError("fixture")
+            return [[t,"1","1","1","1","10",t+299999,"0",1,"6","0"]
+                    for t in range(end-48*300000,end+300000,300000)]
+        out=backup_market_context(NOW,fetch=fetch)
+        self.assertEqual(out["sources"]["Binance Spot BTCUSDT"]["windows"]["H4"]["delta_btc"],96)
+        self.assertEqual(out["sources"]["Binance USD-M BTCUSDT"]["windows"]["M5"]["volume_btc"],10)
+        self.assertEqual(out["sources"]["Bybit Linear BTCUSDT"]["status"],"unavailable")
+        self.assertIsNone(out["trade_signal"])
+
+    def test_binance_missing_bucket_not_full_window(self):
+        from src.report_feed import backup_market_context
+        end = int(NOW.timestamp()) // 300 * 300000
+        def fetch(url):
+            if "bybit" in url:
+                raise ValueError("fixture")
+            return [[end-300000,"1","1","1","1","10",end-1,"0",1,"6","0"]]
+        out=backup_market_context(NOW,fetch=fetch)
+        self.assertNotIn("M15",out["sources"]["Binance Spot BTCUSDT"]["windows"])
+        self.assertIn("M5",out["sources"]["Binance Spot BTCUSDT"]["windows"])
