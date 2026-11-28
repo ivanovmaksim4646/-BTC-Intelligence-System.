@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "classification": "htf_observation_only",
-  "generated_at_utc": "2026-11-28T06:55:19.774166+00:00",
+  "generated_at_utc": "2026-11-28T07:00:21.123980+00:00",
   "venue": "Kraken Spot XBTUSD",
   "futures_chart_validated": false,
   "trade_signal": null,
@@ -13,17 +13,30 @@
   "timeframes": {
     "H1": {
       "status": "observed",
-      "last_closed_candle_start_utc": "2026-11-28T05:00:00+00:00",
-      "last_high": 59938.3,
-      "last_low": 59545.8,
-      "last_close": 59675.5,
-      "events": [],
+      "last_closed_candle_start_utc": "2026-11-28T06:00:00+00:00",
+      "last_high": 59841.6,
+      "last_low": 59588.2,
+      "last_close": 59688.9,
+      "events": [
+        {
+          "kind": "inside_bar",
+          "reference_high": 59938.3,
+          "reference_low": 59545.8
+        }
+      ],
       "fvg": [
         {
           "kind": "bearish_fvg",
           "low": 60196.3,
           "high": 61231.2,
           "formed_at": 1795791600,
+          "mitigation_status": "unknown"
+        },
+        {
+          "kind": "bearish_fvg",
+          "low": 59841.6,
+          "high": 59876.6,
+          "formed_at": 1795845600,
           "mitigation_status": "unknown"
         }
       ],
