@@ -35,6 +35,48 @@ def read(name):
         return None
 
 
+def early_spot_watch(current, now):
+    """Independent spot-only observation; not a trade or calibrated forecast."""
+    import math
+    stamp = timestamp(current.get("collected_at_utc"))
+    result = {"status": "unavailable", "direction": None, "source": "Kraken Spot",
+              "trade_signal": None, "windows": {}, "experimental": True}
+    if not stamp or not 0 <= (now-stamp).total_seconds() <= MAX_AGE_SECONDS:
+        return result
+    for tf, secs in (("M5",300),("M15",900),("H1",3600),("H4",14400)):
+        row = ((current.get("order_flow") or {}).get("spot") or {}).get(tf) or {}
+        end, start = timestamp(row.get("window_end_utc")), timestamp(row.get("window_start_utc"))
+        if (row.get("coverage") != "complete" or not end or not start
+                or end.timestamp() != int(now.timestamp())//secs*secs
+                or (end-start).total_seconds() != secs):
+            continue
+        b,s = row.get("buy_volume"),row.get("sell_volume")
+        if any(type(x) not in (int,float) or not math.isfinite(x) or x<0 for x in (b,s)) or b+s<=0:
+            continue
+        result["windows"][tf] = {"end_utc": row["window_end_utc"], "delta_btc": b-s,
+                                 "volume_btc": b+s, "pressure": (b-s)/(b+s)}
+    w = result["windows"]
+    result["status"] = "observed" if w else "unavailable"
+    if "M15" in w and "H1" in w:
+        a,b = w["M15"]["pressure"],w["H1"]["pressure"]
+        if a>0.1 and b>0.1:
+            result["direction"] = "WATCH LONG"
+        elif a< -0.1 and b< -0.1:
+            result["direction"] = "WATCH SHORT"
+    result["limitation"] = "Experimental aligned spot aggression; nested windows are not independent; price response and persistence not established."
+    return result
+
+
+def compact_book(current, now):
+    book = current.get("order_book") or {}
+    stamp = timestamp(book.get("snapshot_time_utc"))
+    if not stamp or not 0 <= (now-stamp).total_seconds() <= MAX_AGE_SECONDS:
+        return {"status": "unavailable"}
+    return {"status": "snapshot_only", "snapshot_time_utc": book["snapshot_time_utc"],
+            "spot": book.get("spot"), "futures": book.get("futures"),
+            "limitation": "Resting orders, not executed volume or liquidation heatmap."}
+
+
 def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None, bea=None, bls_fed=None):
     now = now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:
@@ -152,6 +194,8 @@ def build(current, analysis, structure, watchlist, scheduler, now=None, okx=None
         calendar["status"] = "official_schedule_only"
     return {
         "economic_calendar": calendar,
+        "early_spot_watch": early_spot_watch(current, now),
+        "resting_order_book": compact_book(current, now),
         "okx_confluence": okx_section,
         "schema_version": "1.1",
         "generated_at_utc": now.isoformat().replace("+00:00", "Z"),
