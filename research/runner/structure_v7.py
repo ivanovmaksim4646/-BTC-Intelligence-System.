@@ -3,6 +3,8 @@ M15 closed shift required for OF; M5 candles still provide execution and retest 
 Not yet a complete integrated strategy.
 """
 from collections import deque
+from research.runner.execution_v6 import ExecutionBook
+from research.baseline.replay import utc
 from research.baseline.replay import (Frame, Liquidity, Book, Setup, FRAMES, FEE, SLIP,
     stamp_start, stamp_end, through, overlap, signprice, trace, shift_trace, BASE_MODELS as OLD_MODELS)
 MODELS=['QM_M15']+[f'OF_{tf}_{f}' for tf in ('M15','H1','H4') for f in ('base','weak')]
@@ -12,7 +14,7 @@ def backtest(data, funding, expected_count=365*288, *, models=None, start=None, 
  frames={step:Frame(step) for step in FRAMES}; liq=Liquidity()
  names=MODELS if models is None else models
  if not names or set(names)-set(MODELS) or len(names)!=len(set(names)):raise ValueError('invalid models')
- books={n:Book(n,fee,slip) for n in names};touches={1:deque(),-1:deque()}
+ books={n:ExecutionBook(n,fee,slip) for n in names};touches={1:deque(),-1:deque()}
  count=0
  for b in data:
   now=b.t+300;eligible=start<=b.t<end
@@ -41,6 +43,7 @@ def backtest(data, funding, expected_count=365*288, *, models=None, start=None, 
   if not eligible:continue
   m15=frames[900]
   for name,book in books.items():
+   book.after_close(b,frames,events)
    if not book.idle():continue
    s=book.setup
    if s and (s.z not in frames[s.tf].zones or now-s.time>10800 or not through(s.d,signprice(s.d,b),s.stop)):
@@ -55,7 +58,15 @@ def backtest(data, funding, expected_count=365*288, *, models=None, start=None, 
      book.reject(now,'weakness_filter',s);continue
     target=liq.target(s.d,b.c)
     if target:
-     s.evidence['retest_close_utc']=utc(now);book.order=(s,target)
+     s.evidence['retest_close_utc']=utc(now)
+     opposing=any(z.side==-s.d and z.lo<=b.c<=z.hi for tf in (900,3600,14400) for z in frames[tf].zones)
+     if opposing:
+      book.reject(now,'entry_inside_fta',s);continue
+     rr,_=book.rr(s.d,b.c,s.stop,target.px,market=True)
+     if rr>=2:book.order=(s,target)
+     else:
+      zone=next(((tf,z) for tf in (900,3600) for z in reversed(frames[tf].zones) if z.side==s.d and z.kind in ('OB','FVG','IFVG','Rejection') and s.d*(b.c-(z.hi if s.d==1 else z.lo))>0 and book.rr(s.d,z.hi if s.d==1 else z.lo,s.stop,target.px)[0]>=2),None)
+      if not zone or not book.place_limit(s,target,zone[1],zone[0],now):book.reject(now,'no_valid_limit_edge',s)
     else:book.reject(now,'no_unswept_target',s)
     continue
    if s:continue
