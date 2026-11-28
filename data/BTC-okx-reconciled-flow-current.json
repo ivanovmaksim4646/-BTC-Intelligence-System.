@@ -4,12 +4,13 @@
   "results": [
     {
       "instrument": "BTC-USDT",
-      "pages": 6,
-      "records": 600,
+      "in_window_trades": 292,
+      "pages": 7,
+      "records": 700,
       "start_ms": 1795859700000,
       "end_ms": 1795860000000,
-      "oldest_ms": 1795859688184,
-      "newest_ms": 1795860028739,
+      "oldest_ms": 1795859649215,
+      "newest_ms": 1795860056577,
       "reason": "start_crossed",
       "both_time_boundaries_observed": true,
       "observed_buy_native": "1.34308481",
@@ -19,7 +20,6 @@
       "complete_delta_btc": null,
       "complete_cvd_btc": null,
       "completeness_verified": false,
-      "trade_page_requests": 6,
       "volume_reconciled": true,
       "delta_btc_reconciled": "-0.50595065",
       "volume_btc_reconciled": "3.19212027",
@@ -30,10 +30,12 @@
       "close_usdt": "59588.7",
       "quote_volume_usdt": "190163.197177724",
       "reconciliation_reason": "exact_native_candle_volume_match",
-      "elapsed_seconds": 3.02
+      "trade_page_requests": 7,
+      "elapsed_seconds": 2.01
     },
     {
       "instrument": "BTC-USDT-SWAP",
+      "in_window_trades": 2411,
       "pages": 25,
       "records": 2500,
       "start_ms": 1795859700000,
@@ -49,7 +51,6 @@
       "complete_delta_btc": null,
       "complete_cvd_btc": null,
       "completeness_verified": false,
-      "trade_page_requests": 25,
       "volume_reconciled": true,
       "delta_btc_reconciled": "7.1241",
       "volume_btc_reconciled": "54.4345",
@@ -60,7 +61,8 @@
       "close_usdt": "59564.3",
       "quote_volume_usdt": "3241809.62708",
       "reconciliation_reason": "exact_native_candle_volume_match",
-      "elapsed_seconds": 11.79
+      "trade_page_requests": 25,
+      "elapsed_seconds": 6.76
     }
   ],
   "spot_backfill": {
@@ -70,12 +72,12 @@
     "error": null
   },
   "futures_backfill": {
-    "target_end_ms": 1795855500000,
+    "target_end_ms": 1795855200000,
     "volume_reconciled": true,
     "reason": "exact_native_candle_volume_match",
     "error": null
   },
-  "history_count": 937,
+  "history_count": 939,
   "instruments": {
     "BTC-USDT": {
       "rolling_windows": {
@@ -224,7 +226,7 @@
         },
         "4h": {
           "required_m5": 48,
-          "reconciled_m5": 46,
+          "reconciled_m5": 47,
           "start_ms": 1795845600000,
           "end_ms": 1795860000000,
           "delta_btc_reconciled": null,
@@ -253,9 +255,9 @@
           "end_ms": 1795860000000,
           "timezone": "Europe/London",
           "required_m5": 24,
-          "reconciled_m5": 23,
-          "session_delta_btc_reconciled": null,
-          "vwap_usdt": null
+          "reconciled_m5": 24,
+          "session_delta_btc_reconciled": "-538.7362",
+          "vwap_usdt": "59595.69454914282325916777423"
         },
         "US_cash_open_window": {
           "start_ms": 1795789800000,
@@ -267,9 +269,9 @@
           "vwap_usdt": null
         }
       },
-      "consecutive_m5": 16,
-      "segment_start_ms": 1795855200000,
-      "segment_cvd_btc_reconciled": "-65.7073",
+      "consecutive_m5": 34,
+      "segment_start_ms": 1795849800000,
+      "segment_cvd_btc_reconciled": "-185.7835",
       "complete_cvd_btc": null,
       "classification": "volume_reconciled_not_sequence_certified"
     }
