@@ -116,5 +116,36 @@ class SpotBoundaryTests(unittest.TestCase):
         self.assertTrue(audited["volume_reconciled"])
         self.assertIsNone(audited["complete_cvd_btc"])
 
+
+class SwapBoundaryRecoveryTests(unittest.TestCase):
+    def read_seed(self, batches, page_budget=8):
+        observed=[]
+        returned=[]
+        def request(path,p):
+            if path!="market/history-trades":return []
+            observed.append(int(p["after"]))
+            return next(batches)
+        def probe(inst,fetch,end,max_pages):
+            returned.extend(fetch(None))
+            return {"instrument":inst,"end_ms":end}
+        with patch("src.okx_flow_history_v1.request",side_effect=request), patch("src.okx_flow_history_v1.probe",side_effect=probe), patch("src.okx_flow_history_v1.reconcile",side_effect=lambda r,*a:r), patch("src.okx_flow_history_v1.time.sleep"):
+            report=collect_one("BTC-USDT-SWAP",END,max_pages_override=page_budget)
+        self.assertEqual(report["trade_page_requests"],len(observed))
+        return observed,returned
+
+    def test_sparse_swap_discards_narrow_seed(self):
+        a,b={"ts":str(END-285)},{"ts":str(END+8170)}
+        requests,rows=self.read_seed(iter([[a],[b,a]]))
+        self.assertEqual(requests,[END+1000,END+60000])
+        self.assertEqual(rows,[b,a])
+
+    def test_busy_swap_has_no_extra_request(self):
+        r={"ts":str(END)}
+        self.assertEqual(self.read_seed(iter([[r]])),([END+1000],[r]))
+
+    def test_budget_includes_fallback(self):
+        r={"ts":str(END-285)}
+        self.assertEqual(self.read_seed(iter([[r]]),1),([END+1000],[r]))
+
 if __name__=="__main__":
     unittest.main()
