@@ -72,3 +72,13 @@ class Tests(unittest.TestCase):
         r=admit(self.managed(),[],NOW,True)
         r["status"]="cancelled"
         self.assertIsNone(admit(self.managed(),[r],NOW,True))
+
+    def test_confirmed_favorable_shift_can_move_stop_before_fta(self):
+        from unittest.mock import patch
+        r=admit(self.managed(),[],NOW,True);t=r["eligible_from"]
+        bars=[{"t":t,"o":100,"h":100.5,"l":99.5,"c":100.1},
+              {"t":t+300,"o":100.1,"h":100.8,"l":100.05,"c":100.7}]
+        with patch("src.forward_paper_journal_v1.favorable_shift",return_value=True):
+            result=advance(r,bars,NOW+dt.timedelta(minutes=15))
+        self.assertEqual(result["be_trigger"],"m5_shift")
+        self.assertEqual(result["active_stop_loss"],100)
