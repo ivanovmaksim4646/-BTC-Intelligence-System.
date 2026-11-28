@@ -316,7 +316,15 @@ def main():
         for line in path.read_text(encoding="utf-8").splitlines()[-200:]:
             try:obs.append(json.loads(line))
             except ValueError:pass
-    report=evaluate(read("BTC-okx-futures-candles.json"),obs)
+    snapshot=read("BTC-okx-futures-candles.json")
+    now=dt.datetime.now(dt.timezone.utc)
+    report=evaluate(snapshot,obs,now)
+    # Independent M15 route; M5 remains legacy and retest execution context.
+    from src.okx_m15_structural_gate import evaluate as evaluate_m15
+    m15=evaluate_m15(snapshot,now)
+    report["m15_structural_gate"]={k:v for k,v in m15.items() if k!="structural_research"}
+    report["structural_research"].extend(m15["structural_research"])
+    report["diagnostics"]["m15_candidates"]=len(m15["structural_research"])
     existing=set()
     existing_keys=set()
     if ENTRY_JOURNAL.exists():
