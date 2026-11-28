@@ -258,3 +258,6 @@ Run 46133902363 failed in charts.py after eight regression tests passed: IB mark
 
 ### 2026-11-28 | Backtest #6 regression gates
 Commit 3e2c1ec6f41502b27c9407b285241ac449234b80 adds explicit CI coverage of confirmed predicates and chart rendering for IB market evidence without retest plus legacy retest evidence. This is test coverage, not execution integration. Diagnostic run 46134520350 passed prior regression step and was in replay when inspected. Full acceptance still requires research-only limit lifecycle, FTA protection and range integration without modifying frozen baseline, plus short control and annual replay. No production changes.
+
+### 2026-11-28 | Backtest #6 FTA execution integration
+Diagnostic run 46134520350 completed successfully, including archive replay, HTML and publication. Commit 33f165caa92031572a16ef43c7bb58672717ecbc integrates FTA touch tracking and confirmed M15 or near-entry (<=0.5 initial price R) M5 opposing shift into IB market replay; BE stop tightens only after confirmation, even after range expiry. This is research-only and BE is entry price, not net of costs. Zone selection and distance convention are implementation assumptions; structural stop, limit lifecycle, general range, QM/OF integration and shared portfolio remain outstanding. New revision CI pending; no final acceptance.
