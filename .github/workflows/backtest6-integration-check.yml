@@ -1,4 +1,4 @@
-name: Backtest 6 integration checks
+name: Backtest 6 annual research
 on:
   push:
     branches: [research/backtest-7-integration]
@@ -6,6 +6,7 @@ on:
       - 'research/runner/execution_v6.py'
       - 'research/runner/structure_v7.py'
       - 'research/runner/combined_v6.py'
+      - 'research/runner/ranges_v6.py'
       - 'research/runner/portfolio_v6.py'
       - 'tests/test_execution_v6.py'
       - '.github/workflows/backtest6-integration-check.yml'
@@ -14,7 +15,7 @@ permissions:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,12 +30,12 @@ jobs:
           key: btc-v6-control-${{ hashFiles('research/baseline/checksums.json') }}
           restore-keys: |
             btc-um-m5-v1-${{ hashFiles('research/baseline/checksums.json') }}-
-      - name: Seven-day historical control
-        run: python -m research.runner.combined_v6
+      - name: Annual historical replay
+        run: python -m research.runner.combined_v6 --start 2025-11-27 --end 2026-11-27
       - uses: actions/upload-artifact@v4
         with:
-          name: btc-v6-control
+          name: btc-v6-annual
           path: research-output/
           if-no-files-found: error
-      - name: Publish control summary
+      - name: Publish annual summary
         run: cat research-output/summary.json >> "$GITHUB_STEP_SUMMARY"
