@@ -125,7 +125,16 @@ def evaluate(snapshot,now=None):
         if first["t"]+M5!=close:
             row["reasons"].append("first_retest_already_passed");continue
         for tf,z in hits:
-            risk=structural_plan(frames,direction,first["c"],q["head"],z,close)
+            risk=structural_plan(frames,direction,first["c"],q["head"],z,close,separate_fta=True)
+            # If the shift already formed inside the FTA, or the FTA was
+            # reached before a prospective limit could be placed, skip.
+            fta=risk.get("fta")
+            zone=risk.get("fta_zone")
+            shiftbar=next(b for b in frames["15m"]["bars"] if b["t"]+M15==shift)
+            if zone and zone["low"]<=shiftbar["c"]<=zone["high"]:
+                risk.update(status="withheld",reason="shift_inside_fta")
+            elif fta is not None and any((b["l"]<=fta if short else b["h"]>=fta) for b in subsequent):
+                risk.update(status="withheld",reason="fta_reached_before_order")
             p={"direction":direction,"entry_close_utc":close,"htf":tf,
                "poi_kind":z["kind"],"poi_formed":z["formed"],"model":"MTF_POI_QM_M15",
                "shift_close_utc":shift,"neckline":level,"qm_head":head,
