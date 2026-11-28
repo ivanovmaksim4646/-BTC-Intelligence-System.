@@ -1,6 +1,6 @@
 {
   "classification": "structure_observation_only",
-  "collected_at_utc": "2026-11-27T23:55:20.326203Z",
+  "collected_at_utc": "2026-11-28T00:00:26.730048Z",
   "notes": [
     "Only closed OHLC candles",
     "Shift and BOS are separate candidate observations based on confirmed pivots and last closed candles; no validated trade signal",
@@ -11,7 +11,16 @@
   "source": "Kraken Spot XBTUSD",
   "timeframes": {
     "D1": {
-      "events": [],
+      "events": [
+        {
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 61533.1
+        },
+        {
+          "kind": "sweep_low_reclaim_inside",
+          "reference_low": 59850.0
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1791417600,
@@ -266,10 +275,10 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 60499.2,
-      "last_high": 61533.1,
-      "last_low": 59850.0,
-      "latest_closed_utc": "2026-11-26T00:00:00Z",
+      "last_close": 59863.7,
+      "last_high": 62139.1,
+      "last_low": 58728.7,
+      "latest_closed_utc": "2026-11-27T00:00:00Z",
       "status": "ok"
     },
     "H1": {
@@ -504,18 +513,18 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 59684.5,
-      "last_high": 59800.9,
-      "last_low": 59540.9,
-      "latest_closed_utc": "2026-11-27T22:00:00Z",
+      "last_close": 59863.7,
+      "last_high": 59871.2,
+      "last_low": 59684.5,
+      "latest_closed_utc": "2026-11-27T23:00:00Z",
       "status": "ok"
     },
     "H4": {
       "events": [
         {
           "kind": "inside_bar",
-          "reference_high": 61619.9,
-          "reference_low": 58728.7
+          "reference_high": 60500.0,
+          "reference_low": 59454.1
         }
       ],
       "fvg": [
@@ -754,14 +763,23 @@
           "status": "inverted_observation"
         }
       ],
-      "last_close": 59846.3,
-      "last_high": 60500.0,
-      "last_low": 59454.1,
-      "latest_closed_utc": "2026-11-27T16:00:00Z",
+      "last_close": 59863.7,
+      "last_high": 59871.2,
+      "last_low": 59540.9,
+      "latest_closed_utc": "2026-11-27T20:00:00Z",
       "status": "ok"
     },
     "M15": {
-      "events": [],
+      "events": [
+        {
+          "break_level": 59828.4,
+          "broken_swing_utc": "2026-11-27T23:00:00Z",
+          "confirmation": "closed_candle_above_confirmed_swing_high",
+          "kind": "bullish_shift_candidate",
+          "not_bos": true,
+          "previous_structure": "lower_highs_lower_lows"
+        }
+      ],
       "fvg": [
         {
           "formed_at": 1795790700,
@@ -776,10 +794,10 @@
           "low": 59846.3
         }
       ],
-      "last_close": 59796.0,
-      "last_high": 59805.3,
-      "last_low": 59755.9,
-      "latest_closed_utc": "2026-11-27T23:30:00Z",
+      "last_close": 59863.7,
+      "last_high": 59871.2,
+      "last_low": 59778.5,
+      "latest_closed_utc": "2026-11-27T23:45:00Z",
       "qm": [
         {
           "broken_level": 61480.4,
@@ -897,12 +915,8 @@
     "M5": {
       "events": [
         {
-          "break_level": 59828.4,
-          "broken_swing_utc": "2026-11-27T23:00:00Z",
-          "confirmation": "closed_candle_above_confirmed_swing_high",
-          "kind": "bullish_bos_candidate",
-          "not_shift": true,
-          "previous_structure": "higher_highs_higher_lows"
+          "kind": "sweep_high_reclaim_inside",
+          "reference_high": 59865.2
         }
       ],
       "fvg": [
@@ -923,12 +937,18 @@
           "high": 59810.4,
           "kind": "bullish_fvg",
           "low": 59801.3
+        },
+        {
+          "formed_at": 1795823700,
+          "high": 59838.7,
+          "kind": "bullish_fvg",
+          "low": 59816.2
         }
       ],
-      "last_close": 59838.6,
-      "last_high": 59865.2,
-      "last_low": 59810.4,
-      "latest_closed_utc": "2026-11-27T23:50:00Z",
+      "last_close": 59863.7,
+      "last_high": 59871.2,
+      "last_low": 59838.7,
+      "latest_closed_utc": "2026-11-27T23:55:00Z",
       "qm": [
         {
           "broken_level": 60737.8,

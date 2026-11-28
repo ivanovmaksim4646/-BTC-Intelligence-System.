@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-27T23:56:17.072635+00:00",
+  "generated_at_utc": "2026-11-28T00:01:28.225112+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,7 +12,6 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
-    "reconciled_flow_5m",
     "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
@@ -20,17 +19,22 @@
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "-0.38654620",
-        "volume_btc": "5.5134248",
-        "direction": "short",
+        "delta_btc": "0.58527861",
+        "volume_btc": "5.63424749",
+        "direction": "long",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": null
+      "futures": {
+        "delta_btc": "21.4561",
+        "volume_btc": "76.7413",
+        "direction": "long",
+        "quality": "volume_reconciled_not_sequence_certified"
+      }
     },
     "15m": {
       "spot": {
-        "delta_btc": "-15.53849740",
-        "volume_btc": "23.95302778",
+        "delta_btc": "-10.75234163",
+        "volume_btc": "24.67307603",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -38,8 +42,8 @@
     },
     "1h": {
       "spot": {
-        "delta_btc": "-25.13181085",
-        "volume_btc": "97.35808739",
+        "delta_btc": "-23.70980422",
+        "volume_btc": "93.05379396",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -47,8 +51,8 @@
     },
     "4h": {
       "spot": {
-        "delta_btc": "-25.80439454",
-        "volume_btc": "400.10614868",
+        "delta_btc": "-24.60415792",
+        "volume_btc": "393.14814200",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -59,39 +63,39 @@
     "5m": "bullish",
     "15m": "mixed",
     "1h": "mixed",
-    "4h": "bullish"
+    "4h": "mixed"
   },
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": -10.5891,
-      "delta_percent": -0.03307,
-      "elapsed_seconds": 287.138,
-      "previous_timestamp_ms": 1795823472624,
-      "current_timestamp_ms": 1795823759762,
+      "delta_btc": -0.7949,
+      "delta_percent": -0.00248,
+      "elapsed_seconds": 311.415,
+      "previous_timestamp_ms": 1795823759762,
+      "current_timestamp_ms": 1795824071177,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 5.38999370938e-05,
-      "rate_percent": 0.00539,
-      "next_funding_time_ms": 1795852800000,
+      "rate_fraction": 5.36903926803e-05,
+      "rate_percent": 0.005369,
+      "next_funding_time_ms": 1795881600000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59881.6,
-      "index_price": 59906.9,
-      "mark_timestamp_ms": 1795823760398,
-      "index_timestamp_ms": 1795823760102,
-      "mark_minus_index_usdt": -25.3,
-      "premium_bps": -4.22322,
+      "mark_price": 59921.0,
+      "index_price": 59943.7,
+      "mark_timestamp_ms": 1795824072040,
+      "index_timestamp_ms": 1795824071484,
+      "mark_minus_index_usdt": -22.7,
+      "premium_bps": -3.786887,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "ask_heavier",
-    "timestamp_ms": 1795823760155,
+    "resting_side": "bid_heavier",
+    "timestamp_ms": 1795824071655,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -158,7 +162,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795823700,
+  "m5_close_s": 1795824000,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }
