@@ -343,6 +343,96 @@ def compact_chart(doc, context, now=None):
     return {"status":"verified_subset" if out else "unavailable","source":doc["source"],
             "collected_at_utc":doc["collected_at_utc"],"timeframes":out}
 
+def backup_market_context(now, fetch=None):
+    """Independent free public feeds; never substitute for same-venue paper evidence."""
+    import math
+    from concurrent.futures import ThreadPoolExecutor
+    from urllib.request import Request, urlopen
+    def get(url):
+        with urlopen(Request(url,headers={"User-Agent":"BTC-Intelligence/1.0","Accept":"application/json"}),timeout=8) as response:
+            return json.load(response)
+    fetch = fetch or get
+    end = int(now.timestamp())//300*300000
+    def number(x):
+        if isinstance(x,bool):
+            raise ValueError("invalid number")
+        n=float(x)
+        if not math.isfinite(n):
+            raise ValueError("nonfinite")
+        return n
+    def binance(url):
+        raw=fetch(url)
+        if not isinstance(raw,list):
+            raise ValueError("unexpected kline response")
+        index={}
+        for row in raw:
+            if not isinstance(row,list) or len(row)<11 or type(row[0]) is not int or type(row[6]) is not int:
+                raise ValueError("invalid kline")
+            t=row[0]
+            if t%300000 or row[6]!=t+299999:
+                raise ValueError("invalid window")
+            if t>=end:
+                continue
+            volume,buy=number(row[5]),number(row[9])
+            if not 0<=buy<=volume or t in index:
+                raise ValueError("invalid volume or duplicate")
+            index[t]=(volume,2*buy-volume)
+        windows={}
+        for label,n in (("M5",1),("M15",3),("H1",12),("H4",48)):
+            keys=list(range(end-n*300000,end,300000))
+            if all(t in index for t in keys):
+                v=sum(index[t][0] for t in keys)
+                d=sum(index[t][1] for t in keys)
+                windows[label]={"end_ms":end,"start_ms":keys[0],"volume_btc":v,
+                                "delta_btc":d,"coverage":"exchange_closed_kline_taker_volume",
+                                "pressure":d/v if v>0 else None}
+        return {"status":"observed" if windows else "unavailable","windows":windows,
+                "classification":"exchange_kline_taker_buy_base_volume_not_trade_sequence"}
+    def bybit(url):
+        raw=fetch(url)
+        if not isinstance(raw,dict) or raw.get("retCode")!=0:
+            raise ValueError("exchange error")
+        b=raw["result"]
+        t=b.get("ts")
+        if b.get("s")!="BTCUSDT" or type(t) is not int or not 0<=dt.datetime.now(dt.timezone.utc).timestamp()*1000-t<=180000:
+            raise ValueError("stale or wrong instrument")
+        sides={}
+        for key in ("b","a"):
+            rows=b[key]
+            if not isinstance(rows,list) or not 0<len(rows)<=50:
+                raise ValueError("invalid depth")
+            levels=[(number(x[0]),number(x[1])) for x in rows]
+            prices=[x[0] for x in levels]
+            if any(min(x)<=0 for x in levels) or len(set(prices))!=len(prices) or prices!=sorted(prices,reverse=key=="b"):
+                raise ValueError("invalid levels")
+            sides[key]=levels
+        if sides["b"][0][0]>=sides["a"][0][0]:
+            raise ValueError("crossed book")
+        return {"status":"snapshot_only","timestamp_ms":t,"best_bid":sides["b"][0][0],
+                "best_ask":sides["a"][0][0],
+                "bid_levels":[{"price_usdt":p,"size_btc":v} for p,v in sorted(sides["b"],key=lambda x:x[1],reverse=True)[:3]],
+                "ask_levels":[{"price_usdt":p,"size_btc":v} for p,v in sorted(sides["a"],key=lambda x:x[1],reverse=True)[:3]],
+                "depth_levels":{"bid":len(sides["b"]),"ask":len(sides["a"])},
+                "classification":"resting_orders_not_liquidations"}
+    specs={
+        "Binance Spot BTCUSDT":(binance,"https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=50"),
+        "Binance USD-M BTCUSDT":(binance,"https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=5m&limit=50"),
+        "Bybit Spot BTCUSDT":(bybit,"https://api.bybit.com/v5/market/orderbook?category=spot&symbol=BTCUSDT&limit=50"),
+        "Bybit Linear BTCUSDT":(bybit,"https://api.bybit.com/v5/market/orderbook?category=linear&symbol=BTCUSDT&limit=50")
+    }
+    def safe(spec):
+        fn,url=spec
+        try:
+            return fn(url)
+        except Exception as exc:
+            return {"status":"unavailable","error_type":type(exc).__name__}
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        result=dict(zip(specs,pool.map(safe,specs.values())))
+    return {"generated_at_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
+            "sources":result,"trade_signal":None,"liquidation_heatmap":None,
+            "policy":"Independent market context only; no cross-venue substitution or aggregation."}
+
+
 def main():
     report = build(
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
@@ -357,6 +447,7 @@ def main():
     report["okx_reconciled_flow"] = read("BTC-okx-reconciled-flow-current.json")
     report["okx_spot_persistence"] = spot_persistence(read("BTC-okx-reconciled-m5-history.json"), dt.datetime.now(dt.timezone.utc))
     report["okx_visible_liquidity"] = okx_visible_liquidity(read("BTC-okx-liquidity-derivatives-v1.json"), read("BTC-okx-wall-persistence-v1.json"), dt.datetime.now(dt.timezone.utc))
+    report["backup_market_context"] = backup_market_context(dt.datetime.now(dt.timezone.utc))
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
     temp.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
