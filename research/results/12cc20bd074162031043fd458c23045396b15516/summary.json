@@ -1,0 +1,276 @@
+{
+  "classification": "historical_research_only",
+  "instrument": "Binance USD-M BTCUSDT",
+  "config": {
+    "start_utc": "2025-11-27",
+    "end_exclusive_utc": "2025-12-01",
+    "models": [
+      "QM_M15",
+      "OF_M5_base",
+      "OF_H1_base",
+      "OF_H4_base",
+      "OF_M15_base"
+    ],
+    "fee_bps_per_side": 5,
+    "slippage_bps_per_side": 2
+  },
+  "warmup_m5": 8640,
+  "evaluation_m5": 1152,
+  "funding_settlements": 12,
+  "archive_sha256": {
+    "2025-10": "fab262ca4318f8f65164ae33a020458439adc6f7bc2e59bbfce1886118d05a48",
+    "2025-11": "2759d4be0fe68cc2be3d4d91940fcd95abc69f0c31f25d0b6cb5e0629c625d2d"
+  },
+  "funding_sha256": "145c168c9926e76aad759ef43d9bb92d5535f7ef57e3cef4414cb86b9d913f57",
+  "prefix_parity": {
+    "status": "matched",
+    "closed_trades": 6,
+    "models": [
+      "OF_H1_base",
+      "OF_H4_base",
+      "OF_M5_base",
+      "QM_M15"
+    ]
+  },
+  "models": {
+    "QM_M15": {
+      "n": 1,
+      "pf_cash": null,
+      "wr": 100.0,
+      "pf": null,
+      "expect": 2.246719390619845,
+      "net": 2.246719390619845,
+      "drawdown_m5_pct": 0.3525007498727084,
+      "long": {
+        "n": 1,
+        "pf_cash": null,
+        "wr": 100.0,
+        "pf": null,
+        "expect": 2.246719390619845,
+        "net": 2.246719390619845
+      },
+      "short": {
+        "n": 0,
+        "pf_cash": null,
+        "wr": null,
+        "pf": null,
+        "expect": null,
+        "net": 0
+      },
+      "by_poi": {
+        "IFVG": {
+          "n": 1,
+          "pf_cash": null,
+          "wr": 100.0,
+          "pf": null,
+          "expect": 2.246719390619845,
+          "net": 2.246719390619845
+        }
+      },
+      "by_session": {
+        "outside_reference_windows": {
+          "n": 1,
+          "pf_cash": null,
+          "wr": 100.0,
+          "pf": null,
+          "expect": 2.246719390619845,
+          "net": 2.246719390619845
+        }
+      },
+      "rejected_setups": {
+        "expired": 2
+      }
+    },
+    "OF_M5_base": {
+      "n": 4,
+      "pf_cash": 0.681836577023998,
+      "wr": 25.0,
+      "pf": 0.6933936940158966,
+      "expect": -0.22903348870121665,
+      "net": -0.9161339548048666,
+      "drawdown_m5_pct": 2.9434012353561023,
+      "long": {
+        "n": 2,
+        "pf_cash": 2.0065410570723556,
+        "wr": 50.0,
+        "pf": 2.04811352770804,
+        "expect": 0.5301296431882822,
+        "net": 1.0602592863765643
+      },
+      "short": {
+        "n": 2,
+        "pf_cash": 0.0,
+        "wr": 0.0,
+        "pf": 0.0,
+        "expect": -0.9881966205907154,
+        "net": -1.976393241181431
+      },
+      "by_poi": {
+        "IFVG": {
+          "n": 2,
+          "pf_cash": 2.0065410570723556,
+          "wr": 50.0,
+          "pf": 2.04811352770804,
+          "expect": 0.5301296431882822,
+          "net": 1.0602592863765643
+        },
+        "Rejection": {
+          "n": 2,
+          "pf_cash": 0.0,
+          "wr": 0.0,
+          "pf": 0.0,
+          "expect": -0.9881966205907154,
+          "net": -1.976393241181431
+        }
+      },
+      "by_session": {
+        "NY": {
+          "n": 1,
+          "pf_cash": 0.0,
+          "wr": 0.0,
+          "pf": 0.0,
+          "expect": -1.0115882090512505,
+          "net": -1.0115882090512505
+        },
+        "outside_reference_windows": {
+          "n": 3,
+          "pf_cash": 1.032783618246982,
+          "wr": 33.33333333333333,
+          "pf": 1.0482971972669386,
+          "expect": 0.03181808474879463,
+          "net": 0.09545425424638387
+        }
+      },
+      "rejected_setups": {
+        "expired": 2,
+        "entry_or_net_rr_invalid": 8,
+        "stop_breached_before_entry": 3
+      }
+    },
+    "OF_H1_base": {
+      "n": 1,
+      "pf_cash": null,
+      "wr": 100.0,
+      "pf": null,
+      "expect": 2.071321787645231,
+      "net": 2.071321787645231,
+      "drawdown_m5_pct": 0.3753819416347892,
+      "long": {
+        "n": 1,
+        "pf_cash": null,
+        "wr": 100.0,
+        "pf": null,
+        "expect": 2.071321787645231,
+        "net": 2.071321787645231
+      },
+      "short": {
+        "n": 0,
+        "pf_cash": null,
+        "wr": null,
+        "pf": null,
+        "expect": null,
+        "net": 0
+      },
+      "by_poi": {
+        "IFVG": {
+          "n": 1,
+          "pf_cash": null,
+          "wr": 100.0,
+          "pf": null,
+          "expect": 2.071321787645231,
+          "net": 2.071321787645231
+        }
+      },
+      "by_session": {
+        "outside_reference_windows": {
+          "n": 1,
+          "pf_cash": null,
+          "wr": 100.0,
+          "pf": null,
+          "expect": 2.071321787645231,
+          "net": 2.071321787645231
+        }
+      },
+      "rejected_setups": {
+        "entry_or_net_rr_invalid": 1
+      }
+    },
+    "OF_H4_base": {
+      "n": 0,
+      "pf_cash": null,
+      "wr": null,
+      "pf": null,
+      "expect": null,
+      "net": 0,
+      "drawdown_m5_pct": 0.0,
+      "long": {
+        "n": 0,
+        "pf_cash": null,
+        "wr": null,
+        "pf": null,
+        "expect": null,
+        "net": 0
+      },
+      "short": {
+        "n": 0,
+        "pf_cash": null,
+        "wr": null,
+        "pf": null,
+        "expect": null,
+        "net": 0
+      },
+      "by_poi": {},
+      "by_session": {},
+      "rejected_setups": {}
+    },
+    "OF_M15_base": {
+      "n": 1,
+      "pf_cash": 0.0,
+      "wr": 0.0,
+      "pf": 0.0,
+      "expect": -1.0122404123999886,
+      "net": -1.0122404123999886,
+      "drawdown_m5_pct": 1.98400648536472,
+      "long": {
+        "n": 1,
+        "pf_cash": 0.0,
+        "wr": 0.0,
+        "pf": 0.0,
+        "expect": -1.0122404123999886,
+        "net": -1.0122404123999886
+      },
+      "short": {
+        "n": 0,
+        "pf_cash": null,
+        "wr": null,
+        "pf": null,
+        "expect": null,
+        "net": 0
+      },
+      "by_poi": {
+        "IFVG": {
+          "n": 1,
+          "pf_cash": 0.0,
+          "wr": 0.0,
+          "pf": 0.0,
+          "expect": -1.0122404123999886,
+          "net": -1.0122404123999886
+        }
+      },
+      "by_session": {
+        "NY": {
+          "n": 1,
+          "pf_cash": 0.0,
+          "wr": 0.0,
+          "pf": 0.0,
+          "expect": -1.0122404123999886,
+          "net": -1.0122404123999886
+        }
+      },
+      "rejected_setups": {
+        "stop_breached_before_entry": 2,
+        "entry_or_net_rr_invalid": 2
+      }
+    }
+  }
+}
