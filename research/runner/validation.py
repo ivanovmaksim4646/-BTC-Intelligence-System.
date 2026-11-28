@@ -4,6 +4,7 @@ from bisect import bisect_left
 from datetime import datetime
 from pathlib import Path
 from research.baseline import replay
+from research.runner import deviation_replay
 
 DAY = 86400
 SPEC = Path(__file__).with_name("validation.json")
@@ -34,7 +35,7 @@ def approved_examples(examples, trades, models, start, end):
         if (not isinstance(key,str) or not key.strip() or key in keys or not ex["provenance"].strip()
             or dt.tzinfo is None or dt.utcoffset().total_seconds()!=0 or dt.timestamp()%300
             or ex["direction"] not in ("LONG","SHORT") or ex["expected"] not in ("entry","skip")
-            or ex["model"] not in replay.MODELS):
+            or ex["model"] not in replay.MODELS + [deviation_replay.MODEL]):
             raise ValueError("Invalid or duplicate reference example")
         keys.add(key)
         t=int(dt.timestamp())
@@ -58,8 +59,12 @@ def assess(bars, funding, start, end, models, costs, trades, spec):
         sub=bars[bisect_left(times,lo-30*DAY):bisect_left(times,hi)]
         if not sub or sub[0].t!=lo-30*DAY or sub[-1].t!=hi-300:
             raise ValueError("Fold coverage is incomplete")
-        return replay.backtest(sub,funding,(hi-lo)//300,models=names,start=lo,end=hi,
-                               fee=charges[0],slip=charges[1])
+        old=[n for n in names if n in replay.MODELS]
+        books=replay.backtest(sub,funding,(hi-lo)//300,models=old,start=lo,end=hi,
+                               fee=charges[0],slip=charges[1]) if old else {}
+        if deviation_replay.MODEL in names:
+            books.update(deviation_replay.run(sub,funding,(hi-lo)//300,start=lo,end=hi,fee=charges[0],slip=charges[1]))
+        return books
     fold=spec.get("walk_forward")
     if fold and end-start<2*DAY:
         result["walk_forward_skipped"]="At least two evaluation days required"
