@@ -1,0 +1,21 @@
+{
+  "classification": "diagnostic_only",
+  "counts": {
+    "cases": 506,
+    "any_previously_tested": 471,
+    "all_previously_tested": 354,
+    "any_two_prior_tests": 424,
+    "zone_instances": 1408,
+    "zone_instances_pretested": 1224,
+    "zone_instances_two_tests": 1049,
+    "all_two_prior_tests": 240,
+    "any_wick_far_edge": 215,
+    "all_wick_far_edge": 36
+  },
+  "sample_size": 48,
+  "definitions": {
+    "prior_test": "Completed distinct M5 overlap episode before the shift close; not a discretionary validity verdict",
+    "far_edge": "Wick reached opposite zone edge; only automatically invalidates FVG/IFVG in v3",
+    "present": "Same exact zone present in its own timeframe state at shift close"
+  }
+}
