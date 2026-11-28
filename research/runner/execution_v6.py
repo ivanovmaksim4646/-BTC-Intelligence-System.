@@ -15,7 +15,9 @@ class Pending:
     created: int
 
 class ExecutionBook(b.Book):
-    def __init__(self,name,fee=b.FEE,slip=b.SLIP):
+    def __init__(self,name,fee=b.FEE,slip=b.SLIP,policy='structural'):
+        if policy not in ('fixed','be','half','structural'):raise ValueError('unknown stop policy')
+        self.policy=policy
         super().__init__(name,fee,slip)
         self.pending=None
         self.limit_events=[]
@@ -111,7 +113,7 @@ class ExecutionBook(b.Book):
         distance=max(0,d*((z.lo if d==1 else z.hi)-p["entry"])/risk)
         shift=next((step for step in (900,300) if protection_trigger(
             d,distance,True,events.get(step),step,step in events)),None)
-        if not shift:return
+        if not shift or self.policy=='fixed':return
         old=p["stop"]
         candidates=[]
         entry_time=datetime.fromisoformat(p["entry_utc"]).timestamp()
@@ -127,9 +129,16 @@ class ExecutionBook(b.Book):
                 if tighten_stop(d,old,proposed,bar.c)!=old:
                     candidates.append((proposed,anchor_tf))
         proposed,anchor_tf=max(candidates,key=lambda x:d*x[0]) if candidates else (p["entry"],None)
+        if self.policy=='be':
+            # Cover exit slippage and entry/exit fees, excluding uncertain future funding.
+            proposed=p["entry"]*(1+d*self.fee)/(1-d*self.fee)/(1-d*self.slip)
+            anchor_tf=None
+        elif self.policy=='half':
+            proposed=(p["initial_stop"]+p["entry"])/2
+            anchor_tf=None
         new=tighten_stop(d,old,proposed,bar.c)
         if new!=old:
             p["stop"]=new
-            p.setdefault("management",[]).append(dict(time=b.utc(now),reason="FTA_structural" if anchor_tf else "FTA_BE",anchor_tf=anchor_tf,
+            p.setdefault("management",[]).append(dict(time=b.utc(now),reason="FTA_structural" if anchor_tf else "FTA_BE" if self.policy=="structural" else "FTA_"+self.policy,anchor_tf=anchor_tf,
                 tf=tf,shift_tf=shift,old_stop=old,new_stop=new))
         self.fta=None
