@@ -49,6 +49,21 @@ def backtest(data, funding, expected_count=365*288, *, models=None, start=None, 
    if s and (s.z not in frames[s.tf].zones or now-s.time>10800 or not through(s.d,signprice(s.d,b),s.stop)):
     reason='poi_invalidated' if s.z not in frames[s.tf].zones else 'expired' if now-s.time>10800 else 'stop_breached_before_entry'
     book.reject(now,reason,s);book.setup=None;s=None
+   if s:
+    blockers=[(tf,z) for tf in (900,3600,14400) for z in frames[tf].zones
+              if z.side==-s.d and z.lo<=b.c<=z.hi]
+    wait=getattr(s,'fta_wait',None)
+    if blockers:
+     s.fta_wait=blockers
+     continue
+    if wait:
+     # Require a closed candle beyond every blocking zone, not simple departure.
+     if not all(z not in frames[tf].zones and s.d*(b.c-(z.hi if s.d==1 else z.lo))>0 for tf,z in wait):
+      continue
+     s.fta_wait=None
+     s.time=now
+     s.evidence['fta_invalidated_utc']=utc(now)
+     continue
    if s and now>s.time and b.l<=s.hi and b.h>=s.lo and through(s.d,b.c,(s.lo+s.hi)/2) and s.d*(b.c-b.o)>0:
     book.setup=None
     # Weakness of opposing aggressors: positive signed delta for the opponent,
@@ -61,7 +76,9 @@ def backtest(data, funding, expected_count=365*288, *, models=None, start=None, 
      s.evidence['retest_close_utc']=utc(now)
      opposing=any(z.side==-s.d and z.lo<=b.c<=z.hi for tf in (900,3600,14400) for z in frames[tf].zones)
      if opposing:
-      book.reject(now,'entry_inside_fta',s);continue
+      book.setup=s
+      s.fta_wait=[(tf,z) for tf in (900,3600,14400) for z in frames[tf].zones if z.side==-s.d and z.lo<=b.c<=z.hi]
+      continue
      rr,_=book.rr(s.d,b.c,s.stop,target.px,market=True)
      if rr>=2:book.order=(s,target)
      else:
