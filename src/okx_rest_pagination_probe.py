@@ -18,8 +18,10 @@ def request(path, params):
         raise ValueError("OKX response not successful")
     return obj["data"]
 
-def probe(inst, fetch, end, max_pages=180):
-    start=end-300000
+def probe(inst, fetch, end, max_pages=180, *, span_ms=300000):
+    start=end-span_ms
+    below=above=first_inside=last_inside=None
+    in_window=0
     cursor=None
     seen=set()
     buy=sell=Decimal(0)
@@ -36,7 +38,7 @@ def probe(inst, fetch, end, max_pages=180):
         ts=[int(r["ts"]) for r in rows]
         if any(a<=b for a,b in zip(ids,ids[1:])) or any(a<b for a,b in zip(ts,ts[1:])):
             raise ValueError("unexpected page ordering")
-        if cursor is not None and ids[0]>=cursor:
+        if cursor is not None and (ids[0]>=cursor or ts[0]>oldest):
             raise ValueError("cursor failed to advance")
         for r,i,t in zip(rows,ids,ts):
             if r["instId"]!=inst or i in seen or r["side"] not in ("buy","sell"):
@@ -47,14 +49,24 @@ def probe(inst, fetch, end, max_pages=180):
             seen.add(i)
             oldest=t if oldest is None else min(t,oldest)
             newest=t if newest is None else max(t,newest)
+            if t<start and below is None:
+                below=(i,t,r["side"],str(size))
+            if t>=end:
+                above=(i,t,r["side"],str(size))
             if start<=t<end:
+                tick=(i,t,r["side"],str(size))
+                if last_inside is None:last_inside=tick
+                first_inside=tick
+                in_window+=1
                 if r["side"]=="buy": buy+=size
                 else: sell+=size
         cursor=ids[-1]
         if oldest<start:
             reason="start_crossed"
             break
-    return {"instrument":inst,"pages":pages,"records":len(seen),"start_ms":start,"end_ms":end,
+    edges=({"lower_outside":below,"upper_outside":above,"first_inside":first_inside,"last_inside":last_inside}
+           if span_ms!=300000 else {})
+    return {"instrument":inst,"in_window_trades":in_window,**edges,"pages":pages,"records":len(seen),"start_ms":start,"end_ms":end,
             "oldest_ms":oldest,"newest_ms":newest,"reason":reason,
             "both_time_boundaries_observed":oldest is not None and oldest<start and newest>=end,
             "observed_buy_native":str(buy),"observed_sell_native":str(sell),

@@ -2,6 +2,7 @@
 import json,time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
 from decimal import Decimal
 from src.okx_rest_pagination_probe import probe,request
 from src.okx_flow_reconcile import aggregate,reconcile,INSTRUMENTS,M5,decimal
@@ -63,34 +64,72 @@ def summarize(rows,end):
             "segment_cvd_btc_reconciled":str(sum((decimal(r["delta_btc_reconciled"]) for r in chain),Decimal(0))) if chain else None,
             "complete_cvd_btc":None,"classification":"volume_reconciled_not_sequence_certified"}
     return out
-def collect_one(inst,end,max_runtime_seconds=180,max_pages_override=None):
+def join_minutes(parts,end):
+    """Verify all five time slices and shared boundary prints before adding volumes."""
+    start=end-M5
+    if len(parts)!=5 or any((p["start_ms"],p["end_ms"])!=(start+i*60000,start+(i+1)*60000)
+                            for i,p in enumerate(parts)):
+        raise ValueError("invalid repair intervals")
+    if any(p["instrument"]!="BTC-USDT-SWAP" or p["unit"]!="contracts" for p in parts):
+        raise ValueError("invalid repair instrument or unit")
+    total=sum(p["in_window_trades"] for p in parts)
+    bounds=all(p["both_time_boundaries_observed"] for p in parts)
+    # At each join, both walks must identify the same actual trade on each side.
+    # Empty minutes are allowed only if their surrounding trades also agree.
+    joined=all(left["upper_outside"]==(right["first_inside"] or right["upper_outside"])
+               and right["lower_outside"]==(left["last_inside"] or left["lower_outside"])
+               for left,right in zip(parts,parts[1:]))
+    buy=sum(decimal(p["observed_buy_native"]) for p in parts)
+    sell=sum(decimal(p["observed_sell_native"]) for p in parts)
+    return dict(instrument="BTC-USDT-SWAP",start_ms=start,end_ms=end,unit="contracts",
+                pages=sum(p["pages"] for p in parts),in_window_trades=total,
+                oldest_ms=parts[0]["oldest_ms"],newest_ms=parts[-1]["newest_ms"],
+                both_time_boundaries_observed=bounds and joined,
+                reason="minute_boundaries_matched" if bounds and joined else "incomplete_minute_boundaries",
+                observed_buy_native=str(buy),observed_sell_native=str(sell),observed_delta_native=str(buy-sell),
+                completeness_verified=False,complete_delta_btc=None,complete_cvd_btc=None)
+
+
+def collect_one(inst,end,max_runtime_seconds=180,max_pages_override=None,*,split_repair=False):
     began=time.monotonic()
-    pages_left=max_pages_override if max_pages_override is not None else (500 if inst.endswith("SWAP") else 180)
-    budget=pages_left
+    budget=max_pages_override if max_pages_override is not None else (500 if inst.endswith("SWAP") else 180)
+    pages_used=0
+    last_request=began
+    lock=Lock()
     def trade_page(params):
-        nonlocal pages_left
-        if pages_left<=0:return []
-        if time.monotonic()-began>max_runtime_seconds:raise TimeoutError("bounded collection deadline")
-        time.sleep(.25)
-        pages_left-=1
+        nonlocal pages_used,last_request
+        # One rate limit and one request budget across all five slices.
+        with lock:
+            if pages_used>=budget:return []
+            delay=max(0.,.25-(time.monotonic()-last_request))
+            if time.monotonic()+delay>=began+max_runtime_seconds:
+                raise TimeoutError("bounded collection deadline")
+            time.sleep(delay)
+            last_request=time.monotonic()
+            pages_used+=1
         return request("market/history-trades",params)
-    def fetch(cursor):
-        p={"instId":inst,"type":"1","limit":"100"}
-        if cursor is not None:
-            return trade_page(dict(p,after=str(cursor)))
-        # Seed by timestamp and continue by trade ID. A sparse first second can
-        # miss every actual post-close trade even for the perpetual contract.
-        margin_ms=60000 if inst=="BTC-USDT" else 1000
-        p.update(type="2",after=str(end+margin_ms))
-        rows=trade_page(p)
-        if inst=="BTC-USDT-SWAP" and pages_left and not any(int(r["ts"])>=end for r in rows):
-            # Discard the narrow page, so no overlapping rows enter the sum.
-            # Both requests consume the same total request and time budgets.
-            rows=trade_page(dict(p,after=str(end+60000)))
-        return rows
+    def walk(boundary,span_ms=M5):
+        def fetch(cursor):
+            p={"instId":inst,"type":"1","limit":"100"}
+            if cursor is not None:
+                return trade_page(dict(p,after=str(cursor)))
+            margin_ms=60000 if inst=="BTC-USDT" else 1000
+            p.update(type="2",after=str(boundary+margin_ms))
+            rows=trade_page(p)
+            if inst=="BTC-USDT-SWAP" and pages_used<budget and not any(int(r["ts"])>=boundary for r in rows):
+                wider=trade_page(dict(p,after=str(boundary+60000)))
+                if wider:rows=wider
+            return rows
+        if span_ms==M5:
+            return probe(inst,fetch,boundary,max_pages=budget)
+        return probe(inst,fetch,boundary,max_pages=budget,span_ms=span_ms)
     try:
-        r=probe(inst,fetch,end,max_pages=budget)
-        r["trade_page_requests"]=budget-pages_left
+        if split_repair and inst=="BTC-USDT-SWAP":
+            with ThreadPoolExecutor(max_workers=5) as pool:
+                futures=[pool.submit(walk,t,60000) for t in range(end-M5+60000,end+1,60000)]
+                r=join_minutes([f.result() for f in futures],end)
+        else:
+            r=walk(end)
         # The recent-candles endpoint only returns the latest bars. A
         # retrospective gap up to four hours old must query the historical
         # endpoint using a timestamp cursor or reconciliation will fail
@@ -105,6 +144,7 @@ def collect_one(inst,end,max_runtime_seconds=180,max_pages_override=None):
         r=reconcile(r,candles,meta)
     except Exception as exc:
         r={"instrument":inst,"end_ms":end,"volume_reconciled":False,"error":type(exc).__name__}
+    r["trade_page_requests"]=pages_used
     r["elapsed_seconds"]=round(time.monotonic()-began,2)
     return r
 def backfill_target(rows,end,max_age_buckets=48,instrument="BTC-USDT"):
@@ -155,7 +195,7 @@ def main():
         p=previous.get(key) or {}
         prior=p.get("target_end_ms") if p.get("volume_reconciled") is False else None
         target=rotating_backfill_target(old+results,end,inst,prior)
-        result=collect_one(inst,target,max_runtime_seconds=seconds,max_pages_override=pages) if target is not None else None
+        result=collect_one(inst,target,max_runtime_seconds=seconds,max_pages_override=pages,split_repair=inst=="BTC-USDT-SWAP") if target is not None else None
         return target,result
     with ThreadPoolExecutor(max_workers=2) as pool:
         spot=pool.submit(repair,"BTC-USDT","spot_backfill",60,180)
