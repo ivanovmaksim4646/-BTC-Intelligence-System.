@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at_utc": "2026-11-28T11:25:51.085560+00:00",
+  "generated_at_utc": "2026-11-28T11:30:52.675944+00:00",
   "source": "OKX BTC-USDT-SWAP",
   "classification": "closed_okx_swing_structure_plus_sampled_liquidity_research",
   "status": "structure_and_sampled_liquidity",
@@ -10,9 +10,9 @@
       "timeframe": "5m",
       "status": "observed",
       "structure": "mixed",
-      "last_closed_candle_open_s": 1795864800,
-      "last_closed_candle_close_s": 1795865100,
-      "last_close": 59234.2,
+      "last_closed_candle_open_s": 1795865100,
+      "last_closed_candle_close_s": 1795865400,
+      "last_close": 59234.7,
       "confirmed_swing_highs": [
         {
           "t": 1795859700,
@@ -40,10 +40,10 @@
     "15m": {
       "timeframe": "15m",
       "status": "observed",
-      "structure": "mixed",
-      "last_closed_candle_open_s": 1795863600,
-      "last_closed_candle_close_s": 1795864500,
-      "last_close": 59238.1,
+      "structure": "bearish",
+      "last_closed_candle_open_s": 1795864500,
+      "last_closed_candle_close_s": 1795865400,
+      "last_close": 59234.7,
       "confirmed_swing_highs": [
         {
           "t": 1795851900,
@@ -56,12 +56,12 @@
       ],
       "confirmed_swing_lows": [
         {
-          "t": 1795849200,
-          "price": 59156.2
-        },
-        {
           "t": 1795855500,
           "price": 59474.9
+        },
+        {
+          "t": 1795862700,
+          "price": 59017.2
         }
       ],
       "swing_confirmation_delay_bars": 2,
@@ -134,27 +134,27 @@
   "htf_structure": "mixed",
   "ltf_structure": "mixed",
   "liquidity_context": {
-    "book_timestamp_ms": 1795865150051,
+    "book_timestamp_ms": 1795865451902,
     "resting_side": "ask_heavier",
-    "resting_imbalance": -0.459551,
+    "resting_imbalance": -0.203458,
     "open_interest_change": {
-      "delta_btc": 57.4697,
-      "delta_percent": 0.17745,
-      "oi_btc": 32443.337300000127,
-      "elapsed_seconds": 308.798,
+      "delta_btc": -5.9533,
+      "delta_percent": -0.01835,
+      "oi_btc": 32437.38400000013,
+      "elapsed_seconds": 301.946,
       "snapshot_only": true
     },
     "funding": {
-      "rate_fraction": 6.57135860569e-05,
+      "rate_fraction": 6.63435803265e-05,
       "next_funding_time_ms": 1795910400000,
       "classification": "quoted_not_realized"
     },
     "premium": {
-      "mark_price": 59236.6,
-      "index_price": 59263.0,
-      "premium_bps": -4.454719,
-      "mark_timestamp_ms": 1795865150438,
-      "index_timestamp_ms": 1795865150027,
+      "mark_price": 59209.6,
+      "index_price": 59233.7,
+      "premium_bps": -4.06863,
+      "mark_timestamp_ms": 1795865452158,
+      "index_timestamp_ms": 1795865451454,
       "classification": "instantaneous_premium_not_expiry_basis"
     },
     "wall_persistence": {
