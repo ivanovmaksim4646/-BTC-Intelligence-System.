@@ -1,0 +1,36 @@
+name: BTC Telegram connectivity test
+on:
+  push:
+    branches: [feature/telegram-delivery-v1]
+    paths: ['.github/workflows/btc-telegram-test.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: btc-telegram-test
+  cancel-in-progress: false
+jobs:
+  test:
+    if: github.ref_name == 'feature/telegram-delivery-v1' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Offline adapter tests
+        run: python -m unittest discover -s tests -p test_telegram_delivery_v1.py -v
+      - name: Send one explicitly labeled connectivity test
+        env:
+          BTC_TELEGRAM_BOT_TOKEN: ${{ secrets.BTC_TELEGRAM_BOT_TOKEN }}
+          BTC_TELEGRAM_CHAT_ID: ${{ secrets.BTC_TELEGRAM_CHAT_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          from src.telegram_delivery_v1 import send
+          try:
+              send(os.environ["BTC_TELEGRAM_BOT_TOKEN"],os.environ["BTC_TELEGRAM_CHAT_ID"],
+                   "BTC Intelligence System: TEST — канал Telegram підключено. Це не торговий сигнал.")
+          except Exception as exc:
+              print("Telegram connectivity failed:",type(exc).__name__)
+              raise SystemExit(1) from None
+          print("Telegram API accepted test message; phone receipt unverified")
+          PY
