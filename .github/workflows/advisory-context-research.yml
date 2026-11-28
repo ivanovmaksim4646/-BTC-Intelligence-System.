@@ -1,0 +1,26 @@
+name: Advisory context research
+on:
+  push:
+    branches: [research/advisory-market-coverage]
+    paths:
+      - 'src/advisory_context_v1.py'
+      - 'tests/test_advisory_context_v1.py'
+      - '.github/workflows/advisory-context-research.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p test_advisory_context_v1.py -v
+      - run: python -m src.market_breadth_macro_v1
+      - run: python -m src.advisory_context_v1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: advisory-context
+          path: data/BTC-advisory-context-v1.json
