@@ -76,7 +76,7 @@ class Levels:
         if p and tf>=900:
             self.add(p.side,p.px,"swing "+str(tf//60)+"m",tf>=3600)
 
-def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=None):
+def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=None,first_tests=None):
     """External target is chosen by structure BEFORE RR, not by desired R."""
     pivot=frames[900].last.get(d)
     boundary=pivot.px if pivot and d*(pivot.px-entry)>0 else entry
@@ -88,14 +88,22 @@ def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=
     fta_candidates.append((tp,target_kind,None))
     overlaps=[]
     shift_inside=[]
+    tested_ignored=[]
+    first_tests={} if first_tests is None else first_tests
     # Distinguish the confirmed shift CLOSE from a hypothetical limit price.
     # An opposing zone formed after the shift cannot retrospectively veto it.
     for tf in (900,3600,14400,86400):
         for z in frames[tf].zones:
             if z.kind not in ALLOWED_POI or z in filled or z.side==d:continue
-            zone=dict(kind=z.kind,tf=tf,low=z.lo,high=z.hi,formed_utc=b.utc(z.born))
-            if shift_price is not None and shift_time is not None and z.born<shift_time and z.lo<=shift_price<=z.hi:
+            first=first_tests.get((tf,z))
+            zone=dict(kind=z.kind,tf=tf,low=z.lo,high=z.hi,formed_utc=b.utc(z.born),
+                      first_test_utc=b.utc(first) if first is not None else None)
+            if (shift_price is not None and shift_time is not None and z.born<shift_time
+                    and z.lo<=shift_price<=z.hi and (first is None or first>=shift_time)):
                 shift_inside.append(zone)
+            if first is not None:
+                tested_ignored.append(zone)
+                continue
             if z.lo<=entry<=z.hi:
                 # A limit in a live opposing zone needs a fresh post-
                 # invalidation setup; retain precise evidence for review.
@@ -106,7 +114,8 @@ def structural_targets(d,entry,frames,levels,filled,shift_price=None,shift_time=
                 fta_candidates.append((edge,"opposing_"+z.kind+"_"+str(tf//60)+"m",zone))
     fta,fta_kind,fta_zone=min(fta_candidates,key=lambda v:(abs(v[0]-entry),v[1]))
     result=dict(target=tp,target_kind=target_kind,fta=fta,fta_kind=fta_kind,fta_zone=fta_zone,
-                external_boundary=boundary,overlap_zones=overlaps,shift_inside_zones=shift_inside)
+                external_boundary=boundary,overlap_zones=overlaps,shift_inside_zones=shift_inside,
+                previously_tested_ignored_count=len(tested_ignored))
     if shift_inside:return result,"shift_inside_active_fta"
     if overlaps:return result,"limit_inside_active_opposing_zone"
     return result,None
@@ -214,14 +223,14 @@ class Account:
             p=self.pos;out=x.c*(1-p["d"]*self.slip)
             mark+=p["funding"]+p["qty"]*(p["d"]*(out-p["entry"])-self.fee*(out+p["entry"]))
         self.peak=max(self.peak,mark);self.dd=max(self.dd,1-mark/self.peak)
-    def place_ready(self,frames,levels,filled,x,now):
+    def place_ready(self,frames,levels,filled,x,now,first_tests=None):
         if self.ready is None:return
         s=self.ready;self.ready=None
         d=s["d"]
         zone=s.get("zone")
         if zone is not None and (zone not in frames[s["poi_tf"]].zones or zone in filled):
             self.reject("poi_invalidated_on_retest");return
-        targets,reason=structural_targets(d,s["entry_limit"],frames,levels,filled)
+        targets,reason=structural_targets(d,s["entry_limit"],frames,levels,filled,first_tests=first_tests)
         if self.current_audit is not None:self.current_audit["retest_targets"]=targets
         if reason:self.reject("retest_"+reason);return
         # The TP is frozen at the original decision. Never extend it to
@@ -260,7 +269,7 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
     if not bars or bars[0].t!=start-30*DAY or bars[-1].t!=end-300 or any(v.t-u.t!=300 for u,v in zip(bars,bars[1:])):
         raise ValueError("archive continuity/warmup")
     frames={tf:b.Frame(tf) for tf in b.FRAMES}
-    levels=Levels();filled=set()
+    levels=Levels();filled=set();first_tests={};shift_fresh={}
     touches={1:deque(),-1:deque()}
     accounts=[Account(m,k,fee,slip) for m in MODELS for k in BUFFERS]
     count=0
@@ -269,8 +278,10 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
         if eligible:count+=1
         # Wick full-fill retires an imbalance only; OB/Breaker/Rejection
         # use existing timeframe-close invalidation in Frame.close.
-        for f in frames.values():
+        for tf,f in frames.items():
             for z in f.zones:
+                if tf>=900 and z.kind in ALLOWED_POI and z.born<=x.t and b.overlap(x,z):
+                    first_tests.setdefault((tf,z),now)
                 if z.kind in ("FVG","IFVG") and z.born<=x.t and (x.l<=z.lo if z.side==1 else x.h>=z.hi):filled.add(z)
         if eligible:
             for a in accounts:a.on_bar(x,now,end,funding,frames,filled)
@@ -294,10 +305,26 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
             if tf==900:qm=pattern
             levels.pivot(pivot,tf)
         filled.intersection_update(z for f in frames.values() for z in f.zones)
+        live_keys={(tf,z) for tf,f in frames.items() if tf>=900 for z in f.zones}
+        first_tests={k:t for k,t in first_tests.items() if k in live_keys}
+        # Preserve event-time state for QM, confirmed after its shift.
+        for tf,direction in shifts.items():
+            if tf not in (300,900):continue
+            f=frames[tf];price=f.shift_close
+            zones=[]
+            for ztf in (900,3600,14400,86400):
+                for z in frames[ztf].zones:
+                    first=first_tests.get((ztf,z))
+                    if (z.kind in ALLOWED_POI and z not in filled and z.side!=direction
+                            and z.born<now and z.lo<=price<=z.hi and (first is None or first>=now)):
+                        zones.append(dict(kind=z.kind,tf=ztf,low=z.lo,high=z.hi,
+                                          formed_utc=b.utc(z.born),first_test_utc=b.utc(first) if first is not None else None))
+            shift_fresh[(tf,now,direction)]=zones
+        shift_fresh={k:v for k,v in shift_fresh.items() if now-k[1]<=MAX_AGE}
         if not eligible:continue
         for a in accounts:
             a.after_close(x,now,shifts.get(300))
-            a.place_ready(frames,levels,filled,x,now)
+            a.place_ready(frames,levels,filled,x,now,first_tests)
         if now>=end:continue
         ideas={}
         if qm:
@@ -329,7 +356,13 @@ def run(bars,funding,start,end,fee=.0005,slip=.0002):
                 ideas["SWEEP_EXTREME"]=dict(d=d,anchor=sweep["extreme"],anchor_kind="sweep_extreme",anchor_at=b.utc(sweep["close"]),entry_limit=pivot.px,lo=pivot.px,hi=pivot.px,
                                            zone=None,poi_tf=900,poi="Sweep",sweep=sweep,shift_price=frames[900].shift_close,shift_time=now,setup_utc=b.utc(now))
         for model,idea in ideas.items():
-            targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled,idea.get("shift_price"),idea.get("shift_time"))
+            targets,reason=structural_targets(idea["d"],idea["entry_limit"],frames,levels,filled,first_tests=first_tests)
+            event_tf=300 if model=="OF_ZONE" else 900
+            event_key=(event_tf,idea["shift_time"],idea["d"])
+            if targets is not None:
+                targets["shift_inside_zones"]=shift_fresh.get(event_key,[])
+                if event_key not in shift_fresh:reason="missing_shift_freshness_snapshot"
+                elif targets["shift_inside_zones"]:reason="shift_inside_fresh_fta"
             for a in accounts:
                 if a.model!=model or not a.idle():continue
                 if reason:a.events+=1;a.audit_idea(idea,targets,now);a.reject(reason)
@@ -374,6 +407,20 @@ def self_test():
     f[3600].zones=[b.Zone("FVG",-1,99,101,0)]
     result,err=structural_targets(1,100,f,lv,set(),103,300)
     assert err=="limit_inside_active_opposing_zone" and result["overlap_zones"][0]["kind"]=="FVG"
+    z=f[3600].zones[0]
+    result,err=structural_targets(1,100,f,lv,set(),103,300,first_tests={(3600,z):100})
+    assert err is None and result["fta"]==102
+    z=b.Zone("OB",-1,102,104,0)
+    f[3600].zones=[z]
+    result,err=structural_targets(1,100,f,lv,set(),103,300,first_tests={(3600,z):300})
+    assert err=="shift_inside_active_fta"
+    result,err=structural_targets(1,100,f,lv,set(),103,300,first_tests={(3600,z):200})
+    assert err is None
+    f[900].last[-1]=b.Pivot(-1,97,0)
+    lv.add(-1,94,"external",True)
+    z=b.Zone("OB",1,96,98,0);f[3600].zones=[z]
+    result,err=structural_targets(-1,100,f,lv,set(),97,300,first_tests={(3600,z):100})
+    assert err is None and result["fta"]==94
 
 def main():
     self_test()
@@ -410,7 +457,8 @@ def main():
                            "BE nominal entry after FTA or confirmed favorable M5 shift, costs included",
                            "fixed 3bp buffer; OB wick touch is not FVG full-fill; structural audit includes rejected setups",
                            "BB excluded from POI and FTA; shift CLOSE in a pre-existing active opposing zone blocks, overlapping limit waits for new setup",
-                           "FTA recomputed at retest before placement; frozen TP and SL; post-placement FTA touch cancels pending, post-fill touch moves BE"]}
+                           "FTA recomputed at retest before placement; frozen TP and SL; post-placement FTA touch cancels pending, post-fill touch moves BE",
+                           "fresh FTA only: first M5 wick overlap after confirmed creation retires zone from future FTA selection; first contact at shift retains veto, event-time snapshot prevents QM hindsight; entry POI unchanged"]}
     out=Path("risk-profile-output");out.mkdir(exist_ok=True)
     (out/"summary.json").write_text(json.dumps(report,indent=2,allow_nan=False)+"\n")
     (out/"trades.json").write_text(json.dumps({a.name:a.rows for a in full},indent=2,allow_nan=False)+"\n")
