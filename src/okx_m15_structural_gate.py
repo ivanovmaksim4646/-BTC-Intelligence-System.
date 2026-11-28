@@ -4,9 +4,12 @@ OB definition matches baseline research: last opposite candle before a close
 beyond the preceding three candles' extreme. Not discretionary OB validation.
 """
 import datetime as dt
-from src.okx_market_context_v1 import validate_frame
-from src.okx_entry_evidence_gate_v1 import fresh, prior_poi_zones, structural_plan, VENUE
-from src.okx_structural_risk_v3 import plan
+try:
+    from src.okx_market_context_v1 import validate_frame
+    from src.okx_entry_evidence_gate_v1 import fresh, prior_poi_zones, structural_plan, VENUE
+except ModuleNotFoundError:
+    from okx_market_context_v1 import validate_frame
+    from okx_entry_evidence_gate_v1 import fresh, prior_poi_zones, structural_plan, VENUE
 
 M15=900
 M5=300
@@ -52,7 +55,7 @@ def qm_shifts(bars):
             if not (bars[i-1]["c"]>=n[1]>b["c"] if short else bars[i-1]["c"]<=n[1]<b["c"]):continue
             used.add(key)
             out.append({"direction":direction,"shoulder":a[1],"neckline":n[1],"head":h[1],
-                        "head_open":h[2],"shift_close":b["t"]+M15})
+                        "shoulder_open":a[2],"head_open":h[2],"shift_close":b["t"]+M15})
             break
     return out
 
@@ -101,14 +104,15 @@ def evaluate(snapshot,now=None):
         subsequent=[b for b in m5 if shift<=b["t"]]
         if any((b["h"]>=q["head"] if short else b["l"]<=q["head"]) for b in subsequent):
             row["reasons"].append("head_invalidated");continue
-        # The POI must exist before the head and be touched by the head candle.
-        headbar=next(b for b in frames["15m"]["bars"] if b["t"]==head)
+        # The POI must exist before the head and be touched during QM formation.
+        touch_bars=[b for b in frames["15m"]["bars"] if q["shoulder_open"]<=b["t"]<=head]
         hits=[]
         for tf,step in (("1h",3600),("4h",14400)):
             ht=frames[tf]["bars"]
             for z in prior_poi_zones(ht,step,head,direction)+ob_zones(ht,step,head,direction):
-                if not headbar["l"]<=z["high"] or not headbar["h"]>=z["low"]:continue
-                if any((b["c"]>z["high"] if short else b["c"]<z["low"]) for b in frames["15m"]["bars"] if head<=b["t"]):continue
+                touch=next((b for b in touch_bars if b["t"]>=z["available_at"] and b["l"]<=z["high"] and b["h"]>=z["low"]),None)
+                if touch is None:continue
+                if any((b["c"]>z["high"] if short else b["c"]<z["low"]) for b in frames["15m"]["bars"] if touch["t"]<=b["t"]):continue
                 hits.append((tf,z))
         if not hits:row["reasons"].append("no_active_pre_head_mtf_poi");continue
         row["poi_matches"]=[{"htf":tf,**z} for tf,z in hits]
