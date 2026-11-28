@@ -39,11 +39,32 @@ def stablecoins(raw,now):
         if stamp and 0<=(now-stamp).total_seconds()<=1800 and positive(cap) and positive(supply):
             out[key]={"market_cap_usd":cap,"circulating_supply":supply,"asof_utc":stamp.isoformat()}
     return out
+def reconciled_coverage(doc,now):
+    end=doc.get("end_ms")
+    out={"status":"missing_or_stale","sequence_certified":False,"instruments":{}}
+    if type(end) is not int or end%300000 or not 0<=now.timestamp()*1000-end<=900000:return out
+    for name in ("BTC-USDT","BTC-USDT-SWAP"):
+        item=(doc.get("instruments") or {}).get(name) or {}
+        windows={}
+        for tf,n in (("5m",1),("15m",3),("1h",12),("4h",48)):
+            w=(item.get("rolling_windows") or {}).get(tf) or {}
+            if w.get("end_ms")!=end or w.get("required_m5")!=n or w.get("reconciled_m5")!=n:continue
+            if w.get("start_ms")!=end-n*300000:continue
+            try:
+                delta=float(w["delta_btc_reconciled"]);volume=float(w["volume_btc_reconciled"])
+            except (KeyError,ValueError,TypeError):continue
+            if not math.isfinite(delta) or not math.isfinite(volume) or volume<abs(delta):continue
+            windows[tf]={"delta_btc_reconciled":delta,"volume_btc":volume,"coverage":"volume_reconciled_not_sequence_certified"}
+        out["instruments"][name]=windows
+    out.update(status="observed_partial_or_complete",end_ms=end)
+    return out
+
 def main():
     now=dt.datetime.now(dt.timezone.utc)
     out={"classification":"advisory_only","generated_at_utc":now.isoformat(),
          "breadth":breadth(read("BTC-market-breadth-macro-v1.json"),now),
-         "stablecoins":{},"volatility":None,"errors":{},"trade_signal":None}
+         "stablecoins":{},"volatility":None,"errors":{},"trade_signal":None,
+         "okx_flow_coverage":reconciled_coverage(read("BTC-okx-reconciled-flow-current.json"),now)}
     urls={"stablecoins":"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=tether,usd-coin",
           "volatility":"https://www.deribit.com/api/v2/public/get_volatility_index_data?currency=BTC&start_timestamp="+str(int(now.timestamp()*1000)-10800000)+"&end_timestamp="+str(int(now.timestamp()*1000))+"&resolution=3600"}
     for key,url in urls.items():
