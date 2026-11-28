@@ -1,7 +1,7 @@
-name: Structural invalidation audit v2
+name: FTA management audit v3
 on:
   push:
-    branches: [research/structural-validation-v2]
+    branches: [research/fta-management-v3]
     paths:
       - 'research/runner/**'
       - 'research/baseline/**'
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   replay:
-    if: github.ref == 'refs/heads/research/structural-validation-v2'
+    if: github.ref == 'refs/heads/research/fta-management-v3'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -59,4 +59,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/risk-results/
           git commit -m "data: publish structural risk research results"
-          git push origin HEAD:research/structural-validation-v2
+          git push origin HEAD:research/fta-management-v3
