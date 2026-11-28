@@ -1,7 +1,7 @@
-name: Annual BTC research runner
+name: Structural SL TP research
 on:
   push:
-    branches: [research/annual-backtest-runner]
+    branches: [research/structural-risk-comparison-v1]
     paths:
       - 'research/runner/**'
       - 'research/baseline/**'
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   replay:
-    if: github.ref == 'refs/heads/research/annual-backtest-runner'
+    if: github.ref == 'refs/heads/research/structural-risk-comparison-v1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -37,16 +37,24 @@ jobs:
       - name: Research regression tests
         run: python -m unittest discover -s tests -p 'test_research_runner.py' -v
       - name: Replay verified archives
-        run: python -m research.runner.replay
+        run: python -m research.runner.risk_profile_replay
       - name: Show result and input revision
         run: |
           echo "Input commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          cat research-output/summary.json >> "$GITHUB_STEP_SUMMARY"
+          cat risk-profile-output/summary.json >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: btc-research-${{ github.run_id }}-${{ github.run_attempt }}
-          path: research-output/
+          path: risk-profile-output/
           if-no-files-found: error
           retention-days: 30
       - name: Publish tables for GitHub connector
-        run: bash research/runner/publish.sh
+        run: |
+          mkdir -p research/risk-results
+          cp risk-profile-output/summary.json research/risk-results/summary.json
+          python -c 'import json,os; from pathlib import Path; Path("research/risk-results/latest.json").write_text(json.dumps({"input_commit":os.environ["GITHUB_SHA"],"run_id":os.environ["GITHUB_RUN_ID"]},indent=2)+"\n")'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/risk-results/
+          git commit -m "data: publish structural risk research results"
+          git push origin HEAD:research/structural-risk-comparison-v1
