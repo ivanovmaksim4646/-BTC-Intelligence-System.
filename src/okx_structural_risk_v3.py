@@ -5,7 +5,8 @@ def plan(direction, entry, head, zones, liquidity, *, cost_bps=14, buffer_bps=3,
     """Inputs are pre-entry confirmed zones and unswept liquidity only.
     Zone schema: low, high, direction, kind (FVG/IFVG/OB), confirmed_at.
     Caller must validate chronology and active status. Nearest opposing
-    zone or liquidity is the first trouble area. With separate_fta, final TP\n    is nearest verified liquidity; the FTA is preserved for management.
+    zone or liquidity is the first trouble area. With separate_fta, final TP
+    is nearest verified liquidity; the FTA is preserved for management.
     """
     if direction not in ("long","short") or not all(type(x) in (int,float) and isfinite(x) and x>0 for x in (entry,head)):
         return {"status":"withheld","reason":"invalid_geometry"}
@@ -43,6 +44,10 @@ def plan(direction, entry, head, zones, liquidity, *, cost_bps=14, buffer_bps=3,
         if not final:
             return {"status":"withheld","reason":"no_verified_final_liquidity","fta":fta,"fta_kind":fta_kind}
         tp,kind=min(final,key=lambda x:abs(x[0]-entry))
+    fta_zone=None
+    if separate_fta and fta_kind.startswith("opposing_"):
+        match=next((z for z in zones if z["direction"]!=direction and "opposing_"+z["kind"]==fta_kind and (z["low"] if long else z["high"])==fta),None)
+        if match is not None:fta_zone={"low":match["low"],"high":match["high"],"kind":match["kind"]}
     risk=abs(entry-stop)+entry*cost_bps/10000
     reward=abs(tp-entry)-entry*cost_bps/10000
     net=reward/risk
@@ -50,4 +55,4 @@ def plan(direction, entry, head, zones, liquidity, *, cost_bps=14, buffer_bps=3,
             "reason":"net_rr_pass" if net>=2 else "net_rr_below_two",
             "entry":entry,"stop_loss":stop,"take_profit":tp,"target_kind":kind,
             "rr_net_estimate":net,"cost_bps":cost_bps,"trade_signal":None,
-            **({"fta":fta,"fta_kind":fta_kind,"management":"fta_or_ltf_shift_be_v1"} if separate_fta else {})}
+            **({"fta":fta,"fta_kind":fta_kind,"fta_zone":fta_zone,"management":"fta_or_ltf_shift_be_v1"} if separate_fta else {})}
