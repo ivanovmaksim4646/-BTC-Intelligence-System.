@@ -53,6 +53,32 @@ def candidate(feed, now):
                 "text":f"BTC {direction} | {clock} PL\nOKX Spot: Delta M15 {blocks[-1]['delta_btc']:+.2f} BTC; тиск 2×M15.\nЦіна: {'підтверджує напрям' if aligned else 'реакція неоднозначна'}. WATCH, не вхід."}
     return None
 
+def paper_candidate(row, now):
+    """Only prospectively admitted, unexpired pending simulations."""
+    import math
+    if not isinstance(row,dict) or row.get("source")!="OKX BTC-USDT-SWAP" or row.get("paper_only") is not True or row.get("status")!="pending":
+        return None
+    d=row.get("direction"); ident=row.get("id")
+    issued=stamp(row.get("issued_at_utc"))
+    if d not in ("long","short") or not isinstance(ident,str) or not re.fullmatch(r"[a-f0-9]{24}",ident) or not issued or not 0<=(now-issued).total_seconds()<=420:
+        return None
+    expiry=row.get("expires_at"); start=row.get("eligible_from")
+    if type(expiry) is not int or type(start) is not int or expiry!=start+900 or not now.timestamp()<expiry:
+        return None
+    e,s,t,c=(row.get(k) for k in ("entry","stop_loss","take_profit","cost_bps"))
+    if not all(type(v) in (int,float) and math.isfinite(v) and v>0 for v in (e,s,t,c)):
+        return None
+    if not (s<e<t if d=="long" else t<e<s):
+        return None
+    cost=e*c/10000
+    rr=(abs(t-e)-cost)/(abs(e-s)+cost)
+    if rr<2:
+        return None
+    from zoneinfo import ZoneInfo
+    clock=dt.datetime.fromtimestamp(expiry,dt.timezone.utc).astimezone(ZoneInfo("Europe/Warsaw")).strftime("%H:%M")
+    return {"id":ident,"text":f"BTC PAPER {d.upper()} | симуляція, не реальна угода\nEntry: {e:.2f} | SL: {s:.2f} | TP: {t:.2f}\nRR після витрат 1:{rr:.2f} | ліміт до {clock} PL."}
+
+
 def load(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -86,12 +112,39 @@ def main():
     now=dt.datetime.now(dt.timezone.utc)
     try:
         previous=load(STATE) if STATE.exists() else {}
-        item=candidate(load(DATA/"BTC-report-feed.json"),now)
-        if item is None:
-            print("No fresh validated WATCH")
-            return
         if not isinstance(previous,dict):
             raise ValueError("invalid_state")
+        paper_ids=previous.setdefault("paper_ids",[])
+        if not isinstance(paper_ids,list):
+            raise ValueError("invalid_state")
+        if os.environ.get("BTC_TELEGRAM_PAPER_READY")=="1":
+            rows=load(DATA/"BTC-forward-paper-journal-v1.json")
+            if not isinstance(rows,list):
+                raise ValueError("invalid_journal")
+            for row in rows:
+                paper=paper_candidate(row,now)
+                if paper and paper["id"] not in paper_ids:
+                    message_id=send(token,chat,paper["text"])
+                    paper_ids.append(paper["id"])
+                    previous["last_paper_message_id"]=message_id
+                    previous["accepted_at_utc"]=now.isoformat()
+                    save(STATE,previous)
+                    print("Telegram API accepted PAPER message; handset receipt unverified")
+        if os.environ.get("BTC_TELEGRAM_WATCH_READY")!="1":
+            return
+        feed=load(DATA/"BTC-report-feed.json")
+        item=candidate(feed,now)
+        if item is None:
+            # Only a fresh, explicit neutral observation resets the episode.
+            o=feed.get("okx_spot_persistence") or {}
+            end=o.get("end_ms")
+            if (o.get("source")=="OKX BTC-USDT" and o.get("status")=="observed"
+                and o.get("direction") is None and type(end) is int
+                and 0<=now.timestamp()*1000-end<=420000 and end>previous.get("end_ms",0)):
+                previous.update(direction=None,end_ms=end)
+                save(STATE,previous)
+            print("No fresh validated WATCH")
+            return
         if previous.get("source")==item["source"] and previous.get("direction")==item["direction"]:
             print("Unchanged WATCH suppressed")
             return
@@ -99,9 +152,10 @@ def main():
             print("Old observation suppressed")
             return
         message_id=send(token,chat,item["text"])
-        save(STATE,{"source":item["source"],"direction":item["direction"],"end_ms":item["end_ms"],
-                    "provider_message_id":message_id,"accepted_at_utc":now.isoformat()})
-        print("Telegram API accepted message; handset receipt unverified")
+        previous.update(source=item["source"],direction=item["direction"],end_ms=item["end_ms"],
+                        provider_message_id=message_id,accepted_at_utc=now.isoformat())
+        save(STATE,previous)
+        print("Telegram API accepted WATCH message; handset receipt unverified")
     except Exception as exc:
         # Never log exception strings: HTTP errors may contain credential URLs.
         print("Telegram adapter failed:",type(exc).__name__)
