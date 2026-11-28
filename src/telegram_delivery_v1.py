@@ -50,7 +50,7 @@ def candidate(feed, now):
         from zoneinfo import ZoneInfo
         clock = local.astimezone(ZoneInfo("Europe/Warsaw")).strftime("%d.%m %H:%M")
         return {"source":"OKX Spot","direction":direction,"end_ms":end,
-                "text":f"BTC {direction} | {clock} PL\nOKX Spot: Delta M15 {blocks[-1]['delta_btc']:+.2f} BTC; тиск 2×M15.\nЦіна: {'підтверджує напрям' if aligned else 'реакція неоднозначна'}. WATCH, не вхід."}
+                "text":f"📊 АНАЛІТИКА | {direction}\nBTC • {clock} PL\nOKX Spot: Delta M15 {blocks[-1]['delta_btc']:+.2f} BTC; тиск 2×M15.\nЦіна: {'підтверджує напрям' if aligned else 'реакція неоднозначна'}. WATCH, не вхід."}
     return None
 
 def paper_candidate(row, now):
@@ -76,7 +76,8 @@ def paper_candidate(row, now):
         return None
     from zoneinfo import ZoneInfo
     clock=dt.datetime.fromtimestamp(expiry,dt.timezone.utc).astimezone(ZoneInfo("Europe/Warsaw")).strftime("%H:%M")
-    return {"id":ident,"text":f"BTC PAPER {d.upper()} | симуляція, не реальна угода\nEntry: {e:.2f} | SL: {s:.2f} | TP: {t:.2f}\nRR після витрат 1:{rr:.2f} | ліміт до {clock} PL."}
+    marker="🟢" if d=="long" else "🔴"
+    return {"id":ident,"text":f"🚨 ТОРГОВИЙ СИГНАЛ 🚨\n{marker} BTC PAPER {d.upper()}\n━━━━━━━━━━━━━━━━\nEntry: {e:,.2f} USDT\nSL: {s:,.2f} USDT\nTP: {t:,.2f} USDT\nRR (після витрат): 1:{rr:.2f}\n━━━━━━━━━━━━━━━━\nЛіміт до {clock} PL\nPAPER — симуляція, не реальна угода."}
 
 
 def load(path):
