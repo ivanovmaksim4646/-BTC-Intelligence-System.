@@ -1,11 +1,11 @@
 """Conservative structural paper risk planning; no execution or fabricated RR targets."""
 from math import isfinite
 
-def plan(direction, entry, head, zones, liquidity, *, cost_bps=14, buffer_bps=3):
+def plan(direction, entry, head, zones, liquidity, *, cost_bps=14, buffer_bps=3, separate_fta=False):
     """Inputs are pre-entry confirmed zones and unswept liquidity only.
     Zone schema: low, high, direction, kind (FVG/IFVG/OB), confirmed_at.
     Caller must validate chronology and active status. Nearest opposing
-    zone or liquidity is the first trouble area; never bypass it to hit RR.
+    zone or liquidity is the first trouble area. With separate_fta, final TP\n    is nearest verified liquidity; the FTA is preserved for management.
     """
     if direction not in ("long","short") or not all(type(x) in (int,float) and isfinite(x) and x>0 for x in (entry,head)):
         return {"status":"withheld","reason":"invalid_geometry"}
@@ -34,11 +34,20 @@ def plan(direction, entry, head, zones, liquidity, *, cost_bps=14, buffer_bps=3)
     if not targets:
         return {"status":"withheld","reason":"no_verified_target"}
     stop=(min(anchors) if long else max(anchors))*(1-buffer_bps/10000 if long else 1+buffer_bps/10000)
-    tp,kind=min(targets,key=lambda x:abs(x[0]-entry))
+    fta,fta_kind=min(targets,key=lambda x:abs(x[0]-entry))
+    tp,kind=fta,fta_kind
+    if separate_fta:
+        # TP is the nearest independently verified profit-side liquidity.
+        # Opposing imbalances are FTA, not arbitrarily selected final targets.
+        final=[x for x in targets if x[1]=="unswept_liquidity"]
+        if not final:
+            return {"status":"withheld","reason":"no_verified_final_liquidity","fta":fta,"fta_kind":fta_kind}
+        tp,kind=min(final,key=lambda x:abs(x[0]-entry))
     risk=abs(entry-stop)+entry*cost_bps/10000
     reward=abs(tp-entry)-entry*cost_bps/10000
     net=reward/risk
     return {"status":"paper_candidate" if net>=2 else "withheld",
             "reason":"net_rr_pass" if net>=2 else "net_rr_below_two",
             "entry":entry,"stop_loss":stop,"take_profit":tp,"target_kind":kind,
-            "rr_net_estimate":net,"cost_bps":cost_bps,"trade_signal":None}
+            "rr_net_estimate":net,"cost_bps":cost_bps,"trade_signal":None,
+            **({"fta":fta,"fta_kind":fta_kind,"management":"fta_or_ltf_shift_be_v1"} if separate_fta else {})}
