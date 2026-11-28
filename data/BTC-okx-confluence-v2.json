@@ -1,7 +1,7 @@
 {
   "classification": "okx_confluence_research_only",
   "source": "OKX BTC-USDT-SWAP",
-  "generated_at_utc": "2026-11-28T02:36:44.411920+00:00",
+  "generated_at_utc": "2026-11-28T02:41:29.350206+00:00",
   "decision": "NO_TRADE",
   "trade_signal": null,
   "execution_ready": false,
@@ -12,42 +12,34 @@
   "missing": [
     "macro",
     "liquidation_heatmap",
+    "reconciled_flow_5m",
+    "reconciled_flow_15m",
     "reconciled_flow_1h",
     "reconciled_flow_4h"
   ],
   "flow": {
     "5m": {
       "spot": {
-        "delta_btc": "-9.06691449",
-        "volume_btc": "13.80977363",
+        "delta_btc": "-0.59819921",
+        "volume_btc": "2.98737651",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": {
-        "delta_btc": "-110.2545",
-        "volume_btc": "319.8535",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "15m": {
       "spot": {
-        "delta_btc": "-11.46874124",
-        "volume_btc": "27.40361084",
+        "delta_btc": "-7.82716645",
+        "volume_btc": "21.71828005",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
-      "futures": {
-        "delta_btc": "-114.5219",
-        "volume_btc": "580.9431",
-        "direction": "short",
-        "quality": "volume_reconciled_not_sequence_certified"
-      }
+      "futures": null
     },
     "1h": {
       "spot": {
-        "delta_btc": "-7.41800265",
-        "volume_btc": "62.27582047",
+        "delta_btc": "-10.97792825",
+        "volume_btc": "61.02149267",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -55,8 +47,8 @@
     },
     "4h": {
       "spot": {
-        "delta_btc": "-5.22119615",
-        "volume_btc": "323.63712077",
+        "delta_btc": "-8.53023613",
+        "volume_btc": "320.08586629",
         "direction": "short",
         "quality": "volume_reconciled_not_sequence_certified"
       },
@@ -72,34 +64,34 @@
   "derivatives": {
     "oi_change": {
       "status": "two_verified_snapshots",
-      "delta_btc": 32.0261,
-      "delta_percent": 0.09996,
-      "elapsed_seconds": 320.143,
-      "previous_timestamp_ms": 1795833067154,
-      "current_timestamp_ms": 1795833387297,
+      "delta_btc": 3.3571,
+      "delta_percent": 0.01047,
+      "elapsed_seconds": 284.646,
+      "previous_timestamp_ms": 1795833387297,
+      "current_timestamp_ms": 1795833671943,
       "limitation": "not_continuous_intraperiod_OI"
     },
     "funding": {
       "status": "quoted_rate_snapshot",
-      "rate_fraction": 5.71067506688e-05,
-      "rate_percent": 0.0057107,
+      "rate_fraction": 5.87017965599e-05,
+      "rate_percent": 0.0058702,
       "next_funding_time_ms": 1795881600000,
       "not_realized_funding": true
     },
     "mark_index": {
       "status": "two_recent_public_snapshots",
-      "mark_price": 59998.8,
-      "index_price": 60019.8,
-      "mark_timestamp_ms": 1795833387976,
-      "index_timestamp_ms": 1795833387659,
-      "mark_minus_index_usdt": -21.0,
-      "premium_bps": -3.498845,
+      "mark_price": 60006.2,
+      "index_price": 60031.3,
+      "mark_timestamp_ms": 1795833672851,
+      "index_timestamp_ms": 1795833671839,
+      "mark_minus_index_usdt": -25.1,
+      "premium_bps": -4.181152,
       "warning": "instantaneous_mark_index_premium_not_calendar_futures_basis"
     }
   },
   "liquidity": {
-    "resting_side": "bid_heavier",
-    "timestamp_ms": 1795833387707,
+    "resting_side": "balanced",
+    "timestamp_ms": 1795833672457,
     "interpretation": "cancellable_resting_orders_not_directional_vote"
   },
   "macro": {
@@ -166,7 +158,7 @@
   "liquidation_heatmap": null,
   "paper_candidates": [],
   "macro_status": "observations_only_no_release_calendar_or_consensus",
-  "m5_close_s": 1795833300,
+  "m5_close_s": 1795833600,
   "paper_candidates_count": 0,
   "paper_candidates_status": "gate_summary_only_not_entry_authorization"
 }

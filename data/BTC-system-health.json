@@ -1,30 +1,30 @@
 {
   "schema_version": "1.0",
-  "checked_at_utc": "2026-11-28T02:36:44.749244Z",
+  "checked_at_utc": "2026-11-28T02:41:29.630606Z",
   "classification": "operational_diagnostics_only",
   "components": {
     "kraken_collection": {
-      "status": "unverified",
-      "age_seconds": 85
+      "status": "ok",
+      "age_seconds": 71
     },
     "order_flow_analysis": {
       "status": "ok",
-      "age_seconds": 84
+      "age_seconds": 70
     },
     "structure_observation": {
       "status": "ok",
-      "age_seconds": 84
+      "age_seconds": 70
     },
     "watchlist_evaluation": {
       "status": "ok",
-      "age_seconds": 83
+      "age_seconds": 69
     },
     "github_workflow_trigger": {
       "status": "ok",
-      "age_seconds": 83,
+      "age_seconds": 69,
       "event": "workflow_dispatch",
       "source": "cloudflare",
-      "slot": "2026-11-28T02:35:00.000Z"
+      "slot": "2026-11-28T02:40:00.000Z"
     },
     "cloudflare_dispatch": {
       "status": "last_dispatch_observed",
@@ -32,13 +32,13 @@
     },
     "tradingview_intake": {
       "status": "event_history_present",
-      "events_saved": 155,
+      "events_saved": 156,
       "note": "No saved events is not proof there were no TradingView alerts",
-      "last_event_received_at_utc": "2026-11-28T02:35:07.845316+00:00"
+      "last_event_received_at_utc": "2026-11-28T02:40:09.311449+00:00"
     },
     "okx_spot": {
       "status": "volume_reconciled",
-      "age_seconds": 105,
+      "age_seconds": 90,
       "h4_buckets": 48,
       "h4_required": 48,
       "backfill_error": null,
@@ -46,8 +46,8 @@
     },
     "okx_swap": {
       "status": "partial",
-      "age_seconds": 105,
-      "h4_buckets": 41,
+      "age_seconds": 90,
+      "h4_buckets": 40,
       "h4_required": 48,
       "backfill_error": null,
       "sequence_certified": false
@@ -57,7 +57,7 @@
     }
   },
   "fully_operational_confirmed": false,
-  "core_snapshot_ok": false,
+  "core_snapshot_ok": true,
   "notes": [
     "GitHub workflow success does not guarantee five-minute scheduling.",
     "Cloudflare 401 and TradingView 502 require Cloudflare/TradingView logs to diagnose.",
