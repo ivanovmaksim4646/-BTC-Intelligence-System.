@@ -29,7 +29,7 @@ def evaluate(confluence, gate, now=None):
     if "liquidation_heatmap" in missing:
         out["warnings"].append("liquidation_heatmap_unavailable")
     # Separate advisory context from core evidence for an independently
-    # reconstructed WATCH. Existing paper admission stays fail-closed.
+    # reconstructed WATCH. Paper admission stays fail-closed on core evidence.
     advisory={"macro","breadth","liquidation_heatmap","reconciled_flow_4h"}
     out["context_diagnostics"]={
         "advisory_missing":sorted(set(missing)&advisory),
@@ -46,7 +46,15 @@ def evaluate(confluence, gate, now=None):
         rr=(abs(t-e)-e*c/10000)/(abs(e-s)+e*c/10000)
         if rr>=2 and not diag["core_missing"]:
             diag["watch_candidates"].append({"direction":d,"entry":e,"stop_loss":s,"take_profit":t,"rr_net_estimate":rr,"classification":"WATCH_RESEARCH_NOT_PAPER_ADMISSION"})
-    if any(x!="liquidation_heatmap" for x in missing) or confluence.get("conflicts"):
+    # Macro/breadth/heatmap and missing H4 flow are advisory for this
+    # already independently reconstructed structural candidate. The confluence
+    # producer always lists macro as missing, so gating on it made admission
+    # unreachable. Never ignore actual conflicts or missing core evidence.
+    diag["entry_gate_reasons"]=gate.get("reasons") or []
+    diag["entry_gate_diagnostics"]=gate.get("diagnostics") or {}
+    if diag["advisory_missing"]:
+        out["warnings"].extend("advisory_missing_"+x for x in diag["advisory_missing"] if x!="liquidation_heatmap")
+    if diag["core_missing"] or diag["conflicts"]:
         return reject("incomplete_or_conflicting_evidence")
     direction=confluence.get("watch_direction")
     if direction not in ("long","short"):
