@@ -521,6 +521,78 @@ def liquidity_history_chart(now, lines):
     return out
 
 
+def futures_report_sources(current, okx, now):
+    """Select a separately labeled observation, never splice cross-venue CVD."""
+    import math
+    out={"status":"unavailable","windows":{},"trade_signal":None,
+         "policy":"OKX preferred; Kraken independent fallback for reports only. Rolling and aligned windows may differ."}
+    stamp=timestamp((current or {}).get("collected_at_utc"))
+    fresh=stamp is not None and 0<= (now-stamp).total_seconds()<=MAX_AGE_SECONDS
+    expected=int(now.timestamp())//300*300000
+    def valid(delta,volume):
+        return math.isfinite(delta) and math.isfinite(volume) and volume>0 and abs(delta)<=volume+1e-8
+    for tf, secs, key in (("M5",300,"5m"),("M15",900,"15m"),("H1",3600,"1h"),("H4",14400,"4h")):
+        o=(((okx or {}).get("instruments") or {}).get("BTC-USDT-SWAP") or {}).get("rolling_windows",{}).get(key) or {}
+        k=(((current or {}).get("order_flow") or {}).get("futures") or {}).get(tf) or {}
+        choices={}
+        try:
+            d,v=float(o["delta_btc_reconciled"]),float(o["volume_btc_reconciled"])
+            if ((okx or {}).get("classification")=="volume_reconciled_rest_research_only"
+                and o.get("coverage")=="volume_reconciled_not_sequence_certified"
+                and o.get("end_ms")==expected and o.get("start_ms")==expected-secs*1000
+                and o.get("required_m5")==o.get("reconciled_m5")==secs//300 and valid(d,v)):
+                choices["OKX"]={"instrument":"BTC-USDT-SWAP","start_ms":o["start_ms"],"end_ms":expected,
+                    "delta_btc":d,"volume_btc":v,"coverage":o["coverage"],"window_type":"rolling"}
+        except (KeyError,ValueError,TypeError,OverflowError):
+            pass
+        try:
+            d,v=float(k["delta"]),float(k["total_volume"])
+            start,end=timestamp(k.get("window_start_utc")),timestamp(k.get("window_end_utc"))
+            if (fresh and k.get("coverage")=="complete" and k.get("unit")=="BTC-equivalent contracts"
+                and start and end and end.timestamp()==int(now.timestamp())//secs*secs
+                and (end-start).total_seconds()==secs and valid(d,v)):
+                choices["Kraken"]={"instrument":"PF_XBTUSD","start_ms":int(start.timestamp()*1000),
+                    "end_ms":int(end.timestamp()*1000),"delta_btc":d,"volume_btc":v,
+                    "coverage":"collector_complete","window_type":"clock_aligned"}
+        except (KeyError,ValueError,TypeError,OverflowError):
+            pass
+        out["windows"][tf]={"sources":choices,"preferred":"OKX" if "OKX" in choices else "Kraken" if "Kraken" in choices else None}
+    count=sum(bool(x["sources"]) for x in out["windows"].values())
+    out["status"]="all_timeframes_available" if count==4 else "partial" if count else "unavailable"
+    return out
+
+
+def render_visible_liquidity_svg(history):
+    """Render only observed top-three bid/ask points; missing samples stay blank."""
+    import math
+    samples=history.get("samples",[])
+    points=[(s["timestamp_ms"],side,l["price"],l["btc"]) for s in samples
+            for side in ("bid","ask") for l in s[side]]
+    parts=['<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="460" viewBox="0 0 1000 460" role="img">',
+           '<title>OKX sampled resting liquidity</title><rect width="1000" height="460" fill="#101722"/>',
+           '<g fill="#e1e8f0" font-family="sans-serif"><text x="24" y="34" font-size="21">OKX BTC-USDT-SWAP | visible liquidity</text>',
+           '<text x="24" y="57" font-size="13">Top three sampled Bid / Ask levels; not a liquidation heatmap</text>']
+    if not points:
+        return "".join(parts+['<text x="24" y="100">No verified samples</text></g></svg>'])
+    t0,t1=min(p[0] for p in points),max(p[0] for p in points)
+    lo,hi=min(p[2] for p in points),max(p[2] for p in points)
+    pad=max(5,(hi-lo)*.04);lo-=pad;hi+=pad
+    for i in range(5):
+        y=85+72*i;price=hi-(hi-lo)*i/4
+        parts.append(f'<path d="M92 {y} H972" stroke="#334155"/><text x="12" y="{y+4}" font-size="12">{price:,.0f}</text>')
+    for i in range(5):
+        x=92+220*i;t=t0+(t1-t0)*i/4
+        stamp=dt.datetime.fromtimestamp(t/1000,dt.timezone.utc).strftime("%H:%M")
+        parts.append(f'<path d="M{x} 85 V373" stroke="#334155"/><text x="{x-15}" y="397" font-size="12">{stamp}</text>')
+    for t,side,price,btc in points:
+        x=92+880*(t-t0)/max(1,t1-t0);y=85+288*(hi-price)/(hi-lo)
+        rad=min(12,2+math.sqrt(btc)*2)
+        color="#34d399" if side=="bid" else "#fb7185"
+        parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{rad:.2f}" fill="{color}" fill-opacity=".72"><title>{side.upper()} {price:,.2f} USDT / {btc:.4f} BTC</title></circle>')
+    parts.append('<circle cx="105" cy="425" r="5" fill="#34d399"/><text x="117" y="429" font-size="13">Bid</text><circle cx="180" cy="425" r="5" fill="#fb7185"/><text x="192" y="429" font-size="13">Ask</text><text x="270" y="429" font-size="13">UTC | dot size indicates BTC | blank is unknown</text></g></svg>')
+    return "".join(parts)
+
+
 def main():
     report = build(
         read("BTC-intelligence-current.json"), read("BTC-analysis-current.json"),
@@ -542,6 +614,11 @@ def main():
     except (OSError,UnicodeError):
         lines=[]
     report["visible_liquidity_history"] = liquidity_history_chart(dt.datetime.now(dt.timezone.utc), lines)
+    report["futures_report_sources"] = futures_report_sources(read("BTC-intelligence-current.json"),report["okx_reconciled_flow"],dt.datetime.now(dt.timezone.utc))
+    svg=DATA/"BTC-visible-liquidity-history.svg"
+    svg_tmp=svg.with_suffix(".svg.tmp")
+    svg_tmp.write_text(render_visible_liquidity_svg(report["visible_liquidity_history"]),encoding="utf-8")
+    svg_tmp.replace(svg)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temp = OUTPUT.with_suffix(".json.tmp")
     temp.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
