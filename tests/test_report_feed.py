@@ -97,3 +97,32 @@ class BackupMarketContextTests(unittest.TestCase):
         out=backup_market_context(NOW,fetch=fetch)
         self.assertNotIn("M15",out["sources"]["Binance Spot BTCUSDT"]["windows"])
         self.assertIn("M5",out["sources"]["Binance Spot BTCUSDT"]["windows"])
+
+
+class LiquidationAndHistoryFeedTests(unittest.TestCase):
+    def test_liquidation_direction_no_total_claim(self):
+        from src.report_feed import bitget_liquidation_sample
+        row={"symbol":"BTCUSDT","side":"buy","price":"60000","amount":"0.5",
+             "ts":str(int(NOW.timestamp()*1000)-1000)}
+        result=bitget_liquidation_sample(NOW,lambda url:{"code":"00000","data":{"list":[row]}})
+        self.assertEqual(result["records"][0]["position_direction"],"LONG")
+        self.assertFalse(result["complete_coverage"])
+        self.assertIsNone(result["amount_unit"])
+
+    def test_liquidation_invalid_symbol_withheld(self):
+        from src.report_feed import bitget_liquidation_sample
+        row={"symbol":"ETHUSDT","side":"buy","price":"60000","amount":"0.5",
+             "ts":str(int(NOW.timestamp()*1000)-1000)}
+        result=bitget_liquidation_sample(NOW,lambda url:{"code":"00000","data":{"list":[row]}})
+        self.assertEqual(result["status"],"unavailable")
+
+    def test_history_excludes_conflicting_samples(self):
+        import json
+        from src.report_feed import liquidity_history_chart
+        row={"source":"OKX BTC-USDT-SWAP","coverage":"single_cancelable_resting_book_snapshot",
+             "book_timestamp_ms":int(NOW.timestamp()*1000)-1000,
+             "bid_walls":[{"price":59999,"btc":1}],"ask_walls":[{"price":60000,"btc":2}]}
+        other=dict(row,bid_walls=[{"price":59999,"btc":3}])
+        result=liquidity_history_chart(NOW,[json.dumps(row),json.dumps(other)])
+        self.assertEqual(result["excluded_conflicts"],1)
+        self.assertFalse(result["samples"])
