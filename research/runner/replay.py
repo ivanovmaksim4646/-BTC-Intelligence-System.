@@ -10,6 +10,8 @@ from pathlib import Path
 from research.baseline import replay
 from research.baseline.dataset import START, END, stamp
 from research.runner.charts import render
+from research.runner import deviation_replay
+from research.runner.confirmed_filters import self_test
 from research.runner.validation import SPEC, assess
 from research.runner.inputs import BASE, FUNDING_SHA, verified_bars, verified_funding
 
@@ -25,7 +27,7 @@ def parameters(cfg):
     if not START <= start < end <= END:
         raise ValueError(f"Choose UTC dates within [{START}, {END}]")
     models = cfg["models"]
-    if not isinstance(models,list) or not models or any(n not in replay.MODELS for n in models) or len(set(models)) != len(models):
+    if not isinstance(models,list) or not models or any(n not in replay.MODELS + [deviation_replay.MODEL] for n in models) or len(set(models)) != len(models):
         raise ValueError("Unknown, repeated or missing research model")
     costs = [cfg[k] for k in ("fee_bps_per_side","slippage_bps_per_side")]
     if any(type(v) not in (float,int) or not math.isfinite(v) or not 0 <= v <= 100 for v in costs):
@@ -78,8 +80,12 @@ def run(cfg, cache, out):
     bars,pins = verified_bars(start,end,cache)
     funding = verified_funding(stamp(start),stamp(end))
     expected = (end-start).days*288
-    books = replay.backtest(bars,funding,expected,models=models,start=stamp(start),
-                            end=stamp(end),fee=costs[0],slip=costs[1])
+    self_test()
+    old_models=[m for m in models if m in replay.MODELS]
+    books = replay.backtest(bars,funding,expected,models=old_models,start=stamp(start),
+                            end=stamp(end),fee=costs[0],slip=costs[1]) if old_models else {}
+    if deviation_replay.MODEL in models:
+        books.update(deviation_replay.run(bars,funding,expected,start=stamp(start),end=stamp(end),fee=costs[0],slip=costs[1]))
     reference = parity(start,end,costs,books)
     stats = {}
     trades, rejected = [], []
